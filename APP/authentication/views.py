@@ -3,9 +3,12 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password, check_password
 from .models import UserModel
+# from ..utils.utils import encrypt_data
+from utils.utils import encrypt_data
+
 import json
 
-# Create your views here.
+
 @csrf_exempt
 def registerUser(request):
     if request.method == 'POST':
@@ -56,5 +59,34 @@ def registerUser(request):
             }, status=201)
         except Exception as e:
             return JsonResponse({'error': 'error while registering user'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+@csrf_exempt   
+def login(request):
+    if request.method == 'GET':
+        try:
+            data = json.loads(request.body)
+    
+
+            user = UserModel.objects.filter(username=data['username']).first() 
+
+            if not user:
+                return JsonResponse({"message":'user not found'}, status=404)
+
+            if not check_password( data['password'],user.password):
+                return JsonResponse({"message":'invalid password'},status=400)
+            
+            encrypted_data = encrypt_data(user.username,user.email)
+        
+            response = JsonResponse({"message":'login successfully'},status=200)
+            
+            # setting cookies
+            response.set_cookie('access_token', encrypted_data)
+
+            return response
+        except Exception as e:
+            return JsonResponse({'error': 'error while login'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
