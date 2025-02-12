@@ -96,14 +96,21 @@ WSGI_APPLICATION = 'APP.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+import os 
+import environ
+env = environ.Env()
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'automate_product_purchase',
-        'USER': 'root',
-        'PASSWORD': '2005',
-        'HOST':'127.0.0.1',
-        'PORT':'3306',
+        'NAME':env('DB_NAME'),
+        'USER':env('DB_USER'),
+        'PASSWORD':env('DB_PASSWORD'),
+        'HOST':env('DB_HOST'),
+        'PORT':env('DB_PORT')
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': BASE_DIR / 'db.sqlite3',
     }

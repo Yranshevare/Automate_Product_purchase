@@ -1,18 +1,21 @@
 from cryptography.fernet import Fernet
 import json
-
-
-# secret = Fernet.generate_key()
-secret = b'3qt4bNzP4sfhYhWbt87s8IMaX5Slc0BOCZTrwj7MFck='
-chipher = Fernet(secret)
+import os 
+import environ
 import base64
 
+env = environ.Env()
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
+# Retrieve the secret as a string and convert to bytes
+secret_str = env('SECRET')
+secret = secret_str.encode('utf-8')  # Convert the string to bytes
 
+chipher = Fernet(secret)
    
 def encrypt_data(username,email):
-    # print(username,email)
     data = {
         "username": username,
         "email": email
@@ -35,5 +38,6 @@ def decrypt_data(data):
     
     # Print the decrypted data (which is the original JSON string)
     return decrypted_data
+
 
 
