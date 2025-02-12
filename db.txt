@@ -1,0 +1,3 @@
+use automate_product_purchase
+show TABLES
+select * from authentication_usermodel
