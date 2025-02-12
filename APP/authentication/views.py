@@ -22,13 +22,9 @@ def registerUser(request):
 
             if user:
                 return JsonResponse({'error': 'User already exists'}, status=400)
-            
-            password = data.get('password', None)
 
 
-            if password:
-                data['password'] = make_password(password)
-            else:
+            if not data.get('password'):
                 return JsonResponse({'error': 'Password not provided'}, status=400)
             
             user = UserModel(
@@ -36,7 +32,7 @@ def registerUser(request):
                 email=data['email'],
                 mobile=data['mobileNo'],
                 profession=data['proffesion'],
-                password=data['password'],
+                password=make_password(data['password']),
                 gender=data['gender'],
                 isEmailVerified=data.get('isEmailVerified', False)  # Default to False
             )
@@ -44,8 +40,6 @@ def registerUser(request):
             try:
                 user.save()
             except Exception as e:
-                print(f"Error saving user: {e}")
-                print(user.gender)
                 return JsonResponse({'error': f"Error saving user: {e}"}, status=400)
 
 
