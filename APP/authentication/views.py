@@ -3,7 +3,6 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password, check_password
 from .models import UserModel
-# from ..utils.utils import encrypt_data
 from utils.utils import encrypt_data
 
 import json
@@ -67,6 +66,10 @@ def registerUser(request):
 def login(request):
     if request.method == 'GET':
         try:
+
+            if 'access_token' in request.COOKIES:
+                return JsonResponse({"message":'already login'},status=200)
+            
             data = json.loads(request.body)
     
 
@@ -81,12 +84,26 @@ def login(request):
             encrypted_data = encrypt_data(user.username,user.email)
         
             response = JsonResponse({"message":'login successfully'},status=200)
-            
+
             # setting cookies
             response.set_cookie('access_token', encrypted_data)
 
             return response
         except Exception as e:
             return JsonResponse({'error': 'error while login'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+@csrf_exempt   
+def logout(request):
+    if request.method == 'GET':
+        try:
+            if 'access_token' not in request.COOKIES:
+                return JsonResponse({"message":"user doesn't exist"},status=200)
+            response = JsonResponse({"message":'logout successfully'},status=200)
+            response.delete_cookie('access_token')
+            return response 
+        except Exception as e:
+            return JsonResponse({'error': 'error while logout'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
