@@ -166,7 +166,7 @@ def verifyOTP(request):
                 return JsonResponse({"message":"invalid otp"},status=400)
             
             if 'access_token' not in request.COOKIES:
-                return JsonResponse({"message":"user doesn't exist"},status=200)
+                return JsonResponse({"message":"Unauthorized requested"},status=401)
             
              # get access token from cookies
             access_token = request.COOKIES['access_token']
@@ -177,7 +177,7 @@ def verifyOTP(request):
             user = UserModel.objects.filter(email=decrypted_data['email']).first()
 
             if not user:
-                return JsonResponse({"message":"user doesn't exist"},status=200)
+                return JsonResponse({"message":"user doesn't exist"},status=404)
             
             
             # change isEmailVerified to true
@@ -189,6 +189,6 @@ def verifyOTP(request):
 
             return JsonResponse({"message":'otp verified successfully'},status=200)
         except Exception as e:
-            return JsonResponse({'error': 'error while verifying otp'}, status=400)
+            return JsonResponse({'error': 'error while verifying otp',"message":str(e)}, status=400)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
