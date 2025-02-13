@@ -36,8 +36,10 @@ def decrypt_data(data):
     # Decrypt the data using the Fernet cipher
     decrypted_data = chipher.decrypt(decoded_encrypted_data).decode()
     
-    # Print the decrypted data (which is the original JSON string)
-    return decrypted_data
+    # Convert the decrypted string (likely JSON) back into a dictionary
+    decrypted_json = json.loads(decrypted_data)
+    
+    return decrypted_json  # Return the decrypted data as a dictionary
 
 
 

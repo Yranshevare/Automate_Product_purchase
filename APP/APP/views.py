@@ -4,10 +4,20 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 # csrf_exempt
 
+from django.core.mail import send_mail
+from . import settings
 
 
+@csrf_exempt
 def home(request):
     print(request.method)
+    subject = "testing email sending"
+    message = "Hello, world. You're at the APP home."
+    from_email = "yranshevare2005@gmail.com"
+    recipient_list = ["yadneshranshevare@gmail.com"]
+
+    send_mail(subject, message, from_email, recipient_list)
+
     # return HttpResponse("Hello, world. You're at the APP home.")
     return JsonResponse({"message": "Hello, world. You're at the APP home."})
 

@@ -6,4 +6,6 @@ urlpatterns = [
     path('registerUser/', views.registerUser),
     path('login/',views.login),
     path('logout/',views.logout),
+    path('generateOTP/',views.generateOTP),
+    path('verifyOTP/',views.verifyOTP),
 ]
