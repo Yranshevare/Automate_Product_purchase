@@ -42,6 +42,7 @@ def registerUser(request):
                 gender=data['gender'],
                 isEmailVerified=data.get('isEmailVerified', False)  # Default to False
             )
+            # print(user.gender)
 
             try:
                 user.save()
