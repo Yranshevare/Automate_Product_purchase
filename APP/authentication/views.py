@@ -133,7 +133,7 @@ def generateOTP(request):
             
             # Generate the 4 digit OTP
             global otp
-            otp = random.randint(1000, 9999)
+            otp = random.randint(100000, 999999)
 
             # send email with otp
             subject = "verifying your email"
