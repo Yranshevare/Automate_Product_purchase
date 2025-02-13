@@ -162,6 +162,9 @@ def verifyOTP(request):
             if 'otp' not in data:
                 return JsonResponse({"message": "OTP is required"}, status=400)
             
+            if data['otp'] != otp:
+                return JsonResponse({"message":"invalid otp"},status=400)
+            
             if 'access_token' not in request.COOKIES:
                 return JsonResponse({"message":"user doesn't exist"},status=200)
             
@@ -176,10 +179,6 @@ def verifyOTP(request):
             if not user:
                 return JsonResponse({"message":"user doesn't exist"},status=200)
             
-            
-
-            if data['otp'] != otp:
-                return JsonResponse({"message":"invalid otp"},status=400)
             
             # change isEmailVerified to true
             user.isEmailVerified = True
