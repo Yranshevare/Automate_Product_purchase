@@ -1,3 +1,5 @@
+create database automate_product_purchase
+show databases
 use automate_product_purchase
-show TABLES
+SHOW TABLES;
 select * from authentication_usermodel
