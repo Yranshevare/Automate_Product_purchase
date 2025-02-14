@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'authentication',
+    'process',
 ]
 
 MIDDLEWARE = [
@@ -170,3 +171,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = env('EMAIL_HOST')
 EMAIL_HOST_PASSWORD = env('HOST_PASSWORD')
 EMAIL_USE_SSL = False
+
+
+USER_MODEL = 'authentication.UserModel'

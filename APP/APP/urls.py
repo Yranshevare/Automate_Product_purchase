@@ -25,4 +25,5 @@ urlpatterns = [
     path('get/', views.get),
     path('registerUser/', views.registerUser),
     path('auth/',include('authentication.urls')),
+    path('process/',include('process.urls')),
 ]
