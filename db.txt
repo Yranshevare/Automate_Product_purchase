@@ -3,3 +3,4 @@ show databases
 use automate_product_purchase
 SHOW TABLES;
 select * from authentication_usermodel
+select * from process_processmodel
