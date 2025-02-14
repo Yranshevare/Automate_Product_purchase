@@ -79,7 +79,15 @@ def get(request):
                 return JsonResponse({"message":"process doesn't exist"},status=200)
             
             # Convert processes to a list of dictionaries (or any format you want)
-            process_list = [{"process_id": pro._id, "process_title": pro.title} for pro in process]
+            process_list = [{
+                "process_id": pro._id, 
+                "process_title": pro.title,
+                "step_one": pro.stepOne,
+                "step_two": pro.stepTwo,
+                "step_three": pro.stepThree,
+                "step_four": pro.stepFour,
+                "step_five": pro.stepFive
+            } for pro in process]
 
             return JsonResponse({'message':'get the process','process':process_list},status=200)
         else:
