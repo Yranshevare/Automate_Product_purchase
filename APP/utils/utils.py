@@ -15,10 +15,11 @@ secret = secret_str.encode('utf-8')  # Convert the string to bytes
 
 chipher = Fernet(secret)
    
-def encrypt_data(username,email):
+def encrypt_data(username,email,id):
     data = {
         "username": username,
-        "email": email
+        "email": email,
+        "id": id
     }
 
     

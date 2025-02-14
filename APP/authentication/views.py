@@ -86,7 +86,7 @@ def login(request):
             if not check_password( data['password'],user.password):
                 return JsonResponse({"message":'invalid password'},status=400)
             
-            encrypted_data = encrypt_data(user.username,user.email)
+            encrypted_data = encrypt_data(user.username,user.email,user._id)
         
             response = JsonResponse({"message":'login successfully'},status=200)
 
