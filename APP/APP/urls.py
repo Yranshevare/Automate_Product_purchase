@@ -26,4 +26,5 @@ urlpatterns = [
     path('registerUser/', views.registerUser),
     path('auth/',include('authentication.urls')),
     path('process/',include('process.urls')),
+    path('stepOne/',include('stepOne.urls')),
 ]
