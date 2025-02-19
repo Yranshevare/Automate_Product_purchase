@@ -61,7 +61,7 @@ def createProcess(request):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @csrf_exempt
-def get(request):
+def get_all(request):
     try:
         if request.method == 'GET':
             # Get access token from cookies
@@ -78,6 +78,8 @@ def get(request):
             if not process:
                 return JsonResponse({"message":"process doesn't exist"},status=200)
             
+           
+            
             # Convert processes to a list of dictionaries (or any format you want)
             process_list = [{
                 "process_id": pro._id, 
@@ -93,6 +95,64 @@ def get(request):
         else:
             return JsonResponse({'error': 'Invalid request method'}, status=405)
     except Exception as e:
+        print(str(e))
+        return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+    
+
+@csrf_exempt
+def get_one(request):
+    try:
+        if request.method == 'POST':
+
+
+              # Get access token from cookies
+            access_token = request.COOKIES.get('access_token')  # Using .get() to avoid KeyError
+            if not access_token:
+                return JsonResponse({'error': 'unauthorize request'}, status=401)
+            
+              
+           
+
+            decrypt_token = decrypt_data(access_token)
+
+            
+            data = json.loads(request.body)
+
+
+            process = processModel.objects.filter(_id = data['process_id']).first()
+
+            
+            if not process:
+                return JsonResponse({"message":"process doesn't exist"},status=200)
+            
+     
+            if process.owner_id != decrypt_token['id']:
+                return JsonResponse({"message":'not the owner of this process'},status=401)
+            
+            encrypt_process_cookies = encrypt_data(None,None,process._id)
+            
+            pro = {
+                "process_id": process._id,
+                "process_title": process.title,
+                "step_one": process.stepOne,
+                "step_two": process.stepTwo,
+                "step_three": process.stepThree,
+                "step_four": process.stepFour,
+                "step_five": process.stepFive
+            }
+            
+            
+            response = JsonResponse({"message":"get the process","process":pro},status=200)
+                
+            
+            
+            response.set_cookie('process_token', encrypt_process_cookies, httponly=True, secure=True)
+
+            return response
+        else:
+            return JsonResponse({'error': 'Invalid request method'}, status=405)
+    except Exception as e:
+        print(str(e))
         return JsonResponse({'error': 'Invalid JSON format'}, status=400)
     
 
@@ -100,7 +160,6 @@ def get(request):
 def delete(request):
     try:
         if request.method == 'DELETE':
-
             data = json.loads(request.body)
             # Get access token from cookies
             access_token = request.COOKIES.get('access_token')  # Using .get() to avoid KeyError
