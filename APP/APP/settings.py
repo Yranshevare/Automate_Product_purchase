@@ -175,3 +175,4 @@ EMAIL_USE_SSL = False
 
 
 USER_MODEL = 'authentication.UserModel'
+PROCESS_MODEL = 'process.processModel'

@@ -39,7 +39,7 @@ def run_flow(message: str) -> dict:
 
 
 @csrf_exempt
-def home(request):
+def generate(request):
     if request.method == 'GET':
         try:
             message =  json.loads(request.body)
