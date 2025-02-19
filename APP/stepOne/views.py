@@ -46,6 +46,9 @@ def generate(request):
     if request.method == 'GET':
         try:
             message =  json.loads(request.body)
+
+            if message['message'] == "" or message == None:
+                return JsonResponse({"message":"message is empty"},status=400)
             # print()
             response = run_flow(message['message'])
             sheet = response["outputs"][0]['outputs'][0]["results"]["message"]["data"]["text"]
@@ -117,6 +120,41 @@ def save(request):
 
 
 @csrf_exempt
-def get(request):
+def get(request,process_id):
     """
+    get the process id via url
+    get the step one data via process id
+    get the user info form the cookies
+    check for the ownership of the process and add the ownership inn response
     """
+
+    try:
+        if request.method == 'GET':
+
+            step_one = stepOneModel.objects.filter(process_id = process_id).first()
+            if not step_one:
+                return JsonResponse({"message":"step doesn't exits"},status= 404)
+
+            data = {
+                "requirementSHeet":step_one.requirementSHeet,
+                'owner': False
+            }
+            
+
+            access_token = request.COOKIES.get('access_token')  # Using .get() to avoid KeyError
+            if access_token:
+                decrypt_token = decrypt_data(access_token)
+                if decrypt_token['id'] == step_one.process.owner_id:
+                    data['owner'] = True
+            
+
+            
+            
+
+            return JsonResponse({"message":"successfully fetched the data","data": data},status=200)
+        else:
+            return JsonResponse({'error': 'Invalid request method'}, status=405)
+        
+    except Exception as e:
+        return JsonResponse({"message": "error while getting the data",'error':e}, status=400)
+
