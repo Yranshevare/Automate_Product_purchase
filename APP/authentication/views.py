@@ -107,6 +107,9 @@ def logout(request):
                 return JsonResponse({"message":"user doesn't exist"},status=200)
             response = JsonResponse({"message":'logout successfully'},status=200)
             response.delete_cookie('access_token')
+
+            if 'process_token' in request.COOKIES:
+                response.delete_cookie('process_token')
             return response 
         except Exception as e:
             return JsonResponse({'error': 'error while logout'}, status=400)

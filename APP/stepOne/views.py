@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from .models import stepOneModel
+from process.models import processModel
+from utils.utils import encrypt_data,decrypt_data
 import requests
 import json
 
@@ -52,3 +55,68 @@ def generate(request):
 
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+
+@csrf_exempt
+def save(request):
+    if request.method == 'POST':
+        try:
+            if 'access_token' not in request.COOKIES:
+                return JsonResponse({"message":"Unauthorized requested"},status=401)
+            
+            if 'process_token'  not in request.COOKIES:
+                return JsonResponse({"message":"process doesn't exist"},status=404)
+            
+            pro = decrypt_data(request.COOKIES.get('process_token'))['id']
+            user = decrypt_data(request.COOKIES.get('access_token'))
+     
+
+            process = processModel.objects.filter(_id  = pro).first()
+
+
+            if(process.owner_id != user['id']):
+                return JsonResponse({"message":"not the owner"}, status=401)
+
+            data = json.loads(request.body)
+
+            if data['requirementSHeet'] == "":
+                return JsonResponse({"message":"requirement sheet is empty"},status=400)
+
+
+    
+            if process.stepOne == 'Complete':
+
+        
+                step_one = stepOneModel.objects.filter(process = process).first()
+              
+                step_one.requirementSHeet = data['requirementSHeet']
+                step_one.save()
+                return JsonResponse({"message":"successfully updated the data",},status=200)
+            else:
+
+        
+                step_one = stepOneModel(
+                    requirementSHeet = data['requirementSHeet'],
+                    process = process
+                )
+             
+                process.stepOne = 'Complete'
+                process.save()
+                step_one.save()
+        
+
+
+            return JsonResponse({"message":"successfully saved the data",},status=200)
+        except Exception as e:
+            return JsonResponse({"message": "error while saving the data",'error':e}, status=400)
+
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+
+
+@csrf_exempt
+def get(request):
+    """
+    """
