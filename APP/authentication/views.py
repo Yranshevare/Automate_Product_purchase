@@ -6,6 +6,9 @@ from .models import UserModel
 from utils.utils import encrypt_data, decrypt_data
 from django.core.mail import send_mail
 from APP import settings
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from django.core.mail import EmailMessage
 
 import json
 import random
@@ -141,11 +144,43 @@ def generateOTP(request):
 
             # send email with otp
             subject = "verifying your email"
-            message = "your verifying opt is \n " + str(otp) + "\n it will be valid for 5 minutes only"
+            # message = "your verifying opt is \n " + str(otp) + "\n it will be valid for 5 minutes only"
+
             from_email = settings.EMAIL_HOST_USER
             recipient_list = [decrypted_data['email']]
 
-            send_mail(subject, message, from_email, recipient_list)
+           
+            
+            # HTML content of the email
+            html_content = f"""
+            <html>
+                <body>
+                  <h1>Welcome to Automate Product Purchase Platform!</h1>
+                  <p>Thank you for registering with us! We're excited to have you on board.</p>
+
+                  <p>To complete your registration and start using our website, please verify your email address by entering the One-Time Password (OTP) below:</p>
+
+                  <h2>Your OTP: <strong>{otp}</strong></h2>
+
+                  <p><b>Note: This OTP is valid for the next 5 minutes. Once verified, you can fully enjoy all our services.</b></p>
+
+                  <p>If you did not create an account on Automate Product Purchase Platform, please ignore this email or contact our support team.</p>
+
+                  <p>Thank you for joining us, and we look forward to having you as part of our community!</p>
+
+                  
+                  <p>Best regards,</p>
+                  <p>The Automate Product Purchase Platform Team</p>
+
+                  <p><em> please do not reply.</em></p>
+                </body>
+            </html>
+            """
+
+            email = EmailMessage(subject, html_content, from_email, recipient_list)
+            email.content_subtype = "html"  # Mark content as HTML
+            email.send()
+
 
             # reset the otp after 5 minutes
             threading.Timer(60*5, resetOTP).start()
