@@ -136,6 +136,7 @@ def get(request,process_id):
                 return JsonResponse({"message":"step doesn't exits"},status= 404)
 
             data = {
+                "process_id":step_one._id,
                 "requirementSHeet":step_one.requirementSHeet,
                 'owner': False
             }
@@ -157,4 +158,33 @@ def get(request,process_id):
         
     except Exception as e:
         return JsonResponse({"message": "error while getting the data",'error':e}, status=400)
+    
+
+@csrf_exempt
+def delete(request):
+    try:
+        if request.method == 'DELETE':
+            access_token = request.COOKIES.get('access_token')  # Using .get() to avoid KeyError
+            if not access_token:
+                return JsonResponse({'error': 'unauthorize request'}, status=401)
+            
+            process_token = request.COOKIES.get('process_token')  # Using .get() to avoid KeyError
+            if not process_token:
+                return JsonResponse({'error': 'unauthorize request'}, status=401)
+
+            decrypt_process_token = decrypt_data(process_token)
+            step_one = stepOneModel.objects.filter(process_id = decrypt_process_token['id']).first()
+            if not step_one:
+                return JsonResponse({"message":"step doesn't exits"},status= 404)
+            step_one.delete()
+
+            process = processModel.objects.filter(_id = decrypt_process_token['id']).first()
+            process.stepOne = 'Incomplete'
+            process.save()
+
+            return JsonResponse({"message":"successfully deleted the step"},status=200)
+        else:
+            return JsonResponse({'error': 'Invalid request method'}, status=405)
+    except Exception as e:
+        return JsonResponse({"message": "error while deleting the step",'error':e}, status=400)
 
