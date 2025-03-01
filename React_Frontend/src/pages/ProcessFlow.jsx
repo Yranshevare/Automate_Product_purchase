@@ -23,6 +23,19 @@ export default function ProcessFlow() {
         loadInformation()
     }, [])
 
+    async function logout(){
+        try {
+            const res = await axios.get(`${server}auth/logout/`,{
+                withCredentials: true
+            })
+            if(res.data.message === 'logout successfully'){
+                navigate("/auth/login")
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const steps = [
         {
             number: "1",
@@ -88,7 +101,7 @@ export default function ProcessFlow() {
                             ))}
                         </div>
                     </div>
-                    <button className="logout-button" onClick={() => navigate('/')}>
+                    <button className="logout-button" onClick={logout}>
                         Log out
                     </button>
                 </div>

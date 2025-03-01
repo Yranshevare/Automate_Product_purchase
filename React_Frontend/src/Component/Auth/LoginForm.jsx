@@ -13,7 +13,6 @@ function LoginForm() {
 
     const handleLogin = async (e) => {
         e.preventDefault()
-        console.log('kkkk')
         setLogin("Logging in...")
         try{
             let res = await axios.post(`${server}auth/login/`,{
@@ -23,6 +22,9 @@ function LoginForm() {
                 withCredentials: true
             })
             console.log(res)
+            if(res.status === 200){
+                navigate("/")
+            }
             
         }
         catch (error){

@@ -75,7 +75,7 @@ def get_all(request):
 
             # print(access_token)
             decrypt_token = decrypt_data(access_token)
-            print(decrypt_token)
+            # print(decrypt_token)
 
 
             if not decrypt_token:

@@ -82,7 +82,7 @@ def login(request):
             
             
             data = json.loads(request.body)
-            print(data)
+            # print(data)
 
             user = UserModel.objects.filter(username=data['username']).first() 
 
@@ -91,7 +91,7 @@ def login(request):
 
             if not check_password( data['password'],user.password):
                 return JsonResponse({"message":'invalid password'},status=400)
-            print(user)
+            # print(user)
             
 
 
@@ -109,9 +109,6 @@ def login(request):
             }
 
 
-            # secret_key = 'your_secret_key'
-            # print(payload)
-            # token = jwt.encode(payload, secret_key, algorithm='HS256')
             
             encrypted_data = encrypt_data(payload)
             # print(encrypt_data)
@@ -136,10 +133,13 @@ def logout(request):
             if 'access_token' not in request.COOKIES:
                 return JsonResponse({"message":"user doesn't exist"},status=200)
             response = JsonResponse({"message":'logout successfully'},status=200)
-            response.delete_cookie('access_token')
+            # Expire the cookie explicitly
+            response.set_cookie("access_token", "", expires="Thu, 01 Jan 1970 00:00:00 GMT", max_age=0, path="/", httponly=True, secure=True,samesite='none')
 
+            # If there's a process_token, expire it too
             if 'process_token' in request.COOKIES:
-                response.delete_cookie('process_token')
+                response.set_cookie("process_token", "", expires="Thu, 01 Jan 1970 00:00:00 GMT", max_age=0, path="/", httponly=True,samesite='none')
+
             return response 
         except Exception as e:
             return JsonResponse({'error': 'error while logout'}, status=400)

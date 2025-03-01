@@ -15,7 +15,7 @@ secret_str = env('SECRET')
 
 
 def encrypt_data(data):
-    print(data)
+    # print(data)
     encoded_encrypted_data = jwt.encode(data, secret_str, algorithm='HS256')
     return encoded_encrypted_data
 
@@ -26,9 +26,9 @@ def encrypt_data(data):
 
 def decrypt_data(data):
     try:
-        print(data)
+        # print(data)
         decoded_payload = jwt.decode(data, secret_str, algorithms=['HS256'])
-        print("✅ Decoded Payload:", decoded_payload)  # Debugging
+        # print("✅ Decoded Payload:", decoded_payload)  # Debugging
         return decoded_payload
     except jwt.ExpiredSignatureError:
         print("❌ Error: Token has expired")
