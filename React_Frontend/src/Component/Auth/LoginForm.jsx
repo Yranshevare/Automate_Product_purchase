@@ -28,7 +28,7 @@ function LoginForm() {
             
         }
         catch (error){
-            alert("errorrr!!!!")
+            alert("error: "+error.response?.data?.message)
         }
         finally{
             setLogin("LOG IN")
