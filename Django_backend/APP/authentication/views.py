@@ -9,7 +9,9 @@ from APP import settings
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from django.core.mail import EmailMessage
+from datetime import datetime, timedelta, timezone
 
+import jwt
 import json
 import random
 import threading
@@ -72,14 +74,15 @@ def registerUser(request):
 
 @csrf_exempt   
 def login(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         try:
 
             if 'access_token' in request.COOKIES:
                 return JsonResponse({"message":'already login'},status=200)
             
+            
             data = json.loads(request.body)
-    
+            print(data)
 
             user = UserModel.objects.filter(username=data['username']).first() 
 
@@ -88,16 +91,40 @@ def login(request):
 
             if not check_password( data['password'],user.password):
                 return JsonResponse({"message":'invalid password'},status=400)
+            print(user)
             
-            encrypted_data = encrypt_data(user.username,user.email,user._id)
+
+
+            user = {
+                'username': user.username,
+                'email': user.email,
+                'user_id': str(user._id)
+            }
+            payload = {
+                'username': user['username'],
+                'email': user['email'],
+                'id': user['user_id'],
+                'exp': int((datetime.now(timezone.utc) + timedelta(minutes=60)).timestamp()),  # ✅ Fix here
+                'iat': int(datetime.now(timezone.utc).timestamp())  # ✅ Fix here
+            }
+
+
+            # secret_key = 'your_secret_key'
+            # print(payload)
+            # token = jwt.encode(payload, secret_key, algorithm='HS256')
+            
+            encrypted_data = encrypt_data(payload)
+            # print(encrypt_data)
         
             response = JsonResponse({"message":'login successfully'},status=200)
 
             # setting cookies
-            response.set_cookie('access_token', encrypted_data)
+            response.set_cookie('access_token', encrypted_data, httponly=True,secure=True,max_age=3600,samesite='none')
+            
 
             return response
         except Exception as e:
+            print(e)
             return JsonResponse({'error': 'error while login'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)

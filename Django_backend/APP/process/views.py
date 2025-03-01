@@ -10,7 +10,10 @@ import json
 # Create your views here.
 @csrf_exempt 
 def home(request):
-    return HttpResponse("Hello, world. You're at the process home.")
+    # print(request.COOKIES)
+    response  = JsonResponse({"message": "Hello, world. You're at the process home."})
+    response.set_cookie('process_token', 'ajhjdshdgfusfhdfygdfdhjb', httponly=True, secure=True)
+    return response
 
 
 @csrf_exempt
@@ -66,10 +69,14 @@ def get_all(request):
         if request.method == 'GET':
             # Get access token from cookies
             access_token = request.COOKIES.get('access_token')  # Using .get() to avoid KeyError
+            # print(request.COOKIES)
             if not access_token:
                 return JsonResponse({'error': 'unauthorize request'}, status=401)
 
+            # print(access_token)
             decrypt_token = decrypt_data(access_token)
+            print(decrypt_token)
+
 
             if not decrypt_token:
                 return JsonResponse({'error': 'user not found'}, status=404)

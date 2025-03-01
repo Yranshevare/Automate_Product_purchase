@@ -1,11 +1,27 @@
 // ProcessFlow.jsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../CSS/ProcessFlow.css';
+import { server } from '../constant';
+import axios from 'axios';
+import { use } from 'react';
 
 export default function ProcessFlow() {
     const navigate = useNavigate();
     const [isNavOpen, setIsNavOpen] = useState(false);
+    async function loadInformation() {
+        try {
+            const res = await axios.get(`${server}process/get_all/`,{
+                withCredentials: true
+            })
+            console.log(res)
+        } catch (error) {
+            
+        }
+    }
+   useEffect(() => {
+        loadInformation()
+    }, [])
 
     const steps = [
         {

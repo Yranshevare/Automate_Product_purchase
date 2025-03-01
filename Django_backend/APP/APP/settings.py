@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'authentication',
     'process',
     'stepOne',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -65,7 +66,9 @@ CORS_ALLOW_METHODS = [
     'PATCH',
     'DELETE',
     'OPTIONS',
+    'cookie',
 ]
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_HEADERS = [
     'content-type',
@@ -176,3 +179,10 @@ EMAIL_USE_SSL = False
 
 USER_MODEL = 'authentication.UserModel'
 PROCESS_MODEL = 'process.processModel'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'authentication.authentication.CookieJWTAuthentication',
+    )
+}
