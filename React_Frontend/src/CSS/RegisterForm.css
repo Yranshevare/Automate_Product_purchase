@@ -1,0 +1,42 @@
+
+
+.register-form-container{
+  width: 50%;
+  height: 589.2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.register-form-group{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 85%;
+}
+.register-form{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 70%;
+}
+.gender-container{
+  color: grey;
+  display: flex;
+  gap: 12px;
+  padding: 5px 10px;
+}
+.gender-container{
+  color: grey;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 10px;
+}
+
+.radio{
+  display: flex;
+  gap: 2rem;
+  width: 90%;
+  justify-content: space-around;
+}

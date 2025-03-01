@@ -1,7 +1,7 @@
 import React from 'react'
 import {useNavigate, Link} from "react-router-dom"
 import { useState } from 'react'
-import "./RegisterForm.css"
+import "../../CSS/RegisterForm.css"
 
 function RegisterForm() {
 
@@ -29,18 +29,18 @@ function RegisterForm() {
     }
 
     return (
-        <div className="container">
-            <div className="form-container">
+        <>
+            <div className="register-form-container">
                 <h2 className="title">Register</h2>
                 <form 
-                className="form"
+                className="register-form"
                 onSubmit={handleRegister}>
-                    <div className="form-group">
+                    <div className="register-form-group">
                         <input type="text" className="input" placeholder='Name' onChange={(e)=>setName(e.target.value)} required/>
                         <input type="Email" className="input" placeholder='Email' onChange={(e)=>setEmail(e.target.value)} required />
                         <input type="phone" className="input" placeholder='Phone Number' onChange={(e)=>setPhone(e.target.value)} maxLength="10" minLength="10" required />
                         <input type="text" className="input" placeholder='Occupation' onChange={(e)=>setOccupation(e.target.value)} required />
-                        <div className="gender-container input">
+                        <div className="gender-container">
                             <label>Gender</label>
                             <div className='radio'>
                                 <label>
@@ -68,12 +68,10 @@ function RegisterForm() {
                         Already have an account? Login
                     </button> */}
                 </form>
-                <p><Link to="/">Already have an account? Login</Link></p>
+                <Link to="/auth/login">Already have an account? Login</Link>
             </div>
-            <div className="img-container">
-                <img src="https://s3-alpha-sig.figma.com/img/cfa8/0ce8/c4900a6038da878fcb345e53ceda53a4?Expires=1740960000&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=C8GcvTxQ6NSl-mLUGdjdg6~FACoC1bKQX4FNffMiJ5TVQh1H4y~CvQZ4XNg2OEP5wj4O1geFNZUIRC8pBJDcVVKFTXTChpVwD1KOOYDZV3qqu0HqY5bq9OKFsMx6RddFfAlr9q5UfTsqaAxfOn-UHTcbDBCkBy7zbApBsPbq0LMHA2lWEiMCcK4Jpz9MbeibcmjW9KNR7IEIQFSYMkXvonvoQYlf-w7ZOpLsw9exI-Adl~YJhYzvfL1GHoNDmJPKt3liaWd~cUIrrDN5yHk4Pa30Cp7Kww8M3c3xkVHgEhlSHfIZ7OMm0SdIG4wrVViqbTlA3bRS3OEG3-p4mwGgxQ__" alt="register-img" />
-            </div>
-        </div>
+           
+        </>
     )
 }
 

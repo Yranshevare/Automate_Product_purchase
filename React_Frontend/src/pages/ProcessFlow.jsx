@@ -1,7 +1,7 @@
 // ProcessFlow.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './ProcessFlow.css';
+import '../CSS/ProcessFlow.css';
 
 export default function ProcessFlow() {
     const navigate = useNavigate();
@@ -97,7 +97,7 @@ export default function ProcessFlow() {
                     <div className="title-section">
                         <h1>“Your Seamless Path to Completing a Perfect Quotation Purchase – Simple, Fast, and Secure!”</h1>
                         <img
-                            src="https://s3-alpha-sig.figma.com/img/d4c4/6468/357487748ceaa640d23b8e2df289b53e?Expires=1741564800&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=IbmlE2nxDW9oH-UbmK88z0i4RIpdQSjaqCQozVKcmZXcTbWggiJytw0ZK2QX5egmAu4ZETo8gr9Av8HIwR4dPqhRbKJAzq1wBp2nPj-kS5nQkMEmGuZSMi-yGJeIM8duqX9A6cMpHhwseEJ538XXgn2SalL6niIuf6TsqXbPCJ~erLVX5et~g0AngKGNGMc8LWTIut1RFW61a6PHj-JFbnbTqvlYOYK6RHZS0ctrxKfcfE11Qo7cm1NO7fIaOf2Ky~pi82CoZhyEsVB1FUYFpIk8865J1xrre00XfjGGBT0~K6WtIQpVDXxPzwRvP8aqL1-ISMp14vk50t7HW2E3Ng__"
+                            src="/process_illustration.jpeg"
                             alt="Process illustration"
                             className="illustration"
                         />
