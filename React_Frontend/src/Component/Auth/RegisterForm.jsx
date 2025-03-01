@@ -1,6 +1,8 @@
 import React from 'react'
 import {useNavigate, Link} from "react-router-dom"
 import { useState } from 'react'
+import {server} from "../../constant.js"
+import axios from "axios"
 import "../../CSS/RegisterForm.css"
 
 function RegisterForm() {
@@ -12,19 +14,41 @@ function RegisterForm() {
     const [gender, setGender] = useState("");
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
+    const [registerLoading, setRegisterLoading] = useState("REGISTER")
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        console.log(name, email, phone, occupation, gender, password, confirmPassword)
+        if(password.length < 8){
+            alert("password must be at least 8 characters long!")
+            return
+        }
         if(password !== confirmPassword){
             alert("passwords do not match!")
             return;
         }
         try{
-            await navigate("/verify")
+            setRegisterLoading("Registering...")
+            const res = await axios.post(`${server}auth/registerUser/`,{
+                username: name,
+                email: email, 
+                mobileNo: phone, 
+                proffesion: occupation, 
+                gender: gender, 
+                password: password, 
+            }, {
+                withCredentials: true
+            })
+            console.log(res)
+            await navigate("/auth/login")
         }
         catch(error){
-            alert("registration failed!")
+            console.log(error.response?.data?.error)
+            alert( error.response?.data?.error)
+        }
+        finally{
+            setRegisterLoading("REGISTER")
         }
     }
 
@@ -60,7 +84,7 @@ function RegisterForm() {
                         <input type="password" className="input" placeholder='password' onChange={(e)=>setPassword(e.target.value)} required />
                         <input type="password" className="input" placeholder='confirm password' onChange={(e)=>setConfirmPassword(e.target.value)} required/>
                     </div>
-                    <button className="button button-primary" type="submit">REGISTER</button>
+                    <button className="button button-primary" type="submit">{registerLoading}</button>
                     {/* <button className="button button-ghost"
                     onClick={()=>{
                         Navigate("/verify")

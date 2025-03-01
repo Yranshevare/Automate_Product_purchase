@@ -1,5 +1,5 @@
 // ProcessFlow.jsx
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../CSS/ProcessFlow.css';
 import { server } from '../constant';
@@ -8,13 +8,21 @@ import { use } from 'react';
 
 export default function ProcessFlow() {
     const navigate = useNavigate();
+    const [process, setProcess] = useState([]);
     const [isNavOpen, setIsNavOpen] = useState(false);
+
+
+
     async function loadInformation() {
         try {
             const res = await axios.get(`${server}process/get_all/`,{
                 withCredentials: true
             })
-            console.log(res)
+            // console.log(res.data?.process)
+            if(res.data?.process?.length > 0){
+                setProcess(res.data?.process)
+            }
+            // console.log(process)
         } catch (error) {
             
         }
@@ -22,6 +30,23 @@ export default function ProcessFlow() {
    useEffect(() => {
         loadInformation()
     }, [])
+    useEffect(() => {
+        console.log(process)
+    },[process])
+
+
+
+    const isComplete = useCallback((pro) => {
+        if(pro.step_five === "Complete" && pro.step_four === "Complete" && pro.step_three === "Complete" && pro.step_two == "Complete" && pro.step_one === "Complete"){
+            return true
+        }else{
+            return false
+        }
+    },[])
+
+    const selectProcess = useCallback((pro) => {
+        console.log(pro.process_id)
+    },[])
 
     async function logout(){
         try {
@@ -93,10 +118,20 @@ export default function ProcessFlow() {
                             <button className="add-button"><img src="react.svg" alt="" /></button>
                         </div>
                         <div className="title-inputs">
-                            {[1, 2, 3].map((_, index) => (
-                                <div key={index} className="title-input">
-                                    <input type="text" placeholder="Title" />
-                                    <span className="chevron-right"></span>
+                            {process.map((pro, index) => (
+                                <div 
+                                onClick={()=>{selectProcess(pro)}}
+                                key={index} 
+                                className={isComplete(pro)? 'Process complete-border' : 'Process incomplete-border'} >
+                                    <div className='process-state'>
+                                        <div className={isComplete(pro) ? "complete circle" : "incomplete circle"}>
+                                        </div>
+                                            <p>{isComplete(pro) ? "completed" : "on the way"}</p>
+                                    </div>
+                                    <div className="title-input">
+                                        <p>{pro.process_title}</p>
+                                        <span className="chevron-right"></span>
+                                    </div>
                                 </div>
                             ))}
                         </div>

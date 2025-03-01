@@ -190,7 +190,37 @@
 .title-input {
   display: flex;
   align-items: center;
-  
+  justify-content: space-between;
+  height: 50px;
+}
+.title-input p{
+  font-size: 25px;
+  font-weight: 600;
+}
+.process-state{
+  display: flex;
+  height: 12px;
+  align-items: center;
+}
+.process-state p{
+  height: 10px;
+  margin: 0;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  color: rgb(82, 82, 82);
+}
+.circle{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.complete{
+  background-color: green;
+}
+.incomplete{
+  background-color: rgb(246, 107, 107);
 }
 
 .title-input input {
@@ -199,6 +229,18 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   height: 30px;
+}
+
+.Process{
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.complete-border{
+  border: 1px solid green;
+}
+.incomplete-border{
+  border: 1px solid rgb(246, 107, 107);
 }
 
 /* Timeline Styles */
@@ -333,3 +375,5 @@
     left: -24px;
   }
 }
+
+
