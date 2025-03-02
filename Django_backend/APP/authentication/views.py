@@ -28,6 +28,10 @@ def registerUser(request):
                 if field not in data:
                     return JsonResponse({'error': f'Missing required field: {field}'}, status=400)
             
+            user = UserModel.objects.filter(email=data['username']).first() 
+
+            if user:
+                return JsonResponse({'error': 'User with provided username is already exists'}, status=400)
             user = UserModel.objects.filter(email=data['email']).first() 
 
             if user:
