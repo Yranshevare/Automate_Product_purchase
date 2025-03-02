@@ -175,6 +175,7 @@ def logout(request):
 
 otp = None
 def resetOTP():
+    print("reset otp")
     global otp
     otp = None
 
@@ -250,12 +251,16 @@ def generateOTP(request):
 def verifyOTP(request):
     if request.method == 'GET':
         try:
-            data = json.loads(request.body)
-            # Ensure OTP is provided in the request
-            if 'otp' not in data:
-                return JsonResponse({"message": "OTP is required"}, status=400)
+            data = request.GET.get('otp')
             
-            if data['otp'] != otp:
+
+            # Ensure OTP is provided in the request
+            if  not data:
+                return JsonResponse({"message": "OTP is required"}, status=400)
+            global otp
+            if data != str(otp):
+                print(data != otp)
+                print(data,otp)
                 return JsonResponse({"message":"invalid otp"},status=400)
             
             if 'access_token' not in request.COOKIES:

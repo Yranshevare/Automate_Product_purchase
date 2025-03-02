@@ -11,6 +11,7 @@ function VerifyEmail() {
     const [error, setEror] = useState("")
     const [timer, setTimer] = useState("5:00")
     const [resend, setResend] = useState("Resend otp")
+    const [verify, setVerify] = useState("VERIFY OTP")
     const navigate = useNavigate();
 
     const refs = useRef([])
@@ -26,17 +27,30 @@ function VerifyEmail() {
         
     }
 
-    const handlesubmit = (e) => {
+    const handlesubmit = async(e) => {
         e.preventDefault()
         const enterOtp = otp.join("")
-        if(enterOtp==="123456"){
-            navigate("/process")
-        }
-        else{
-            setEror("Invalid OTP. please try again")
+        
+        try {
+            setVerify("Verifying...")
+            console.log(enterOtp)
+            const res = await axios.get(`${server}auth/verifyOTP/`,{
+                params: { otp: enterOtp },
+                withCredentials: true
+            });
+            // console.log(res.data)
+            if(res.data.message === 'otp verified successfully'){
+                alert("otp verified successfully")
+                navigate("/")
+            }
+        } catch (error) {
+            console.log(error)
+            setEror("problem while verifying OTP. please try again")
             alert("invalid otp")
             setOtp(["","","","","",""])
             refs.current[0].focus()
+        }finally{
+            setVerify("VERIFY OTP")
         }
     }
     const sendEmail = useCallback(async () => {
@@ -103,7 +117,7 @@ function VerifyEmail() {
                         </div>
                         <div className="otp-timer">{timer}</div>
                     </div>
-                    <button type="submit" className="button button-primary" >VERIFY OTP</button>
+                    <button type="submit" className="button button-primary" >{verify}</button>
                     <a onClick={sendEmail}>{resend}</a>
                 </form>
             </div>
