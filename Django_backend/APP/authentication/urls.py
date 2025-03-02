@@ -8,4 +8,5 @@ urlpatterns = [
     path('logout/',views.logout),
     path('generateOTP/',views.generateOTP),
     path('verifyOTP/',views.verifyOTP),
+    path('get/',views.get),
 ]

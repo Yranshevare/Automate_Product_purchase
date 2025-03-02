@@ -125,6 +125,34 @@ def login(request):
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
     
+
+
+@csrf_exempt
+def get(request):
+    if request.method == 'GET':
+        try:
+            if 'access_token' not in request.COOKIES:
+                return JsonResponse({"message":"Unauthorized requested"},status=401)
+            access_token = request.COOKIES['access_token']
+            decrypted_data = decrypt_data(access_token)
+            user = UserModel.objects.filter(email=decrypted_data['email']).first()
+            if not user:
+                return JsonResponse({"message":"user doesn't exist"},status=404)
+            user = {
+                'username': user.username,
+                'email': user.email,
+                'user_id': str(user._id),
+                'proffesion': user.profession,
+                'isEmailVerified': user.isEmailVerified,
+                'gender': user.gender,
+                'mobileNo': str(user.mobile)
+            }
+            return JsonResponse(user,status=200)
+        except Exception as e:
+            return JsonResponse({'error': 'error while getting user'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
 @csrf_exempt   
 def logout(request):
     if request.method == 'GET':

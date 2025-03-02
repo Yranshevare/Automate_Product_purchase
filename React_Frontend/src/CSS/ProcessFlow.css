@@ -17,6 +17,9 @@
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
   transition: right 0.3s ease;
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .sidebar.open {
@@ -68,7 +71,11 @@
   background: #f0f0f0;
   border-radius: 50%;
 }
-
+.user-info{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .user-info h2 {
   margin: 0;
   font-size: 18px;
@@ -135,20 +142,33 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  /* width: 100vh; */
+  background-color: #556ED9;
+  border-radius: 10px;
 }
 
 .title-section h1 {
   font-size: 40px;
-  color: #333;
+  /* color: #333; */
+  color: whitesmoke;
   margin-bottom: 20px;
   max-width: 50%;
 }
 
 .illustration {
   max-width: 50%;
-  height: 400px;
+  height: 398px;
+  /* border-top: 2px solid black;
+  border-bottom: 2px solid black; */
 }
-
+@media(max-width: 768px) {
+  .illustration {
+    display: none;
+  }
+  .title-section h1{
+    max-width: 90%;
+  }
+}
 /* Process Controls */
 .process-controls {
   margin-bottom: 30px;
@@ -169,6 +189,14 @@
   padding: 10px;
   border-style: none;
   border-radius: 4px;
+}
+
+.process-title{
+  text-align: center;
+}
+.process-title p{
+  font-weight: 600;
+  font-size: 25px;
 }
 
 .add-button {
@@ -254,6 +282,7 @@
   align-items: flex-start;
   margin-bottom: 20px;
   position: relative;
+  border-radius: 10px;
 }
 
 .step-number {
@@ -283,7 +312,7 @@
 .step-button {
   flex: 1;
   background: white;
-  border: 1px solid #eee;
+  border: hidden;
   border-radius: 8px;
   padding: 15px;
   text-align: left;
@@ -307,17 +336,31 @@
   margin-bottom: 5px;
 }
 
-.status {
+.status-incomplete {
   color: #ff0404;
   font-size: 12px;
 }
 
-.status::before {
+.status-incomplete::before {
   content: '';
   display: inline-block;
   width: 8px;
   height: 8px;
   background: #ff0404;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+.status-complete {
+  color: rgb(2, 255, 2);
+  font-size: 12px;
+}
+
+.status-complete::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: rgb(2, 255, 2);
   border-radius: 50%;
   margin-right: 4px;
 }
@@ -356,11 +399,20 @@
   color: #ff0404;
   background: none;
   border: none;
-  padding: 20px 0;
+  padding: 20px ;
   cursor: pointer;
   font-size: 16px;
   margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  border-top: 1px solid red;
+  transition-duration: 0.3s;
 }
+.logout-button:hover {
+  scale: 1.05;
+}
+
+
 
 @media (max-width: 768px) {
   .timeline {
@@ -376,4 +428,7 @@
   }
 }
 
-
+.no-process-selected{
+  text-align: center;
+  cursor: pointer;
+}

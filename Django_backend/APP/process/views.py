@@ -5,6 +5,7 @@ from utils.utils import encrypt_data, decrypt_data
 from django.views.decorators.csrf import csrf_exempt
 from authentication.models import UserModel
 from .models import processModel
+from datetime import datetime, timedelta, timezone
 import json
 
 # Create your views here.
@@ -132,11 +133,19 @@ def get_one(request):
             if not process:
                 return JsonResponse({"message":"process doesn't exist"},status=200)
             
+            
      
-            if process.owner_id != decrypt_token['id']:
+            if (str(process.owner_id) != decrypt_token['id']):
+                
                 return JsonResponse({"message":'not the owner of this process'},status=401)
             
-            encrypt_process_cookies = encrypt_data(None,None,process._id)
+            payload = {
+                'id': str(process._id),
+                'exp': int((datetime.now(timezone.utc) + timedelta(minutes=60)).timestamp()),  # ✅ Fix here
+                'iat': int(datetime.now(timezone.utc).timestamp())  # ✅ Fix here
+            }
+            
+            encrypt_process_cookies = encrypt_data(payload)
             
             pro = {
                 "process_id": process._id,
@@ -153,7 +162,7 @@ def get_one(request):
                 
             
             
-            response.set_cookie('process_token', encrypt_process_cookies, httponly=True, secure=True)
+            response.set_cookie('process_token', encrypt_process_cookies, httponly=True,secure=True,max_age=3600,samesite='none')
 
             return response
         else:

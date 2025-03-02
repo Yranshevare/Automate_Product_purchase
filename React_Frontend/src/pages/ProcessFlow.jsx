@@ -1,26 +1,43 @@
 // ProcessFlow.jsx
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../CSS/ProcessFlow.css';
 import { server } from '../constant';
 import axios from 'axios';
-import { use } from 'react';
+import MainContainer from '../Component/processFlow/MainContainer';
 
 export default function ProcessFlow() {
     const navigate = useNavigate();
     const [process, setProcess] = useState([]);
     const [isNavOpen, setIsNavOpen] = useState(false);
+    const [selectedProcess, setSelectedProcess] = useState(null);
+    const [user, setUser] = useState(null);
 
 
 
     async function loadInformation() {
+        if(localStorage.getItem('process') !== null){
+            setSelectedProcess(localStorage.getItem('process'))
+        }
         try {
-            const res = await axios.get(`${server}process/get_all/`,{
-                withCredentials: true
-            })
+
+            const [pro, user ] = await axios.all([
+                axios.get(`${server}process/get_all/`,{
+                    withCredentials: true
+                }),
+                axios.get(`${server}auth/get/`,{
+                    withCredentials: true
+                })
+            ])
+            console.log(pro)
+            if(user?.data !== null){
+                setUser(user.data)
+                
+            }
+            
             // console.log(res.data?.process)
-            if(res.data?.process?.length > 0){
-                setProcess(res.data?.process)
+            if(pro.data?.process?.length > 0){
+                setProcess(pro.data?.process)
             }
             // console.log(process)
         } catch (error) {
@@ -29,10 +46,10 @@ export default function ProcessFlow() {
     }
    useEffect(() => {
         loadInformation()
+        
     }, [])
-    useEffect(() => {
-        console.log(process)
-    },[process])
+   
+   
 
 
 
@@ -44,9 +61,13 @@ export default function ProcessFlow() {
         }
     },[])
 
+    
+    
     const selectProcess = useCallback((pro) => {
-        console.log(pro.process_id)
-    },[])
+        setIsNavOpen(!isNavOpen)
+        setSelectedProcess(pro.process_id)
+        localStorage.setItem('process', pro.process_id)
+    },[isNavOpen])
 
     async function logout(){
         try {
@@ -54,6 +75,7 @@ export default function ProcessFlow() {
                 withCredentials: true
             })
             if(res.data.message === 'logout successfully'){
+                localStorage.removeItem('process');
                 navigate("/auth/login")
             }
         } catch (error) {
@@ -61,55 +83,20 @@ export default function ProcessFlow() {
         }
     }
 
-    const steps = [
-        {
-            number: "1",
-            title: "Create your requirement sheet",
-            description: "Specify your requirement, specification and why you need this product",
-            path: "/create-requirement"
-        },
-        {
-            number: "2",
-            title: "Send for primary approval",
-            description: "mention the email of the person whose approval is needed",
-            path: "/primary-approval"
-        },
-        {
-            number: "3",
-            title: "Request for quotetaion",
-            description: "mention the email of different vendor whose quote you want",
-            path: "/request-quotation"
-        },
-        {
-            number: "4",
-            title: "Quote selection",
-            description: "select the specific quote for approval",
-            path: "/quote-selection"
-        },
-        {
-            number: "5",
-            title: "Send for final approval",
-            description: "mention the email of the person whose approval is needed",
-            path: "/final-approval"
-        },
-        {
-            number: "6",
-            title: "Place a purchase Ordeer",
-            description: "auto genrate a purchase order and send it to the selected vendor",
-            path: "/purchase-order"
-        }
-    ];
-
+    
+    
     return (
         <div className="app-container">
             {/* Sidebar Navigation */}
             <div className={`sidebar ${isNavOpen ? 'open' : ''}`}>
                 <div className="sidebar-content">
                 <div className="user-profile">
-                        <div className="avatar"></div>
+                        <div className="avatar">
+                            <img src={user?.gender == 'male' ? '/boy.png' : '/girl.png'} alt="" className='avatar'/>
+                        </div>
                         <div className="user-info">
-                            <h2>Username</h2>
-                            <p>abd@gmil.com</p>
+                            <h2>{ user?.username||"Username"}</h2>
+                            <p>{user?.email||'abd@gmil.com'}</p>
                         </div>
                     </div>
                     <div className="process-controls">
@@ -121,6 +108,7 @@ export default function ProcessFlow() {
                             {process.map((pro, index) => (
                                 <div 
                                 onClick={()=>{selectProcess(pro)}}
+                                
                                 key={index} 
                                 className={isComplete(pro)? 'Process complete-border' : 'Process incomplete-border'} >
                                     <div className='process-state'>
@@ -136,10 +124,10 @@ export default function ProcessFlow() {
                             ))}
                         </div>
                     </div>
+                </div>
                     <button className="logout-button" onClick={logout}>
                         Log out
                     </button>
-                </div>
             </div>
 
             <div className="main-content">
@@ -167,30 +155,17 @@ export default function ProcessFlow() {
                         />
                     </div>
 
-                   
+                    {
+                        selectedProcess === null ? (
+                            <p 
+                            className='no-process-selected'
+                            onClick={() => setIsNavOpen(!isNavOpen)}>select the process first</p>
+                        ):(
+                            <MainContainer process={selectedProcess} />
+                        )
+                    }   
 
-                    <div className="timeline">
-                        {steps.map((step, index) => (
-                            <div key={index} className="timeline-item">
-                                <div className="step-number">{step.number}</div>
-                                <button
-                                    className="step-button"
-                                    onClick={() => navigate(step.path)}
-                                >
-                                    <div className="step-content">
-                                        <div className="step-header">
-                                            <span className="status">pending</span>
-                                            <h3>{step.title}</h3>
-                                            <span className="chevron-right"></span>
-                                        </div>
-                                        <p className="step-description">{step.description}</p>
-                                    </div>
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-
-                    
+                    {/* <MainContainer process={5} /> */}
                 </div>
             </div>
         </div>
