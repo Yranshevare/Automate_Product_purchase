@@ -21,9 +21,6 @@ const MainContainer = React.memo(({ process }) => {
   useEffect(() => {
     loadInformation()
   },[process])
-  useEffect(() => {
-    console.log(processData)
-  },[processData    ])
   
   return (
     <div className="timeline">

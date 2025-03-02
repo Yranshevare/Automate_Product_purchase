@@ -175,6 +175,8 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  height: 50%;
+  
 }
 
 .select-process {
@@ -207,12 +209,23 @@
   cursor: pointer;
   height: 30px;
   width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.add-button p{
+  font-size: 2rem;
+  margin: 0;
 }
 
 .title-inputs {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  overflow-y: scroll;
+}
+.title-inputs::-webkit-scrollbar {
+  display: none;
 }
 
 .title-input {
@@ -396,6 +409,10 @@
 }
 
 .logout-button {
+  position: fixed;
+  bottom: 0;
+  width: 420px;
+  background-color: white;
   color: #ff0404;
   background: none;
   border: none;
@@ -431,4 +448,53 @@
 .no-process-selected{
   text-align: center;
   cursor: pointer;
+}
+
+
+/* title component */
+.title-open{
+  position: absolute;
+  top: 0;
+  z-index: 20000;
+  background: transparent;
+  backdrop-filter: blur(1px);
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.title-container{
+  /* border: 1px solid black; */
+  border-radius: 10px;
+  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
+  width: 80%;
+  height: 30%;
+  background-color: white;
+}
+.inner-title-container{
+  padding: 20px;
+}
+.inner-title-container input{
+  width: 100%;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  outline: none;
+  margin-bottom: 10px;
+}
+.inner-title-container button{
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  width: 45%;
+  cursor: pointer;
+}
+.title-button-container{
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

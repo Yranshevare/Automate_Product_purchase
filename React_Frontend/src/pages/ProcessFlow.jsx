@@ -5,6 +5,7 @@ import '../CSS/ProcessFlow.css';
 import { server } from '../constant';
 import axios from 'axios';
 import MainContainer from '../Component/processFlow/MainContainer';
+import Title from '../Component/processFlow/title';
 
 export default function ProcessFlow() {
     const navigate = useNavigate();
@@ -12,6 +13,7 @@ export default function ProcessFlow() {
     const [isNavOpen, setIsNavOpen] = useState(false);
     const [selectedProcess, setSelectedProcess] = useState(null);
     const [user, setUser] = useState(null);
+    const [isTitleOpen, setIsTitleOpen] = useState(false);
 
 
 
@@ -29,7 +31,7 @@ export default function ProcessFlow() {
                     withCredentials: true
                 })
             ])
-            console.log(pro)
+            console.log(user)
             if(user?.data !== null){
                 setUser(user.data)
                 
@@ -60,6 +62,16 @@ export default function ProcessFlow() {
             return false
         }
     },[])
+
+    const OpenTitle = useCallback(() => {
+        console.log(user)
+        if(!user.isEmailVerified){
+            alert('Please verify your email first')
+            navigate('/auth/verify')
+            return
+        }
+        setIsTitleOpen(!isTitleOpen)
+    },[user,isTitleOpen])
 
     
     
@@ -92,7 +104,7 @@ export default function ProcessFlow() {
                 <div className="sidebar-content">
                 <div className="user-profile">
                         <div className="avatar">
-                            <img src={user?.gender == 'male' ? '/boy.png' : '/girl.png'} alt="" className='avatar'/>
+                            <img src={user?.gender.toLowerCase() == 'male'  ? '/boy.png' : '/girl.png'} alt="" className='avatar'/>
                         </div>
                         <div className="user-info">
                             <h2>{ user?.username||"Username"}</h2>
@@ -102,7 +114,9 @@ export default function ProcessFlow() {
                     <div className="process-controls">
                         <div className="select-process">
                             <input className='process-select' type="text" placeholder="select the Process" />
-                            <button className="add-button"><img src="react.svg" alt="" /></button>
+                            <button 
+                            onClick={OpenTitle}
+                            className="add-button"><p>+</p></button>
                         </div>
                         <div className="title-inputs">
                             {process.map((pro, index) => (
@@ -168,6 +182,13 @@ export default function ProcessFlow() {
                     {/* <MainContainer process={5} /> */}
                 </div>
             </div>
+
+            {
+                isTitleOpen && <Title IsTitleOpen={setIsTitleOpen}/>
+            }
         </div>
     );
 }
+
+
+
