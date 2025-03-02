@@ -14,15 +14,18 @@ export default function ProcessFlow() {
     const [selectedProcess, setSelectedProcess] = useState(null);
     const [user, setUser] = useState(null);
     const [isTitleOpen, setIsTitleOpen] = useState(false);
+    const [setVerify, setSetVerify] = useState("verify email");
 
+    
 
+  
 
     async function loadInformation() {
         if(localStorage.getItem('process') !== null){
             setSelectedProcess(localStorage.getItem('process'))
         }
         try {
-
+            // setSelectedProcess(null)
             const [pro, user ] = await axios.all([
                 axios.get(`${server}process/get_all/`,{
                     withCredentials: true
@@ -49,8 +52,26 @@ export default function ProcessFlow() {
    useEffect(() => {
         loadInformation()
         
-    }, [selectedProcess])
+    }, [])
    
+
+    const sendEmail = useCallback(async () => {
+        try {
+            
+            // console.log(user.email)
+            setSetVerify('verifying...')
+            const res =await axios.get(`${server}auth/generateOTP/`,{
+                withCredentials: true
+            })
+            if(res.data.message === "otp generated successfully"){
+                navigate(`/auth/verify/${res.data.email || user.email}`)
+            }
+        } catch (error) {
+            console.log(error)
+        }finally{
+            setSetVerify('verify email')
+        }
+    },[user])
    
 
 
@@ -67,7 +88,6 @@ export default function ProcessFlow() {
         console.log(user)
         if(!user.isEmailVerified){
             alert('Please verify your email first')
-            navigate('/auth/verify')
             return
         }
         setIsTitleOpen(!isTitleOpen)
@@ -139,9 +159,14 @@ export default function ProcessFlow() {
                         </div>
                     </div>
                 </div>
-                    <button className="logout-button" onClick={logout}>
-                        Log out
-                    </button>
+                    <div className='nav-but'>
+                        <button className="verify-button" onClick={sendEmail}>
+                            {setVerify}
+                        </button>
+                        <button className="logout-button" onClick={logout}>
+                            Log out
+                        </button>
+                    </div>
             </div>
 
             <div className="main-content">
@@ -175,7 +200,7 @@ export default function ProcessFlow() {
                             className='no-process-selected'
                             onClick={() => setIsNavOpen(!isNavOpen)}>select the process first</p>
                         ):(
-                            <MainContainer process={selectedProcess} setOpen={setSelectedProcess} />
+                            <MainContainer process={selectedProcess} setSelectedProcess={setSelectedProcess} loadInfo={loadInformation}/>
                         )
                     }   
 
@@ -184,7 +209,7 @@ export default function ProcessFlow() {
             </div>
 
             {
-                isTitleOpen && <Title IsTitleOpen={setIsTitleOpen}/>
+                isTitleOpen && <Title IsTitleOpen={setIsTitleOpen} loadInfo={loadInformation}/>
             }
         </div>
     );

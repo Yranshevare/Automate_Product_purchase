@@ -1,12 +1,16 @@
-import {useNavigate, Link} from "react-router-dom"
+import {useNavigate, Link, useParams} from "react-router-dom"
 import "../../CSS/VerifyEmail.css"
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import axios from "axios"
+import { server } from "../../constant"
 
 function VerifyEmail() {
+    const {email } = useParams()
 
     const [otp, setOtp] = useState(["", "", "", "", "", ""])
     const [error, setEror] = useState("")
     const [timer, setTimer] = useState("5:00")
+    const [resend, setResend] = useState("Resend otp")
     const navigate = useNavigate();
 
     const refs = useRef([])
@@ -35,6 +39,24 @@ function VerifyEmail() {
             refs.current[0].focus()
         }
     }
+    const sendEmail = useCallback(async () => {
+        try {
+            
+            // console.log(user.email)
+            setResend("Resending...")
+            const res =await axios.get(`${server}auth/generateOTP/`,{
+                withCredentials: true
+            })
+            if(res.data.message === "otp generated successfully"){
+                // navigate(`/auth/verify/${res.data.email || email}`)
+                setTimer("5:00")
+            }
+        } catch (error) {
+            console.log(error)
+        }finally{
+            setResend("Resend otp")
+        }
+    },[])
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -62,7 +84,7 @@ function VerifyEmail() {
             <div className="form-container">
                 <div>
                     <h2 className="title">VERIFY YOUR EMAIL</h2>
-                    <p className="otp-message">A 6 digit otp is sent to your email on abc@gmail.com otp will be valid for only 5 minute</p>
+                    <p className="otp-message">A 6 digit otp is sent to your email on <b>{email}</b> otp will be valid for only 5 minute</p>
                 </div>
                 <form className="form" onSubmit={handlesubmit}>
                  
@@ -82,7 +104,7 @@ function VerifyEmail() {
                         <div className="otp-timer">{timer}</div>
                     </div>
                     <button type="submit" className="button button-primary" >VERIFY OTP</button>
-                    <a href="/auth/verify">Resend Otp</a>
+                    <a onClick={sendEmail}>{resend}</a>
                 </form>
             </div>
             

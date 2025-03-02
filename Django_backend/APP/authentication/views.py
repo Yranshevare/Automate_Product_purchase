@@ -239,7 +239,7 @@ def generateOTP(request):
             # reset the otp after 5 minutes
             threading.Timer(60*5, resetOTP).start()
             
-            return JsonResponse({"message":'otp generated successfully'},status=200)
+            return JsonResponse({"message":'otp generated successfully',"email":decrypted_data['email']},status=200)
         except Exception as e:
             return JsonResponse({'error': 'error while generating otp'}, status=400)
     else:

@@ -1,9 +1,10 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { server } from '../../constant'
 import { use } from 'react';
 
-const MainContainer = React.memo(({ process,setOpen }) => {
+const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
+    // console.log(setOpen)
     const [processData, setProcessData] = useState(null);
   async function loadInformation() {
     try {
@@ -22,22 +23,42 @@ const MainContainer = React.memo(({ process,setOpen }) => {
     loadInformation()
   },[process])
 
-  async function deleteProcess() {
-    console.log(process)
+  const deleteProcess = useCallback(async () => {
     try {
         const res = await axios.delete(`${server}process/delete/`, {
-            params: { process_id: process },
-            withCredentials: true
-        });
-        console.log(res.data)
-        setProcessData(null)
-        setOpen(null)
+                params: { process_id: process },
+                withCredentials: true
+            });
         localStorage.removeItem('process');
-        alert(res?.data?.message)
+        await setSelectedProcess(null)
+         setProcessData(null)
+        loadInfo()
+        // alert(res?.data?.message)
     }catch (error) {
+        console.log(error)
         console.log(error?.response?.data?.error || error.response?.data?.message )
     }
-  }
+  },[process,loadInfo])
+//   async function deleteProcess() {
+//     console.log(process)
+//     try {
+//         // const res = await axios.delete(`${server}process/delete/`, {
+//         //     params: { process_id: process },
+//         //     withCredentials: true
+//         // });
+//         console.log(res.data)
+//         setProcessData(null)
+//         await setOpen(null)
+//         console.log(process)
+//         console.log(setOpen)
+//         console.log(loadInfo)
+//         loadInfo()
+//         localStorage.removeItem('process');
+//         alert(res?.data?.message)
+//     }catch (error) {
+//         console.log(error?.response?.data?.error || error.response?.data?.message )
+//     }
+//   }
   
   return (
     <>

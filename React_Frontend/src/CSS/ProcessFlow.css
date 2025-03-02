@@ -222,6 +222,7 @@
 
 .title-inputs {
   display: flex;
+  height: 550px;
   flex-direction: column;
   gap: 20px;
   overflow-y: scroll;
@@ -409,10 +410,15 @@
   color: #666;
   font-size: 14px;
 }
-
-.logout-button {
+.nav-but{
   position: fixed;
   bottom: 0;
+}
+.verify{
+  color: black;
+}
+.logout-button {
+
   width: 420px;
   background-color: white;
   color: #ff0404;
@@ -421,13 +427,30 @@
   padding: 20px ;
   cursor: pointer;
   font-size: 16px;
-  margin-top: 20px;
   margin-left: 20px;
   margin-right: 20px;
   border-top: 1px solid red;
   transition-duration: 0.3s;
 }
 .logout-button:hover {
+  scale: 1.05;
+}
+.verify-button {
+
+  width: 420px;
+  background-color: white;
+  color: black;
+  background: none;
+  border: none;
+  padding: 20px ;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 20px;
+  margin-right: 20px;
+  border-top: 1px solid black;
+  transition-duration: 0.3s;
+}
+.verify-button:hover {
   scale: 1.05;
 }
 
@@ -474,6 +497,7 @@
   width: 80%;
   height: 30%;
   background-color: white;
+  padding-bottom: 10px;
 }
 .inner-title-container{
   padding: 20px;

@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { server } from '../../constant';
 
-export default function Title({IsTitleOpen}) {
+export default function Title({IsTitleOpen,loadInfo}) {
     const [title, setTitle] = useState('')
     const [create, setCreate] = useState('create')
 
@@ -25,13 +25,12 @@ export default function Title({IsTitleOpen}) {
             alert('Please enter a title')
             return
         }
-        console.log(title)
         try {
             setCreate('creating...')
             const res = await axios.post(`${server}process/create`,{title:title},{withCredentials: true})
-            console.log(res.data.message)  
             IsTitleOpen(false)
-            alert(res.data.message)              
+            alert(res.data.message) 
+            loadInfo()             
         } catch (error) {
             console.log(error)
         }

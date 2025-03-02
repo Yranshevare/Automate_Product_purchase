@@ -15,7 +15,7 @@ function App() {
           <Route path="/auth" element={<Auth />} >   {/** nested routes */}
               <Route path="login" element={<LoginForm />}></Route>
               <Route path="register" element={<RegisterForm />}></Route>
-              <Route path="verify" element={<VerifyEmail />}></Route>
+              <Route path="verify/:email" element={<VerifyEmail />}></Route>
           </Route>
           
         </Routes>

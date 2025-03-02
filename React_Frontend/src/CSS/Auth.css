@@ -31,6 +31,7 @@ a{
     color: gray;
     display: inline;
     text-align: center;
+    cursor: pointer;
 }
 
 @media (max-width: 768px) {
