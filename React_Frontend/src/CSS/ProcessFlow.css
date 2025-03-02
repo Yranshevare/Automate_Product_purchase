@@ -181,6 +181,8 @@
 
 .select-process {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: 10px;
   margin-bottom: 20px;
   border-bottom: 1px solid black;
@@ -448,6 +450,7 @@
 .no-process-selected{
   text-align: center;
   cursor: pointer;
+  background: transparent;
 }
 
 
@@ -497,4 +500,28 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+
+.delete-process{
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  height: 50px;
+  padding: 10px;
+}
+
+.delete-process button{
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  width: 50%;
+  cursor: pointer;
+  background: #FF9A9A;
+  color: white;
+  transition-duration: 0.3s;
+}
+.delete-process button:hover{
+  scale: 1.05;
+  background-color: #ff6262;
 }

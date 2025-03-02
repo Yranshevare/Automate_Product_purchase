@@ -49,7 +49,7 @@ export default function ProcessFlow() {
    useEffect(() => {
         loadInformation()
         
-    }, [])
+    }, [selectedProcess])
    
    
 
@@ -113,7 +113,7 @@ export default function ProcessFlow() {
                     </div>
                     <div className="process-controls">
                         <div className="select-process">
-                            <input className='process-select' type="text" placeholder="select the Process" />
+                           <p className='process-select'>Select Process</p>
                             <button 
                             onClick={OpenTitle}
                             className="add-button"><p>+</p></button>
@@ -175,7 +175,7 @@ export default function ProcessFlow() {
                             className='no-process-selected'
                             onClick={() => setIsNavOpen(!isNavOpen)}>select the process first</p>
                         ):(
-                            <MainContainer process={selectedProcess} />
+                            <MainContainer process={selectedProcess} setOpen={setSelectedProcess} />
                         )
                     }   
 

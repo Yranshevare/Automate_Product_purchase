@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { server } from '../../constant'
 import { use } from 'react';
 
-const MainContainer = React.memo(({ process }) => {
+const MainContainer = React.memo(({ process,setOpen }) => {
     const [processData, setProcessData] = useState(null);
   async function loadInformation() {
     try {
@@ -21,8 +21,26 @@ const MainContainer = React.memo(({ process }) => {
   useEffect(() => {
     loadInformation()
   },[process])
+
+  async function deleteProcess() {
+    console.log(process)
+    try {
+        const res = await axios.delete(`${server}process/delete/`, {
+            params: { process_id: process },
+            withCredentials: true
+        });
+        console.log(res.data)
+        setProcessData(null)
+        setOpen(null)
+        localStorage.removeItem('process');
+        alert(res?.data?.message)
+    }catch (error) {
+        console.log(error?.response?.data?.error || error.response?.data?.message )
+    }
+  }
   
   return (
+    <>
     <div className="timeline">
         <div className='process-title'>
             <p>{processData?.process_title}</p>
@@ -118,8 +136,13 @@ const MainContainer = React.memo(({ process }) => {
                 </div>
             </button>
         </div>
-        
     </div>
+    <div className='delete-process'>
+        <button
+        onClick={deleteProcess}
+        >Delete this process</button>
+    </div>
+    </>
   )
 })
 export default MainContainer;

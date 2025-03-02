@@ -176,7 +176,10 @@ def get_one(request):
 def delete(request):
     try:
         if request.method == 'DELETE':
-            data = json.loads(request.body)
+            print('lll')
+            # data = json.loads(request.body)
+            data = request.GET.get('process_id')
+            print(data)
             # Get access token from cookies
             access_token = request.COOKIES.get('access_token')  # Using .get() to avoid KeyError
             if not access_token:
@@ -187,11 +190,12 @@ def delete(request):
             if not decrypt_token:
                 return JsonResponse({'error': 'user not found'}, status=404)
 
-            process = processModel.objects.filter(_id = data['process_id'])
+            process = processModel.objects.filter(_id = data)
             if not process:
                 return JsonResponse({"message":"process doesn't exist"},status=200)
+            print(type(process[0].owner_id),type(decrypt_token['id']))
 
-            if process[0].owner_id != decrypt_token['id']:
+            if str(process[0].owner_id) != decrypt_token['id']:
                 return JsonResponse({"message":"not the owner of this process"},status=401)
             
             process.delete()
