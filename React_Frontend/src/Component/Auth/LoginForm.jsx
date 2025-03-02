@@ -45,7 +45,7 @@ function LoginForm() {
                  className="form"
                  onSubmit={handleLogin}>
                     <div className="form-group">
-                        <input type="text" className='input' placeholder='Username' onChange={(e)=> setEmail(e.target.value)} required />
+                        <input type="text" className='input' placeholder='Username \ email' onChange={(e)=> setEmail(e.target.value)} required />
                         <input type="password" className='input' placeholder='Password' onChange={(e)=> setPassword(e.target.value)} required />
                     </div>
                     <button type="submit" className='button button-primary'>{login}</button>

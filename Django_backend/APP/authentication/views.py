@@ -90,7 +90,9 @@ def login(request):
             user = UserModel.objects.filter(username=data['username']).first() 
 
             if not user:
-                return JsonResponse({"message":'user not found'}, status=404)
+                user = UserModel.objects.filter(email=data['username']).first()
+                if not user:
+                    return JsonResponse({"message":'user not found'}, status=404)
 
             if not check_password( data['password'],user.password):
                 return JsonResponse({"message":'invalid password'},status=400)
@@ -179,7 +181,6 @@ def logout(request):
 
 otp = None
 def resetOTP():
-    print("reset otp")
     global otp
     otp = None
 
@@ -263,8 +264,6 @@ def verifyOTP(request):
                 return JsonResponse({"message": "OTP is required"}, status=400)
             global otp
             if data != str(otp):
-                print(data != otp)
-                print(data,otp)
                 return JsonResponse({"message":"invalid otp"},status=400)
             
             if 'access_token' not in request.COOKIES:
