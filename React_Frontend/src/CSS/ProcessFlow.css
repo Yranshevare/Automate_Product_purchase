@@ -26,7 +26,12 @@
   right: 0;
   width: 450px;
 }
-
+@media (max-width: 500px) {
+  .sidebar.open {
+    width: 70%;
+  }
+  
+}
 .sidebar-content {
   padding: 20px;
 }
@@ -241,6 +246,22 @@
   font-size: 25px;
   font-weight: 600;
 }
+@media (max-height:600px) and (min-height:670px) {
+  .title-inputs{
+    height: 50px;
+  }
+}
+@media (max-height:670px) {
+  .title-inputs{
+    height: 150px;
+  }
+}
+@media (max-height:750px) and (min-height:670px) {
+  .title-inputs{
+    height: 210px;
+  }
+}
+
 .process-state{
   display: flex;
   height: 12px;
@@ -310,6 +331,7 @@
 
 .step-number {
   position: absolute;
+  margin-top: 30px;
   left: -50px;
   width: 32px;
   height: 32px;
@@ -431,7 +453,9 @@
 .nav-but{
   position: fixed;
   bottom: 0;
+  
 }
+
 .verify{
   color: black;
 }
@@ -472,6 +496,17 @@
   scale: 1.05;
 }
 
+@media (max-width: 500px) { 
+  .nav-but{
+    width: 50%;
+  }
+  .verify-button{
+    width: 120%;
+  }
+  .logout-button{
+    width: 120%;
+  }
+}
 
 
 @media (max-width: 768px) {
@@ -497,7 +532,7 @@
 
 /* title component */
 .title-open{
-  position: absolute;
+  position: fixed;
   top: 0;
   z-index: 20000;
   background: transparent;
@@ -513,7 +548,7 @@
   border-radius: 10px;
   box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
   width: 40%;
-  height: 25%;
+  height: 35%;
   background-color: white;
   padding-bottom: 10px;
 }
