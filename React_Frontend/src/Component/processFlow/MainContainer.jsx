@@ -1,7 +1,6 @@
 import axios from 'axios'
 import React, { useCallback, useEffect, useState } from 'react'
 import { server } from '../../constant'
-import { use } from 'react';
 
 const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
     // console.log(setOpen)
@@ -35,30 +34,10 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
         loadInfo()
         // alert(res?.data?.message)
     }catch (error) {
-        console.log(error)
         console.log(error?.response?.data?.error || error.response?.data?.message )
     }
   },[process,loadInfo])
-//   async function deleteProcess() {
-//     console.log(process)
-//     try {
-//         // const res = await axios.delete(`${server}process/delete/`, {
-//         //     params: { process_id: process },
-//         //     withCredentials: true
-//         // });
-//         console.log(res.data)
-//         setProcessData(null)
-//         await setOpen(null)
-//         console.log(process)
-//         console.log(setOpen)
-//         console.log(loadInfo)
-//         loadInfo()
-//         localStorage.removeItem('process');
-//         alert(res?.data?.message)
-//     }catch (error) {
-//         console.log(error?.response?.data?.error || error.response?.data?.message )
-//     }
-//   }
+
   
   return (
     <>

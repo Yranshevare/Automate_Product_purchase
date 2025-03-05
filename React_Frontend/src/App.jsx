@@ -5,6 +5,7 @@ import VerifyEmail from "./Component/Auth/VerifyEmail.jsx"
 import "./CSS/App.css"
 import ProcessFlow from "./pages/ProcessFlow.jsx"
 import Auth from "./pages/Auth.jsx"
+import ReqSheet from "./pages/ReqSheet.jsx"
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
               <Route path="register" element={<RegisterForm />}></Route>
               <Route path="verify/:email" element={<VerifyEmail />}></Route>
           </Route>
-          
+          <Route path="/reqSheet" element={<ReqSheet />}></Route>
         </Routes>
       </div>
     </Router>
