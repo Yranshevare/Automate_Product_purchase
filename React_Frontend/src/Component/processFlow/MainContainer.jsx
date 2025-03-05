@@ -1,8 +1,11 @@
 import axios from 'axios'
 import React, { useCallback, useEffect, useState } from 'react'
 import { server } from '../../constant'
+import {  useNavigate } from 'react-router-dom';
 
 const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
+
+    const navigate = useNavigate();
     // console.log(setOpen)
     const [processData, setProcessData] = useState(null);
   async function loadInformation() {
@@ -49,15 +52,21 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
         <div  className={processData?.step_one =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
             <div className="step-number">1</div>
             <button
+            onClick={()=>navigate("/reqSheet")}
                 className="step-button"
             >
                 <div className="step-content">
-                    <div className="step-header">
-                        <span className={processData?.step_one == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_one}</span>
-                        <h3>Create your requirement sheet</h3>
-                        <span className="chevron-right"></span>
+                    <div className='step-inner-content'>
+                        <div className="step-header">
+                            <div >
+                                <span className={processData?.step_one == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_one}</span>
+                                <h3 >Create your requirement sheet</h3>
+                            </div>
+                        </div>
+                        <hr />
+                        <p className="step-description">Specify your requirement, specification and why you need this product</p>
                     </div>
-                    <p className="step-description">Specify your requirement, specification and why you need this product</p>
+                    <span className="chevron-right"></span>
                 </div>
             </button>
         </div>
@@ -67,12 +76,17 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
                 className="step-button"
             >
                 <div className="step-content">
-                    <div className="step-header">
-                        <span className={processData?.step_two == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_two}</span>
-                        <h3>Send for primary approval</h3>
-                        <span className="chevron-right"></span>
+                    <div className='step-inner-content'>
+                        <div className="step-header">
+                            <div>
+                                <span className={processData?.step_two == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_two}</span>
+                                <h3>Send for primary approval</h3>
+                            </div>
+                        </div>
+                        <hr />
+                        <p className="step-description">mention the email of the person whose approval is needed</p>
                     </div>
-                    <p className="step-description">mention the email of the person whose approval is needed</p>
+                    <span className="chevron-right"></span>
                 </div>
             </button>
         </div>
@@ -82,12 +96,17 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
                 className="step-button"
             >
                 <div className="step-content">
-                    <div className="step-header">
-                        <span className={processData?.step_three == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_three}</span>
-                        <h3>Request for quotations</h3>
-                        <span className="chevron-right"></span>
+                    <div className='step-inner-content'>
+                        <div className="step-header">
+                            <div>
+                                <span className={processData?.step_three == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_three}</span>
+                                <h3>Request for quotations</h3>
+                            </div>
+                        </div>
+                        <hr />
+                        <p className="step-description">mention the email of different vendor whose quote you want</p>
                     </div>
-                    <p className="step-description">mention the email of different vendor whose quote you want</p>
+                    <span className="chevron-right"></span>
                 </div>
             </button>
         </div>
@@ -97,12 +116,17 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
                 className="step-button"
             >
                 <div className="step-content">
-                    <div className="step-header">
-                        <span className={processData?.step_three == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_three}</span>
-                        <h3>Quote selection</h3>
-                        <span className="chevron-right"></span>
+                    <div className='step-inner-content'>
+                        <div className="step-header">
+                            <div>
+                                <span className={processData?.step_three == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_three}</span>
+                                <h3>Quote selection</h3>
+                            </div>
+                        </div>
+                        <hr />
+                        <p className="step-description">select the specific quote for approval</p>
                     </div>
-                    <p className="step-description">select the specific quote for approval</p>
+                    <span className="chevron-right"></span>
                 </div>
             </button>
         </div>
@@ -112,12 +136,17 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
                 className="step-button"
             >
                 <div className="step-content">
-                    <div className="step-header">
-                        <span className={processData?.step_four == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_four}</span>
-                        <h3>Send for final approval</h3>
-                        <span className="chevron-right"></span>
+                    <div className='step-inner-content'>
+                        <div className="step-header">
+                            <div>
+                                <span className={processData?.step_four == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_four}</span>
+                                <h3>Send for final approval</h3>
+                            </div>
+                        </div>
+                        <hr />
+                        <p className="step-description">mention the email of the person whose approval is needed</p>
                     </div>
-                    <p className="step-description">mention the email of the person whose approval is needed</p>
+                    <span className="chevron-right"></span>
                 </div>
             </button>
         </div>
@@ -127,12 +156,17 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
                 className="step-button"
             >
                 <div className="step-content">
-                    <div className="step-header">
-                        <span className={processData?.step_five == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_five}</span>
-                        <h3>Place a purchase Order</h3>
-                        <span className="chevron-right"></span>
+                   <div className='step-inner-content'>
+                        <div className="step-header">
+                            <div>
+                                <span className={processData?.step_five == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_five}</span>
+                                <h3>Place a purchase Order</h3>
+                            </div>
+                        </div>
+                        <hr />
+                        <p className="step-description">auto generate a purchase order and send it to the selected vendor</p>
                     </div>
-                    <p className="step-description">auto generate a purchase order and send it to the selected vendor</p>
+                    <span className="chevron-right"></span>
                 </div>
             </button>
         </div>
