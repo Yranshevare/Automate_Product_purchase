@@ -71,14 +71,14 @@ def save(request):
             if 'process_token'  not in request.COOKIES:
                 return JsonResponse({"message":"process doesn't exist"},status=404)
             
+            
             pro = decrypt_data(request.COOKIES.get('process_token'))['id']
-            user = decrypt_data(request.COOKIES.get('access_token'))
+            user = decrypt_data(request.COOKIES.get('access_token'))["id"]
      
 
             process = processModel.objects.filter(_id  = pro).first()
 
-
-            if(process.owner_id != user['id']):
+            if(process.owner_id != int(user)):
                 return JsonResponse({"message":"not the owner"}, status=401)
 
             data = json.loads(request.body)
@@ -101,10 +101,12 @@ def save(request):
         
                 step_one = stepOneModel(
                     requirementSHeet = data['requirementSHeet'],
+                    SKU = data['SKU'],
                     process = process
                 )
              
                 process.stepOne = 'Complete'
+                print(process.stepOne)
                 process.save()
                 step_one.save()
         
@@ -138,6 +140,7 @@ def get(request,process_id):
             data = {
                 "process_id":step_one._id,
                 "requirementSHeet":step_one.requirementSHeet,
+                "SKU":step_one.SKU,
                 'owner': False
             }
             
