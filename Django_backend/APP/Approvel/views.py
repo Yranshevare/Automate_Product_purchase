@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from utils.utils import decrypt_data
+from utils.utils import decrypt_data,encode_id
 from django.views.decorators.csrf import csrf_exempt
 from .models import ApprovalModel
 from process.models import processModel
@@ -55,7 +55,7 @@ def send_for_primary(request):
                         <div >
                             <p>We hope this message finds you well. We are in the process of preparing a Request for Quotation (RFQ) for an upcoming project, and your approval is required to proceed with the next steps.</p>
                             <p>Please review the requirement sheet at the following link:</p>
-                            <p><a href={settings.FRONTEND}/reqSheet/{process._id} >Review Requirement Sheet</a></p>
+                            <p><a href={settings.FRONTEND}/reqSheet/{encode_id(process._id)} >Review Requirement Sheet</a></p>
                             <p>Once you have reviewed the document, kindly provide your approval or feedback so we can continue with the RFQ process.</p>
                             <p>If you have any questions or need additional information, feel free to reach out.</p>
                             <p>Thank you for your attention to this matter.</p>

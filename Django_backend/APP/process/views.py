@@ -140,7 +140,7 @@ def get_one(request):
             
             payload = {
                 'id': str(process._id),
-                'exp': int((datetime.now(timezone.utc) + timedelta(minutes=60)).timestamp()),  # ✅ Fix here
+                'exp': int((datetime.now(timezone.utc) + timedelta(minutes=60*24)).timestamp()),  # ✅ Fix here
                 'iat': int(datetime.now(timezone.utc).timestamp())  # ✅ Fix here
             }
             
