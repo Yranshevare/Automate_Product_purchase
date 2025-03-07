@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
-from utils.utils import encrypt_data, decrypt_data
+from utils.utils import encrypt_data, decrypt_data,encode_id,decode_id
 from django.views.decorators.csrf import csrf_exempt
 from authentication.models import UserModel
 from .models import processModel
@@ -90,7 +90,7 @@ def get_all(request):
             
             # Convert processes to a list of dictionaries (or any format you want)
             process_list = [{
-                "process_id": pro._id, 
+                "process_id": encode_id(pro._id), 
                 "process_title": pro.title,
                 "step_one": pro.stepOne,
                 "step_two": pro.stepTwo,
@@ -122,12 +122,11 @@ def get_one(request):
            
 
             decrypt_token = decrypt_data(access_token)
+          
+            data = decode_id(json.loads(request.body).get('process_id'))
 
-            
-            data = json.loads(request.body)
 
-
-            process = processModel.objects.filter(_id = data['process_id']).first()
+            process = processModel.objects.filter(_id = data).first()
 
             
             if not process:
@@ -177,7 +176,8 @@ def delete(request):
     try:
         if request.method == 'DELETE':
             # data = json.loads(request.body)
-            data = request.GET.get('process_id')
+            data = decode_id(request.GET.get('process_id'))
+            print(data)
             # Get access token from cookies
             access_token = request.COOKIES.get('access_token')  # Using .get() to avoid KeyError
             if not access_token:
@@ -195,7 +195,7 @@ def delete(request):
             if str(process[0].owner_id) != decrypt_token['id']:
                 return JsonResponse({"message":"not the owner of this process"},status=401)
             
-            process.delete()
+            # process.delete()
 
             return JsonResponse({'message':'process deleted successfully'},status=200)
         else:

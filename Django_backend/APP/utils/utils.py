@@ -37,3 +37,25 @@ def decrypt_data(data):
 
 
 
+secret = secret_str.encode('utf-8')  # Convert the string to bytes
+
+chipher = Fernet(secret)
+
+def encode_id(data):
+    data_str = json.dumps(data)
+    encrypted_data = chipher.encrypt(data_str.encode())  # Encode string to bytes before encryption
+    encoded_encrypted_data = base64.urlsafe_b64encode(encrypted_data).decode('utf-8')  # Convert to string
+    return encoded_encrypted_data
+
+def decode_id(data):
+    decoded_encrypted_data = base64.urlsafe_b64decode(data)
+    # print(decoded_encrypted_data)
+    decrypted_data = chipher.decrypt(decoded_encrypted_data).decode()
+   
+    decrypted_json = json.loads(decrypted_data)
+    
+    return decrypted_json 
+
+
+
+

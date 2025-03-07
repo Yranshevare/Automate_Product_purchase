@@ -29,7 +29,7 @@ const ReqSheet = () => {
   };
   return (
     <div className="req-sheet-container">
-      <div className={`main-content ${isSidebarOpen ? "with-sidebar" : ""}`}>
+      <div className={`main-content-reqSheet ${isSidebarOpen ? "with-sidebar" : ""}`}>
         {/* Info Banner */}
         {showInfoBanner && (
           <div className="info-banner">

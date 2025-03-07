@@ -3,7 +3,7 @@ from django.http import HttpResponse,JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import stepOneModel
 from process.models import processModel
-from utils.utils import encrypt_data,decrypt_data
+from utils.utils import decode_id,decrypt_data
 import requests
 import json
 
@@ -129,11 +129,12 @@ def get(request,process_id):
     get the user info form the cookies
     check for the ownership of the process and add the ownership inn response
     """
-
+    process_id = decode_id(process_id)
     try:
         if request.method == 'GET':
 
             step_one = stepOneModel.objects.filter(process_id = process_id).first()
+
             if not step_one:
                 return JsonResponse({"message":"step doesn't exits"},status= 404)
 
@@ -148,7 +149,7 @@ def get(request,process_id):
             access_token = request.COOKIES.get('access_token')  # Using .get() to avoid KeyError
             if access_token:
                 decrypt_token = decrypt_data(access_token)
-                if decrypt_token['id'] == step_one.process.owner_id:
+                if decrypt_token['id'] == str(step_one.process.owner_id):
                     data['owner'] = True
             
 
