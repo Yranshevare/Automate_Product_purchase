@@ -6,11 +6,13 @@ class ApprovalModel(models.Model):
     email = models.EmailField(max_length=100)
 
     class Status(models.TextChoices):
-        INCOMPLETE = 'Incomplete', 'Incomplete'
+        ACCEPTED = 'Accepted', 'Accepted'
         PENDING = 'Pending', 'Pending'
-        COMPLETE = 'Complete', 'Complete'
+        REJECTED = 'Rejected', 'Rejected'
 
-    status = models.CharField(max_length=20,choices=Status.choices, default=Status.INCOMPLETE)
+    status = models.CharField(max_length=20,choices=Status.choices, default=Status.PENDING)
+
+    response = models.TextField()
 
     class Type(models.TextChoices):
         PRIMARY = 'Primary', 'Primary'

@@ -86,8 +86,6 @@ def send_for_primary(request):
 
             approve = ApprovalModel(
                 email = data,
-                status = ApprovalModel.Status.PENDING,
-                type = ApprovalModel.Type.PRIMARY,
                 process = process
             ) 
 
