@@ -195,7 +195,7 @@ def delete(request):
             if str(process[0].owner_id) != decrypt_token['id']:
                 return JsonResponse({"message":"not the owner of this process"},status=401)
             
-            # process.delete()
+            process.delete()
 
             return JsonResponse({'message':'process deleted successfully'},status=200)
         else:
