@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'authentication',
     'process',
     'stepOne',
+    'Approvel',
     'rest_framework',
 ]
 
@@ -180,6 +181,7 @@ EMAIL_USE_SSL = False
 
 USER_MODEL = 'authentication.UserModel'
 PROCESS_MODEL = 'process.processModel'
+STEP_ONE_MODEL = 'stepOne.stepOneModel'
 
 
 REST_FRAMEWORK = {
@@ -187,3 +189,5 @@ REST_FRAMEWORK = {
         'authentication.authentication.CookieJWTAuthentication',
     )
 }
+
+FRONTEND = 'http://localhost:5173'
