@@ -1,0 +1,249 @@
+/* Main Container */
+.req-sheet-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  min-width: 1200px;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  transition: margin-right 0.3s ease;
+}
+
+.main-content.with-sidebar {
+  filter: blur(4px);
+  z-index: -1;
+}
+
+/* Info Banner */
+.info-banner {
+  display: flex;
+  align-items: center;
+  background-color: rgba(85, 110, 217, 0.1);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  width: 96%;
+}
+
+.info-icon-container {
+  background-color: #556ed9;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+
+.info-icon {
+  width: 20px;
+  height: 20px;
+  color: white;
+}
+
+.info-text {
+  flex: 1;
+}
+
+.info-title {
+  font-weight: 600;
+  color: #301f7b;
+  margin: 0;
+}
+
+.info-description {
+  font-size: 14px;
+  color: rgba(48, 31, 123, 0.8);
+  margin: 0;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #000000;
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 20px;
+}
+
+.section-title {
+  color: #301f7b;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.sku-input {
+  width: 97%;
+  padding: 10px;
+  border: 1px solid #d6d6d6;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.requirement-textarea {
+  width: 97%;
+  min-height: 170px;
+  padding: 10px;
+  border: 1px solid #d6d6d6;
+  border-radius: 6px;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 10px;
+  background-color: rgba(85, 110, 217, 0.2);
+  border: none;
+  border-radius: 6px;
+  color: #000000;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+  background-color: rgba(85, 110, 217, 0.3);
+}
+
+/* Sidebar Toggle */
+.sidebar-toggle {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 40px;
+  background-color: #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  transition: right 0.3s ease;
+}
+
+.sidebar-toggle.open {
+  right: 450px;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  right: -320px;
+  top: 0;
+  width: 320px;
+  height: 100%;
+  background-color: #f2f2f2;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  z-index: 99;
+}
+
+.sidebar.open {
+  right: 0;
+}
+
+.sidebar-content {
+  flex: 1;
+  padding: 24px;
+}
+
+/* Chat Initial View */
+.chat-initial {
+  margin-top: 160px;
+}
+
+.chat-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  color: #000000;
+}
+
+.chat-description {
+  font-size: 14px;
+  color: #666666;
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
+
+/* Chat Input */
+.chat-input-container {
+  position: relative;
+  padding: 16px;
+}
+
+.chat-input {
+  width: 90%;
+  padding: 10px 40px 10px 16px;
+  border: 1px solid #d6d6d6;
+  border-radius: 20px;
+  background-color: white;
+  font-size: 14px;
+}
+
+.arrow-up-button {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.arrow-up-icon {
+  width: 16px;
+  height: 16px;
+  color: #666666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-content.with-sidebar {
+    margin-right: 0;
+  }
+
+  .sidebar {
+    width: 100%;
+    right: -100%;
+  }
+
+  .sidebar.open {
+    right: 0;
+  }
+
+  .sidebar-toggle.open {
+    right: 100%;
+  }
+}
+
+
