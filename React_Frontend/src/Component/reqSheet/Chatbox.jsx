@@ -38,18 +38,27 @@ export default function ChatBox({isSidebarOpen,setSidebarOpen,handleInsert}) {
               </p>
             </div>
           ) : (
+            <>
             <div className="chatbot">
-              <p className="chat-paragraph">
-                Crafted passionately by our team, where boundless imagination fuels groundbreaking innovation, this
-                project is not just a design, but a revolution in the making! SayHello redefines the future of digital
-                interaction with seamless, intelligent conversations that elevate user experience to new heights. With
-                cutting-edge AI capabilities, SayHello ensures every interaction is insightful, responsive, and
-                engaging.
-              </p>
+              <div >
+                <p className="chat-paragraph">
+                  Crafted passionately by our team, where boundless imagination fuels groundbreaking innovation, this
+                  project is not just a design, but a revolution in the making! SayHello redefines the future of digital
+                  interaction with seamless, intelligent conversations that elevate user experience to new heights. With
+                  cutting-edge AI capabilities, SayHello ensures every interaction is insightful, responsive, and
+                  engaging. Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem, repudiandae? Enim voluptas ad libero reprehenderit asperiores sit vel in soluta blanditiis eaque eligendi, iusto deleniti autem repudiandae suscipit quam molestias?
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolorum, possimus sunt. Asperiores, fuga repellat reprehenderit nulla, illum recusandae laboriosam molestiae ab beatae atque earum! Aperiam deleniti et cum voluptate esse. Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit modi architecto dicta cumque autem est id ad at dolor? Provident dolores in amet cum accusamus atque nihil, praesentium labore laboriosam?
+                  Aut autem beatae corrupti laboriosam accusamus! Ipsum dolore laudantium aperiam adipisci, atque possimus iste excepturi ullam facilis aliquam? Numquam praesentium deleniti ex voluptatibus error, odit nobis ullam assumenda provident facilis?
+                  Dolore asperiores voluptate incidunt molestias, cum ducimus rerum reiciendis aspernatur nesciunt a labore deleniti saepe earum quod tempora harum placeat est expedita, assumenda odit. Architecto delectus cumque vero cum rem.
+                  Non, quisquam! Qui perspiciatis distinctio animi, dignissimos accusamus facilis, tempore dolore libero necessitatibus minus in facere consequatur et, quod magnam error voluptatum neque fugit quibusdam. Delectus error rem saepe earum!
+                  Nulla alias numquam suscipit porro, velit itaque praesentium distinctio voluptas excepturi recusandae dolores eveniet? Veritatis doloremque alias numquam beatae. Dicta perferendis rem hic consequatur nemo qui architecto blanditiis quam amet.
+                </p>
+              </div>
               <button className="insert-button" onClick={handleInsert}>
                 insert
               </button>
             </div>
+            </>
             
           )}
         </div>
