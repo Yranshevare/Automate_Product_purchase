@@ -2,12 +2,11 @@
 
 /* Main Container */
 .req-sheet-container {
-  position: fixed;
+  /* position: fixed; */
   display: flex;
   justify-content: center;
-  align-items: center;
   flex-wrap: wrap;
-  min-height: 100vh;
+  height: 100%;
   font-family: Arial, sans-serif;
   width: 100%;
 }
@@ -15,12 +14,18 @@
 /* Main Content */
 .main-content-reqSheet {
   flex: 1;
+  height: 100%;
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
   transition: margin-right 0.3s ease;
 }
-
+.main-content-reqSheet form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 .main-content.with-sidebar {
   filter: blur(4px);
   z-index: -1;
@@ -37,7 +42,8 @@
   margin-bottom: 24px;
   width: 96%;
   cursor: pointer;
-  transition: transform 0.3s ease, opacity 0.3s ease
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  height: 50px;
 }
 
 .info-banner.closing {
@@ -68,7 +74,8 @@
 
 .info-title {
   font-family: Inter;
-  font-weight: 600;
+  font-weight: 800;
+  font-size: larger;
   color: rgba(0, 0, 0, 1);
   margin: 0;
 }
@@ -92,10 +99,11 @@
 /* Form Sections */
 .form-section {
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .form-section.closing{
-  transform: translateY(-20%);
+  transform: translateY(-15%);
   transition: transform 0.3s ease
 }
 
@@ -114,23 +122,25 @@
   border: 1px solid #000000;
   border-radius: 6px;
   font-size: 14px;
+  outline: none;
 }
 
 .requirement-textarea {
   font-family: Inter;
   width: 97%;
-  min-height: 170px;
+  min-height: 400px;
   padding: 10px;
   border: 1px solid #000000;
   border-radius: 6px;
   font-size: 14px;
   resize: vertical;
+  outline: none;
 }
 
 .submit-button {
   font-family: Inter;
-  width: 100%;
-  padding: 10px;
+  width: 70%;
+  padding: 20px;
   background-color: rgba(85, 110, 217, 0.2);
   border: 1px solid rgba(85,110,217,1);
   border-radius: 6px;
@@ -138,7 +148,7 @@
   font-weight: 500;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.3s ease;
+  transition: background-color 0.2s, transform 0.3s ease,scale 0.2s ease;
 }
 
 .submit-button.closing{
@@ -146,6 +156,7 @@
 }
 
 .submit-button:hover {
+  scale: 1.1;
   background-color: rgba(85, 110, 217, 0.3);
 }
 
@@ -195,17 +206,20 @@
 .sidebar-content {
   flex: 1;
   padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Chat Initial View */
-.chat-initial {
+/* .chat-initial {
   margin-top: 160px;
-}
+} */
 
 .chat-title {
   font-family: Inter;
-  font-size: 22px;
-  font-weight: 700;
+  font-size: xx-large;
+  font-weight: 800;
   margin: 0;
   color: #000000;
 }
@@ -228,14 +242,16 @@
   width: 90%;
   padding: 10px 40px 10px 16px;
   border: 1px solid #d6d6d6;
-  border-radius: 20px;
+  border-radius: 50px;
   background-color: white;
   font-size: 14px;
+  height: 25px;
+  outline: none;
 }
 
 .arrow-up-button {
   position: absolute;
-  right: 20px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   width: 30px;
@@ -247,6 +263,10 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition-duration: 0.3s;
+}
+.arrow-up-button:hover {
+  background-color: #797979;
 }
 
 .arrow-up-icon {
@@ -299,8 +319,10 @@
     width: 350px;
    }
    .chat-input-container{
-    top: -100px;
-    right: 10px
+    /* top: 00px; */
+    right: 10px;
+    width: 85%;
+    
    }
    .chat-input{
     height: 50px;
