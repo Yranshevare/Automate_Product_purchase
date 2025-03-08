@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from utils.utils import decrypt_data,encode_id
+from utils.utils import decrypt_data,encode_id,decode_id
 from django.views.decorators.csrf import csrf_exempt
 from .models import ApprovalModel
 from process.models import processModel
@@ -103,3 +103,94 @@ def send_for_primary(request):
 
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+
+@csrf_exempt
+def get(request,process_id):
+    if request.method == 'GET':
+        try:
+            process_id = decode_id(process_id)
+            approve = ApprovalModel.objects.filter(process = process_id).first()
+            if not approve:
+                return JsonResponse({'message':'request not found'},status = 404)
+            
+            data = {
+                "id":approve._id,
+                "status":approve.status,
+                "accepted_by_email":approve.email,
+                "response":approve.response,
+                'type':approve.type
+            }
+            return JsonResponse({"data":data},status = 200)
+        except Exception as e:
+            return JsonResponse({'message':'error while getting the request','error':str(e)},status=500)
+    else:
+        return JsonResponse({"message":"invalid request type"},status=405)      
+    
+
+@csrf_exempt
+def Approve(request,process_id):
+    if request.method == 'GET':
+        try:
+            process_id = decode_id(process_id)
+
+            process = processModel.objects.filter(_id = process_id).first()
+            if not process:
+                return JsonResponse({'message':'process not found'},status = 404)
+            
+            if(process.stepOne != processModel.steps.COMPLETE):
+                return JsonResponse({'message':'no requirement sheet is available'},status = 404)
+            
+
+            approve = ApprovalModel.objects.filter(process = process_id).first()
+            if not approve:
+                return JsonResponse({'message':'request not found'},status = 404)
+            
+
+            approve.status = ApprovalModel.Status.ACCEPTED
+            approve.response = "approved"
+            process.stepTwo = processModel.steps.PENDING
+            process.save()
+            approve.save()
+            return JsonResponse({'message':'your request has been approve'},status = 200)
+        except Exception as e:
+            return JsonResponse({'message':'error while approving the request','error':str(e)},status=500)
+    else:
+        return JsonResponse({"message":"invalid request type"},status=405)
+    
+
+@csrf_exempt
+def Reject(request):
+    if request.method == 'GET':
+        try:
+            # process_id = request.GET.get('process_id')
+            # response = request.GET.get('response')
+            process_id = json.loads(request.body)['process_id']
+            response = json.loads(request.body)['response']
+            process_id = decode_id(process_id)
+
+
+            process = processModel.objects.filter(_id = process_id).first()
+            if not process:
+                return JsonResponse({'message':'process not found'},status = 404)
+            
+            if(process.stepOne != processModel.steps.COMPLETE):
+                return JsonResponse({'message':'no requirement sheet is available'},status = 404)
+            
+
+            approve = ApprovalModel.objects.filter(process = process_id).first()
+            if not approve:
+                return JsonResponse({'message':'request not found'},status = 404)
+            
+
+            approve.status = ApprovalModel.Status.REJECTED
+            approve.response = response
+            process.stepTwo = processModel.steps.REJECTED
+
+            process.save()
+            approve.save()
+            return JsonResponse({'message':'your request has been rejected'},status = 200)
+        except Exception as e:
+            return JsonResponse({'message':'error while rejecting the request','error':str(e)},status=500)
+    else:
+        return JsonResponse({"message":"invalid request type"},status=405)

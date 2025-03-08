@@ -177,7 +177,7 @@ def delete(request):
         if request.method == 'DELETE':
             # data = json.loads(request.body)
             data = decode_id(request.GET.get('process_id'))
-            print(data)
+            
             # Get access token from cookies
             access_token = request.COOKIES.get('access_token')  # Using .get() to avoid KeyError
             if not access_token:

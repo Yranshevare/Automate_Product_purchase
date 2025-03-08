@@ -10,7 +10,9 @@ class processModel(models.Model):
     class steps(models.TextChoices):
         INCOMPLETE = 'Incomplete'
         PENDING = 'Pending'
-        COMPLETE = 'Complete'
+        COMPLETE = 'Complete',
+        REJECTED = 'Rejected',
+        SKIPPED = 'Skipped'
     
     stepOne = models.CharField(
         max_length=100, 
