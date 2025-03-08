@@ -22,19 +22,24 @@ const ReqSheet = () => {
     setIsBannerClosing(true);
   },[isBannerClosing]);
 
-  const handleSubmit = useCallback((e) => {
-    e.preventDefault();
-    setSidebarOpen(true); 
-  },[isSidebarOpen]);
-
+  
   const handleInsert = useCallback(() => {
     const sampleText =
-      "Crafted passionately by our team, where boundless imagination fuels groundbreaking innovation, this project is not just a design, but a revolution in the making!"
+    "Crafted passionately by our team, where boundless imagination fuels groundbreaking innovation, this project is not just a design, but a revolution in the making!"
     setRequirementText((prev) => (prev ? `${prev}\n\n${sampleText}` : sampleText))
     setSidebarOpen(!isSidebarOpen);
   },[requirementText,isSidebarOpen]);
- 
-
+  
+  const handleSubmit = useCallback((e) => {
+    e.preventDefault();
+    if(requirementText === "" || skuValue === ""){
+      alert("please fill all the places")
+      return
+    }
+    console.log(requirementText)
+    console.log(skuValue)
+  },[requirementText,skuValue]);
+  
   return (
     <div className="req-sheet-container">
       <div className={`main-content-reqSheet ${isSidebarOpen ? "with-sidebar" : ""}`}>
