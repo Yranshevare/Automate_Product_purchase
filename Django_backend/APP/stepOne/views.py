@@ -136,11 +136,15 @@ def get(request,process_id):
     get the user info form the cookies
     check for the ownership of the process and add the ownership inn response
     """
+    # print("kkk")
     process_id = decode_id(process_id)
     try:
         if request.method == 'GET':
+            # print(process_id)
 
             step_one = stepOneModel.objects.filter(process_id = process_id).first()
+
+            # print(step_one)
 
             if not step_one:
                 return JsonResponse({"message":"step doesn't exits"},status= 404)

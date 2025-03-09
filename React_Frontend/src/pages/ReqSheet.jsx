@@ -1,7 +1,9 @@
 import ChatBox from "../Component/reqSheet/Chatbox";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "../CSS/ReqSheet.css";
 import Toast from "../Component/reqSheet/Toast";
+import axios from "axios";
+import { server } from "../constant";
 
 
 const ReqSheet = () => {
@@ -9,6 +11,27 @@ const ReqSheet = () => {
   const [skuValue, setSkuValue] = useState("");
   const [requirementText, setRequirementText] = useState("");
   const [isBannerClosing, setIsBannerClosing] = useState(false);
+
+
+  const loadInfo = useCallback(async() => {
+    try {
+      const pro = localStorage.getItem('process');
+      if(!pro){
+        return;
+      }
+      const res = await axios.get(`${server}stepOne/get/${pro}/`,{withCredentials: true}); 
+      if(res.data.message === "successfully fetched the data" ){
+        setSkuValue(res?.data?.data?.SKU);
+        setRequirementText(res?.data?.data?.requirementSHeet);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  },[]);
+
+  useEffect(() => { 
+    loadInfo();
+  },[]);
 
   const handleBannerClick = useCallback(() => {
     setIsBannerClosing(true);
