@@ -1,8 +1,10 @@
 import React, { useCallback, useState } from 'react'
+import ChatLoadingAnimation from './ChatLoadingAnimation';
 
 export default function ChatBox({isSidebarOpen,setSidebarOpen,handleInsert}) {
     const [chatbot, setChatbot] = useState(false)
     const [userInput, setUserInput] = useState("");
+    const [loading, setLoading] = useState(false);
 
     
     const toggleSidebar = () => {
@@ -11,9 +13,16 @@ export default function ChatBox({isSidebarOpen,setSidebarOpen,handleInsert}) {
 
     const handleSendMessage = useCallback((e) => {
         e.preventDefault();
+        if(chatbot){
+            setChatbot(false);
+        }
         setUserInput("");
-        setChatbot(true);
-    },[chatbot,userInput]);
+        setLoading(true);
+        setTimeout(() => {
+          setLoading(false);
+          setChatbot(true);
+        },2000)
+    },[chatbot,userInput,loading]);
 
   return (
     <>
@@ -29,14 +38,17 @@ export default function ChatBox({isSidebarOpen,setSidebarOpen,handleInsert}) {
       {/* Sidebar */}
       <div className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
         <div className="sidebar-content">
+        
         {!chatbot ? (
-            <div className="chat-initial">
-              <h1 className="chat-title">Hey there,</h1>
-              <h1 className="chat-title">what is your use case?</h1>
-              <p className="chat-description">
-                Just tell me about your use case and I will suggest you a nice requirement
-              </p>
-            </div>
+            
+            loading ? <ChatLoadingAnimation/> :
+              <div className="chat-initial">
+                <h1 className="chat-title">Hey there,</h1>
+                <h1 className="chat-title">what is your use case?</h1>
+                <p className="chat-description">
+                  Just tell me about your use case and I will suggest you a nice requirement
+                </p>
+              </div> 
           ) : (
             <>
             <div className="chatbot">
