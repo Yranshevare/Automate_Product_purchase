@@ -1,28 +1,61 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import ChatLoadingAnimation from './ChatLoadingAnimation';
+import axios from 'axios';
+import { server } from '../../constant';
+import markdownit from 'markdown-it'
 
-export default function ChatBox({isSidebarOpen,setSidebarOpen,handleInsert}) {
+const md = markdownit()
+
+export default function ChatBox({isSidebarOpen,setSidebarOpen,setRequirementText}) {
     const [chatbot, setChatbot] = useState(false)
     const [userInput, setUserInput] = useState("");
     const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState("");
+
+    const handleInsert = () => {
+      const sampleText = message
+      setRequirementText((prev) => (prev ? `${prev}\n\n${sampleText}` : sampleText))
+      setSidebarOpen(!isSidebarOpen);
+    }
 
     
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
 
-    const handleSendMessage = useCallback((e) => {
+    const handleSendMessage = useCallback(async(e) => {
         e.preventDefault();
+        if(userInput == ""){
+          alert("please provide some information")
+          return
+        }
         if(chatbot){
             setChatbot(false);
         }
+        const mes = userInput
         setUserInput("");
         setLoading(true);
-        setTimeout(() => {
+
+        try {
+            const res = await axios.get(`${server}stepOne/generate/`,{
+              params:{message:mes},
+              withCredentials: true
+            })
+            setChatbot(true);
+
+            const result = md.render(res.data.response);
+            const plainText = result.replace(/<[^>]*>/g, '').trim();
+
+            setMessage(plainText);
+            // console.log(res.data)
+        } catch (error) {
+          alert(error?.response?.data?.message)
+        }
+        finally{  
           setLoading(false);
-          setChatbot(true);
-        },2000)
-    },[chatbot,userInput,loading]);
+        }
+
+    },[chatbot,userInput,loading,message]);
 
   return (
     <>
@@ -53,18 +86,9 @@ export default function ChatBox({isSidebarOpen,setSidebarOpen,handleInsert}) {
             <>
             <div className="chatbot">
               <div >
-                <p className="chat-paragraph">
-                  Crafted passionately by our team, where boundless imagination fuels groundbreaking innovation, this
-                  project is not just a design, but a revolution in the making! SayHello redefines the future of digital
-                  interaction with seamless, intelligent conversations that elevate user experience to new heights. With
-                  cutting-edge AI capabilities, SayHello ensures every interaction is insightful, responsive, and
-                  engaging. Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem, repudiandae? Enim voluptas ad libero reprehenderit asperiores sit vel in soluta blanditiis eaque eligendi, iusto deleniti autem repudiandae suscipit quam molestias?
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolorum, possimus sunt. Asperiores, fuga repellat reprehenderit nulla, illum recusandae laboriosam molestiae ab beatae atque earum! Aperiam deleniti et cum voluptate esse. Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit modi architecto dicta cumque autem est id ad at dolor? Provident dolores in amet cum accusamus atque nihil, praesentium labore laboriosam?
-                  Aut autem beatae corrupti laboriosam accusamus! Ipsum dolore laudantium aperiam adipisci, atque possimus iste excepturi ullam facilis aliquam? Numquam praesentium deleniti ex voluptatibus error, odit nobis ullam assumenda provident facilis?
-                  Dolore asperiores voluptate incidunt molestias, cum ducimus rerum reiciendis aspernatur nesciunt a labore deleniti saepe earum quod tempora harum placeat est expedita, assumenda odit. Architecto delectus cumque vero cum rem.
-                  Non, quisquam! Qui perspiciatis distinctio animi, dignissimos accusamus facilis, tempore dolore libero necessitatibus minus in facere consequatur et, quod magnam error voluptatum neque fugit quibusdam. Delectus error rem saepe earum!
-                  Nulla alias numquam suscipit porro, velit itaque praesentium distinctio voluptas excepturi recusandae dolores eveniet? Veritatis doloremque alias numquam beatae. Dicta perferendis rem hic consequatur nemo qui architecto blanditiis quam amet.
-                </p>
+                <pre className="chat-paragraph">
+                  {message}
+                </pre>
               </div>
               <button className="insert-button" onClick={handleInsert}>
                 insert

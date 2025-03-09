@@ -9,7 +9,6 @@ const ReqSheet = () => {
   const [skuValue, setSkuValue] = useState("");
   const [requirementText, setRequirementText] = useState("");
   const [isBannerClosing, setIsBannerClosing] = useState(false);
-  // const [showInfoBanner, setShowInfoBanner] = useState(true);
 
   const handleBannerClick = useCallback(() => {
     setIsBannerClosing(true);
@@ -23,12 +22,7 @@ const ReqSheet = () => {
   },[isBannerClosing]);
 
   
-  const handleInsert = useCallback(() => {
-    const sampleText =
-    "Crafted passionately by our team, where boundless imagination fuels groundbreaking innovation, this project is not just a design, but a revolution in the making!"
-    setRequirementText((prev) => (prev ? `${prev}\n\n${sampleText}` : sampleText))
-    setSidebarOpen(!isSidebarOpen);
-  },[requirementText,isSidebarOpen]);
+ 
   
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
@@ -78,7 +72,7 @@ const ReqSheet = () => {
       <ChatBox 
         isSidebarOpen={isSidebarOpen} 
         setSidebarOpen={setSidebarOpen} 
-        handleInsert={handleInsert}
+        setRequirementText={setRequirementText}
       />
     </div>
   );

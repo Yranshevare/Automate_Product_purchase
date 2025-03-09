@@ -23,6 +23,7 @@ function LoginForm() {
             })
             console.log(res)
             if(res.status === 200){
+                localStorage.removeItem('process');
                 navigate("/")
             }
             

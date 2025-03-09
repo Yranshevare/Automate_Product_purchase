@@ -45,19 +45,26 @@ def run_flow(message: str) -> dict:
 def generate(request):
     if request.method == 'GET':
         try:
-            message =  json.loads(request.body)
+            # message =  json.loads(request.body)
+            message = request.GET.get('message')
+            print(message)
 
-            if message['message'] == "" or message == None:
+            if message == "" or message == None:
                 return JsonResponse({"message":"message is empty"},status=400)
             # print()
-            response = run_flow(message['message'])
-            sheet = response["outputs"][0]['outputs'][0]["results"]["message"]["data"]["text"]
+            response = run_flow(str(message))
+            # print(response)
+            try:
+                 sheet = response["outputs"][0]['outputs'][0]["results"]["message"]["data"]["text"]
+            except Exception as e:
+                print(e)
+                return JsonResponse({"message":"error while generating the sheet"},status=400)
             return JsonResponse({"message":"successfully generated the requirement sheet","response":sheet},status=200)
         except Exception as e:
             return JsonResponse({"message": "error while generating the sheet",'error':e}, status=400)
 
     else:
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
+        return JsonResponse({'message': 'Invalid request method'}, status=405)
 
 
 
