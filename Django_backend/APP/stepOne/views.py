@@ -90,7 +90,6 @@ def save(request):
                 return JsonResponse({"message":"not the owner"}, status=401)
 
             data = json.loads(request.body)
-            print(data)
 
             if data['requirementSHeet'] == "":
                 return JsonResponse({"message":"requirement sheet is empty"},status=400)
@@ -105,7 +104,6 @@ def save(request):
                 try:
                     step_one.save()
                 except Exception as e:
-                    print(e)
                     return JsonResponse({"message":"error while saving the data","error":str(e)},status=400)
                 return JsonResponse({"message":"successfully updated the data",},status=200)
             else:
@@ -123,7 +121,6 @@ def save(request):
                 try:
                     step_one.save()
                 except Exception as e:
-                    print(e)
                     return JsonResponse({"message":"error while saving the data","error":str(e)},status=400)
                 process.save()
         
