@@ -1,25 +1,17 @@
-import React, { useState, useRef, use, useEffect } from 'react';
+import React, { useRef } from 'react';
 
 function DeleteRowMenu({isMenuVisible,menuPosition,setMenuVisible,index,shiftRowLeft,shiftRowRight,deleteRow}) {
-//   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-//   const [isMenuVisible, setMenuVisible] = useState(false);
 
-  // Reference for the menu
   const menuRef = useRef(null);
 
   
 
-  // Close the custom context menu when clicking outside
-//   useEffect(() => {
-//       console.log(index,"index")
-//   },[index])
   const handleClickOutside = (event) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
       setMenuVisible(false);
     }
   };
 
-  // Use useEffect to add event listener for outside click
   React.useEffect(() => {
     document.addEventListener('click', handleClickOutside);
     return () => {

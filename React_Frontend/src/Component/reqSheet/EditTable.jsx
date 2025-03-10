@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import DeleteRowMenu from './DeleteRowMenu';
 import ColumnMenu from './ColumnMenu';
 
-function EditableTable({tableData}) {
+function EditableTable({tableData,setFinalData}) {
   
   const initialState = {
     headers:["mention your headers"],
@@ -20,8 +20,9 @@ function EditableTable({tableData}) {
   useEffect(() => {
       setData(tableData ||initialState)
   },[tableData])
+
   useEffect(() => {
-      console.log(data,"data")
+      setFinalData(data)
   },[data])
 
 
@@ -61,7 +62,6 @@ function EditableTable({tableData}) {
 
   // function to open the row menu on right click
   const openRowMenu = (idx) => {
-    console.log("row")
     if(isMenuColVisible){
       setMenuColVisible(false)
     }
@@ -116,7 +116,6 @@ function EditableTable({tableData}) {
 
   //function to open columns menu on right click
   const openColMenu = (idx) => {
-    console.log("col")
     if(isMenuVisible){
       setMenuVisible(false)
     }
@@ -253,6 +252,11 @@ useEffect(() => {
         </tbody>
       </table>
     </div>
+      <div className='table-submit-but'>
+        <button type="submit" className={`submit-button `}>
+              submit
+        </button>
+      </div>
     </>
     )
   );

@@ -16,7 +16,7 @@
   flex: 1;
   height: 100%;
   padding: 20px;
-  max-width: 800px;
+  max-width: 80%;
   margin: 0 auto;
   transition: margin-right 0.3s ease;
 }
@@ -43,7 +43,7 @@
   width: 96%;
   cursor: pointer;
   transition: transform 0.3s ease, opacity 0.3s ease;
-  height: 50px;
+  height: 80px;
 }
 
 .info-banner.closing {
@@ -54,8 +54,8 @@
 .info-icon-container {
   background-color: #556ed9;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -63,8 +63,8 @@
 }
 
 .info-icon {
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   color: white;
 }
 
@@ -75,7 +75,7 @@
 .info-title {
   font-family: Inter;
   font-weight: 800;
-  font-size: larger;
+  font-size: x-large;
   color: rgba(0, 0, 0, 1);
   margin: 0;
 }
@@ -110,7 +110,7 @@
 .section-title {
   font-family: Inter;
   color: #301f7b;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 900;
   margin-bottom: 8px;
 }
@@ -118,10 +118,10 @@
 .sku-input {
   font-family: Inter;
   width: 97%;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #000000;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 16px;
   outline: none;
 }
 
@@ -138,6 +138,7 @@
 }
 
 .submit-button {
+  margin-top: 10px;
   font-family: Inter;
   width: 70%;
   padding: 20px;
@@ -149,6 +150,12 @@
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.3s ease,scale 0.2s ease;
+}
+.table-submit-but{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .submit-button.closing{

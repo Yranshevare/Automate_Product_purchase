@@ -14,8 +14,11 @@ const ReqSheet = () => {
   const [requirementText, setRequirementText] = useState("");
   const [isBannerClosing, setIsBannerClosing] = useState(false);
   const [disable , setDisable] = useState(false)
+  const [finalData,setFinalData] = useState()
 
   const {proId} = useParams()
+
+  
 
 
   const loadInfo = useCallback(async() => {
@@ -51,20 +54,20 @@ const ReqSheet = () => {
   
   const handleSubmit = useCallback(async(e) => {
     e.preventDefault();
-    if(requirementText === "" || skuValue === ""){
+    if( skuValue === ""){
       alert("please fill all the places")
       return
     }
     try {
-      const res = await axios.post(`${server}stepOne/save/`,{requirementSHeet:requirementText,SKU:skuValue},{withCredentials: true});
-      alert(res.data.message)
-      console.log(res)
+      // const res = await axios.post(`${server}stepOne/save/`,{requirementSHeet:requirementText,SKU:skuValue},{withCredentials: true});
+      // alert(res.data.message)
+      // console.log(res)
+      console.log(JSON.stringify(finalData),"sub")
+      console.log(finalData)
     } catch (error) {
       console.log(error)
     }
-    console.log(requirementText)
-    console.log(skuValue)
-  },[requirementText,skuValue]);
+  },[requirementText,skuValue,finalData]);
   
   return (
     <div className="req-sheet-container">
@@ -89,11 +92,9 @@ const ReqSheet = () => {
               onChange={(e) => setSkuValue(e.target.value)}
             />
             <h2 className="section-title">REQUIREMENT SHEET</h2>
-              <EditableTable tableData={requirementText}/>
+              <EditableTable tableData={requirementText} setFinalData={setFinalData} />
           </div>
-          <button type="submit" className={`submit-button ${isBannerClosing ? "closing" : ""}`}>
-            submit
-          </button>
+          
         </form>
       </div>
       {/* Sidebar Toggle Button */}

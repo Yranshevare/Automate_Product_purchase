@@ -48,21 +48,21 @@ export default function ChatBox({isSidebarOpen,setSidebarOpen,setRequirementText
         try {
 
          
-            // const res = await axios.get(`${server}stepOne/generate/`,{
-            //   params:{message:mes},
-            //   withCredentials: true
-            // })
+            const res = await axios.get(`${server}stepOne/generate/`,{
+              params:{message:mes},
+              withCredentials: true
+            })
 
             setChatbot(true);
             // setMessage(res.data.response);
 
 
-            const mdData = `
-            | Item | Description | Quantity | Unit Price (INR) | Total Price (INR) |
-|---|---|---|---|---|
-| Laptop for Study | Laptop with a minimum of 8GB RAM, 256GB SSD, Intel Core i5 processor, 14-inch display, and a battery life of at least 6 hours.  | 1 | 50,000 | 50,000 |
-| Total Budget (INR) |  |  |  | 50,000 | `
-            const parsedData = ParseData(mdData)
+//             const mdData = `
+//             | Item | Description | Quantity | Unit Price (INR) | Total Price (INR) |
+// |---|---|---|---|---|
+// | Laptop for Study | Laptop with a minimum of 8GB RAM, 256GB SSD, Intel Core i5 processor, 14-inch display, and a battery life of at least 6 hours.  | 1 | 50,000 | 50,000 |
+// | Total Budget (INR) |  |  |  | 50,000 | `
+            const parsedData = ParseData(res.data.response)
             setMessage(parsedData) 
             // console.log(res.data)
         } catch (error) {
