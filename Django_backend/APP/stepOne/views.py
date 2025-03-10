@@ -90,6 +90,7 @@ def save(request):
                 return JsonResponse({"message":"not the owner"}, status=401)
 
             data = json.loads(request.body)
+            print(data)
 
             if data['requirementSHeet'] == "":
                 return JsonResponse({"message":"requirement sheet is empty"},status=400)
@@ -101,10 +102,17 @@ def save(request):
                 step_one = stepOneModel.objects.filter(process_id = process._id).first()
               
                 step_one.requirementSHeet = data['requirementSHeet']
-                step_one.save()
+                try:
+                    step_one.save()
+                except Exception as e:
+                    print(e)
+                    return JsonResponse({"message":"error while saving the data","error":str(e)},status=400)
                 return JsonResponse({"message":"successfully updated the data",},status=200)
             else:
-
+                
+                step_one = stepOneModel.objects.filter(SKU = data['SKU']).first()
+                if(step_one):
+                    return JsonResponse({"message":"SKU already exists"},status=400)
         
                 step_one = stepOneModel(
                     requirementSHeet = data['requirementSHeet'],
@@ -112,7 +120,11 @@ def save(request):
                     process = process
                 )
                 process.stepOne = process.steps.COMPLETE
-                step_one.save()
+                try:
+                    step_one.save()
+                except Exception as e:
+                    print(e)
+                    return JsonResponse({"message":"error while saving the data","error":str(e)},status=400)
                 process.save()
         
 

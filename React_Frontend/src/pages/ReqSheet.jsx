@@ -65,8 +65,11 @@ const ReqSheet = () => {
     try {
       const res = await axios.post(`${server}stepOne/save/`,{requirementSHeet:JSON.stringify(finalData),SKU:skuValue},{withCredentials: true});
       alert(res.data.message)
-    } catch (error) {
-      console.log(error.response.data.message || error.response.data.error)
+    } catch (error) { 
+      if(error?.response?.data?.message == "SKU already exists"){
+        alert("SKU already exists please give unique SKU")
+      }
+      console.log(error.response.data.message || "message not found", error?.response?.data?.error || "error")
     }
   },[requirementText,skuValue,finalData]);
 
