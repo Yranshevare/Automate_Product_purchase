@@ -52,7 +52,7 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
         <div  className={processData?.step_one =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
             <div className="step-number">1</div>
             <button
-            onClick={()=>navigate("/reqSheet")}
+            onClick={()=>navigate(`reqSheet/${localStorage.getItem('process')}`)}
                 className="step-button"
             >
                 <div className="step-content">

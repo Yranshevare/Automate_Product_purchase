@@ -381,3 +381,96 @@
   justify-content: end;
   align-items: end;
 }
+
+
+.table{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  overflow: scroll;
+}
+.table::-webkit-scrollbar{
+  display: none;
+}
+.table table {
+  border-collapse: collapse;  /* Collapses borders to remove the double border */
+  width: 100%;
+}
+.table th, td {
+  border: 1px solid black; /* Adds a border to the cells */
+  padding: 8px;
+  text-align: left;
+}
+.table th{
+  background-color: rgba(85,110,217,1);
+  font-size: large;
+  font-weight: 600;
+  color: white;
+  transition-duration: 0.3s;
+}
+.table th:hover{
+  background-color: rgba(85,110,217,0.8);
+}
+.table tbody tr{
+  transition-duration: 0.3s;
+}
+.table tbody tr:hover{
+  background-color: rgba(161, 161, 161, 0.2);
+}
+.table textarea{
+  outline: none;
+  border: none;
+  font-family: Arial, sans-serif;
+  /* min-height: 100px; */
+  resize: none;
+  background: transparent;
+}
+.table textarea::-webkit-scrollbar{
+  display: none;
+}
+.table input{
+  outline: none;
+  border: none;
+  background: transparent;
+  font-size: large;
+  font-weight: 600;
+  color: white;
+  
+}
+
+.edit-table-but{
+  display: flex;
+  justify-content: end;
+}
+.edit-table-but button{
+  margin-left: 10px;
+  margin-right: 10px;
+  background-color: #c4c4c4;
+  border: none;
+  height: 30px;
+  width: 100px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.edit-table-but button:hover{
+  background-color: #b3b3b3;
+}
+.table-menu-but li{
+  padding: 5px;
+  cursor: pointer;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-size: small;
+  color: rgb(255, 255, 255);
+}
+.table-menu-but hr{
+  border: none;
+  margin: 1px;
+  height: 1px;
+  background-color: #6e6e6e;
+}
+.table-menu-but li:hover{
+  background-color: #3e3e3e;
+}
+.table-menu-container{
+  background-color: rgb(32, 33, 36);
+}

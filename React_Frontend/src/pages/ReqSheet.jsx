@@ -4,6 +4,8 @@ import "../CSS/ReqSheet.css";
 import Toast from "../Component/reqSheet/Toast";
 import axios from "axios";
 import { server } from "../constant";
+import { useParams } from "react-router-dom";
+import EditableTable from "../Component/reqSheet/EditTable";
 
 
 const ReqSheet = () => {
@@ -11,19 +13,19 @@ const ReqSheet = () => {
   const [skuValue, setSkuValue] = useState("");
   const [requirementText, setRequirementText] = useState("");
   const [isBannerClosing, setIsBannerClosing] = useState(false);
+  const [disable , setDisable] = useState(false)
+
+  const {proId} = useParams()
 
 
   const loadInfo = useCallback(async() => {
     try {
-      const pro = localStorage.getItem('process');
-      if(!pro){
-        return;
-      }
-      const res = await axios.get(`${server}stepOne/get/${pro}/`,{withCredentials: true}); 
-      if(res.data.message === "successfully fetched the data" ){
-        setSkuValue(res?.data?.data?.SKU);
-        setRequirementText(res?.data?.data?.requirementSHeet);
-      }
+      // const res = await axios.get(`${server}stepOne/get/${proId}/`,{withCredentials: true}); 
+      // if(res.data.message === "successfully fetched the data" ){
+      //   setSkuValue(res?.data?.data?.SKU);
+      //   setRequirementText(res?.data?.data?.requirementSHeet);
+      // }
+      // setDisable(!res?.data?.data?.owner || false)
     } catch (error) {
       console.log(error)
     }
@@ -47,11 +49,18 @@ const ReqSheet = () => {
   
  
   
-  const handleSubmit = useCallback((e) => {
+  const handleSubmit = useCallback(async(e) => {
     e.preventDefault();
     if(requirementText === "" || skuValue === ""){
       alert("please fill all the places")
       return
+    }
+    try {
+      const res = await axios.post(`${server}stepOne/save/`,{requirementSHeet:requirementText,SKU:skuValue},{withCredentials: true});
+      alert(res.data.message)
+      console.log(res)
+    } catch (error) {
+      console.log(error)
     }
     console.log(requirementText)
     console.log(skuValue)
@@ -73,18 +82,14 @@ const ReqSheet = () => {
             <h2 className="section-title">STOCK KEEPING UNIT</h2>
             <input
               type="text"
+              disabled = {disable}
               className="sku-input"
               placeholder="mention your SKU"
               value={skuValue}
               onChange={(e) => setSkuValue(e.target.value)}
             />
             <h2 className="section-title">REQUIREMENT SHEET</h2>
-            <textarea
-              className="requirement-textarea"
-              placeholder="define your requirement sheet here"
-              value={requirementText}
-              onChange={(e) => setRequirementText(e.target.value)}
-            ></textarea>
+              <EditableTable tableData={requirementText}/>
           </div>
           <button type="submit" className={`submit-button ${isBannerClosing ? "closing" : ""}`}>
             submit

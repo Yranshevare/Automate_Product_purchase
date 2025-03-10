@@ -82,13 +82,16 @@ def save(request):
             pro = decrypt_data(request.COOKIES.get('process_token'))['id']
             user = decrypt_data(request.COOKIES.get('access_token'))["id"]
      
+            # print(pro,user)
 
             process = processModel.objects.filter(_id  = pro).first()
+            # print(process)
 
             if(process.owner_id != int(user)):
                 return JsonResponse({"message":"not the owner"}, status=401)
 
             data = json.loads(request.body)
+            # print(data)
 
             if data['requirementSHeet'] == "":
                 return JsonResponse({"message":"requirement sheet is empty"},status=400)
@@ -111,7 +114,7 @@ def save(request):
                     SKU = data['SKU'],
                     process = process
                 )
-             
+                print(step_one)
                 process.stepOne = 'Complete'
                 print(process.stepOne)
                 process.save()

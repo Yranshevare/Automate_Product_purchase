@@ -2,19 +2,26 @@ import React, { useCallback, useEffect, useState } from 'react'
 import ChatLoadingAnimation from './ChatLoadingAnimation';
 import axios from 'axios';
 import { server } from '../../constant';
-import markdownit from 'markdown-it'
+import RenderTable from './RenderTable';
+import ParseData from '../../util/MTX';
 
-const md = markdownit()
+
+
+
+
+
 
 export default function ChatBox({isSidebarOpen,setSidebarOpen,setRequirementText}) {
     const [chatbot, setChatbot] = useState(false)
     const [userInput, setUserInput] = useState("");
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
+    const [message, setMessage] = useState({});
+
+    
 
     const handleInsert = () => {
-      const sampleText = message
-      setRequirementText((prev) => (prev ? `${prev}\n\n${sampleText}` : sampleText))
+      // setRequirementText((prev) => (prev ? `${prev}\n\n${sampleText}` : sampleText))
+      setRequirementText(message)
       setSidebarOpen(!isSidebarOpen);
     }
 
@@ -22,6 +29,8 @@ export default function ChatBox({isSidebarOpen,setSidebarOpen,setRequirementText
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
+
+    
 
     const handleSendMessage = useCallback(async(e) => {
         e.preventDefault();
@@ -37,16 +46,24 @@ export default function ChatBox({isSidebarOpen,setSidebarOpen,setRequirementText
         setLoading(true);
 
         try {
-            const res = await axios.get(`${server}stepOne/generate/`,{
-              params:{message:mes},
-              withCredentials: true
-            })
+
+         
+            // const res = await axios.get(`${server}stepOne/generate/`,{
+            //   params:{message:mes},
+            //   withCredentials: true
+            // })
+
             setChatbot(true);
+            // setMessage(res.data.response);
 
-            const result = md.render(res.data.response);
-            const plainText = result.replace(/<[^>]*>/g, '').trim();
 
-            setMessage(plainText);
+            const mdData = `
+            | Item | Description | Quantity | Unit Price (INR) | Total Price (INR) |
+|---|---|---|---|---|
+| Laptop for Study | Laptop with a minimum of 8GB RAM, 256GB SSD, Intel Core i5 processor, 14-inch display, and a battery life of at least 6 hours.  | 1 | 50,000 | 50,000 |
+| Total Budget (INR) |  |  |  | 50,000 | `
+            const parsedData = ParseData(mdData)
+            setMessage(parsedData) 
             // console.log(res.data)
         } catch (error) {
           alert(error?.response?.data?.message)
@@ -85,10 +102,12 @@ export default function ChatBox({isSidebarOpen,setSidebarOpen,setRequirementText
           ) : (
             <>
             <div className="chatbot">
-              <div >
-                <pre className="chat-paragraph">
-                  {message}
-                </pre>
+              <div className='table' >
+                {/* <pre className="chat-paragraph">
+                 {message}
+                </pre> */}
+                {RenderTable(message)}
+                
               </div>
               <button className="insert-button" onClick={handleInsert}>
                 insert
