@@ -162,6 +162,7 @@
   transform: translateY(-110%);
 }
 
+
 .submit-button:hover {
   scale: 1.1;
   background-color: rgba(85, 110, 217, 0.3);
@@ -480,4 +481,26 @@
 }
 .table-menu-container{
   background-color: rgb(32, 33, 36);
+}
+.delete{
+  margin-top: 10px;
+  font-family: Inter;
+  width: 70%;
+  padding: 20px;
+  background-color: rgb(255, 130, 130);
+  border: 1px solid rgba(255, 0, 0, 0.253);
+  border-radius: 6px;
+  color: #000000;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.3s ease,scale 0.2s ease;
+}
+.delete.closing{
+  transform: translateY(-110%);
+  
+}
+.delete:hover{
+  background-color: rgb(249, 60, 60);
+  scale: 1.1;
 }

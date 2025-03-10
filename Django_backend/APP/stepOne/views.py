@@ -47,7 +47,6 @@ def generate(request):
         try:
             # message =  json.loads(request.body)
             message = request.GET.get('message')
-            print(message)
 
             if message == "" or message == None:
                 return JsonResponse({"message":"message is empty"},status=400)
@@ -91,17 +90,15 @@ def save(request):
                 return JsonResponse({"message":"not the owner"}, status=401)
 
             data = json.loads(request.body)
-            # print(data)
 
             if data['requirementSHeet'] == "":
                 return JsonResponse({"message":"requirement sheet is empty"},status=400)
 
 
     
-            if process.stepOne == 'Complete':
+            if process.stepOne == process.steps.COMPLETE:
 
-        
-                step_one = stepOneModel.objects.filter(process = process).first()
+                step_one = stepOneModel.objects.filter(process_id = process._id).first()
               
                 step_one.requirementSHeet = data['requirementSHeet']
                 step_one.save()
@@ -114,11 +111,9 @@ def save(request):
                     SKU = data['SKU'],
                     process = process
                 )
-                print(step_one)
-                process.stepOne = 'Complete'
-                print(process.stepOne)
-                process.save()
+                process.stepOne = process.steps.COMPLETE
                 step_one.save()
+                process.save()
         
 
 
@@ -197,7 +192,7 @@ def delete(request):
             step_one.delete()
 
             process = processModel.objects.filter(_id = decrypt_process_token['id']).first()
-            process.stepOne = 'Incomplete'
+            process.stepOne = process.steps.INCOMPLETE
             process.save()
 
             return JsonResponse({"message":"successfully deleted the step"},status=200)

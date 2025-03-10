@@ -6,6 +6,7 @@ import axios from "axios";
 import { server } from "../constant";
 import { useParams } from "react-router-dom";
 import EditableTable from "../Component/reqSheet/EditTable";
+import { useNavigate } from "react-router-dom";
 
 
 const ReqSheet = () => {
@@ -18,19 +19,22 @@ const ReqSheet = () => {
 
   const {proId} = useParams()
 
+  const navigate = useNavigate()
+
   
 
 
   const loadInfo = useCallback(async() => {
     try {
-      // const res = await axios.get(`${server}stepOne/get/${proId}/`,{withCredentials: true}); 
-      // if(res.data.message === "successfully fetched the data" ){
-      //   setSkuValue(res?.data?.data?.SKU);
-      //   setRequirementText(res?.data?.data?.requirementSHeet);
-      // }
-      // setDisable(!res?.data?.data?.owner || false)
+      const res = await axios.get(`${server}stepOne/get/${proId}/`,{withCredentials: true}); 
+      if(res.data.message === "successfully fetched the data" ){
+        setSkuValue(res?.data?.data?.SKU);
+        setRequirementText(JSON.parse(res?.data?.data.requirementSHeet));
+      }
+      console.log(res.data.data)
+      setDisable(res?.data?.data?.owner || false)
     } catch (error) {
-      console.log(error)
+      console.log(error.response.data || error.response.data)
     }
   },[]);
 
@@ -59,15 +63,23 @@ const ReqSheet = () => {
       return
     }
     try {
-      // const res = await axios.post(`${server}stepOne/save/`,{requirementSHeet:requirementText,SKU:skuValue},{withCredentials: true});
-      // alert(res.data.message)
-      // console.log(res)
-      console.log(JSON.stringify(finalData),"sub")
-      console.log(finalData)
+      const res = await axios.post(`${server}stepOne/save/`,{requirementSHeet:JSON.stringify(finalData),SKU:skuValue},{withCredentials: true});
+      alert(res.data.message)
+    } catch (error) {
+      console.log(error.response.data.message || error.response.data.error)
+    }
+  },[requirementText,skuValue,finalData]);
+
+
+  const deleteStepOne = useCallback(async() => {
+    alert("are you sure! do you really want to delete this step")
+    try {
+      const res = await axios.delete(`${server}stepOne/delete/`,{withCredentials: true});
+      navigate("/")
     } catch (error) {
       console.log(error)
     }
-  },[requirementText,skuValue,finalData]);
+  },[])
   
   return (
     <div className="req-sheet-container">
@@ -84,8 +96,7 @@ const ReqSheet = () => {
           <div className={`form-section ${isBannerClosing ? "closing" : ""}`}>
             <h2 className="section-title">STOCK KEEPING UNIT</h2>
             <input
-              type="text"
-              disabled = {disable}
+              type="text" 
               className="sku-input"
               placeholder="mention your SKU"
               value={skuValue}
@@ -96,6 +107,15 @@ const ReqSheet = () => {
           </div>
           
         </form>
+        {
+          disable && 
+            <div 
+            type = "button"
+            onClick={deleteStepOne}
+            className="table-submit-but">
+              <button className={`delete ${isBannerClosing ? "closing" : ""} `}>delete</button>
+            </div>
+        }
       </div>
       {/* Sidebar Toggle Button */}
       <ChatBox 
