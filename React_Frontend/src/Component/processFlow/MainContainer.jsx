@@ -2,17 +2,20 @@ import axios from 'axios'
 import React, { useCallback, useEffect, useState } from 'react'
 import { server } from '../../constant'
 import {  useNavigate } from 'react-router-dom';
+import { ThreeDot } from 'react-loading-indicators';
 
 const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
 
     const navigate = useNavigate();
-    // console.log(setOpen)
     const [processData, setProcessData] = useState(null);
+    const [getProcess,setGetProcess] = useState(false)
   async function loadInformation() {
     try {
+        setGetProcess(false)
         const res = await axios.post(`${server}process/get_one/`,{process_id: process},{withCredentials: true})
         // console.log(res.data.process.step_one)
         setProcessData(res.data.process)
+        setGetProcess(true)
         
     } catch (error) {
         if(error?.response?.data?.error == 'unauthorize request' && localStorage.getItem('process') !== null){
@@ -43,6 +46,7 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
 
   
   return (
+    getProcess ?
     <>
     <div className="timeline">
         <div className='process-title'>
@@ -177,6 +181,10 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
         >Delete this process</button>
     </div>
     </>
+    :
+    <div className='pro-loader'>
+        <ThreeDot color="#d6d6d6" size="small" text="" textColor="" />
+    </div>
   )
 })
 export default MainContainer;

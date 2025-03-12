@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import DeleteRowMenu from './DeleteRowMenu';
 import ColumnMenu from './ColumnMenu';
 
@@ -26,13 +26,13 @@ function EditableTable({tableData,setFinalData}) {
   },[data])
 
 
-  const handleCellEdit = (rowIndex, colKey, value) => {
+  const handleCellEdit = useCallback((rowIndex, colKey, value) => {
     const updatedData = [...data.items];
     updatedData[rowIndex][colKey] = value;
     setData({...data, items: updatedData});
-  };
+  },[data]);
 
-  const changeHeader = (idx , value) => {
+  const changeHeader = useCallback((idx , value) => {
     const updatedData = [...data.headers];
     const head = updatedData[idx]
     data.items.map(item => {
@@ -43,66 +43,64 @@ function EditableTable({tableData,setFinalData}) {
       return item
     })
     setData({...data, headers: updatedData});
-  }
+  },[data])
 
-  const addColumn = () => {
+  const addColumn = useCallback(() => {
     const updatedData = [...data.headers];
     updatedData.push("");
     setData({...data, headers: updatedData});
-  }
+  },[data])
 
-  const addRow = () => {
+  const addRow = useCallback(() => {
     const emptyObj = {}
     const updatedData = [...data.items];
     data.headers.map(header => emptyObj[header] = '')
     updatedData.push(emptyObj);
     setData({...data, items: updatedData});
-  }
+  },[data])
 
 
   // function to open the row menu on right click
-  const openRowMenu = (idx) => {
+  const openRowMenu = useCallback((idx) => {
     if(isMenuColVisible){
       setMenuColVisible(false)
     }
     setMenuVisible(true)
     setMenuPosition({x: event.clientX, y: event.clientY})
     setIndex(idx)
-  }
+  },[data,isMenuColVisible])
 
 
   //function to shift row at left side
-  const shiftRowLeft = (idx) => {
+  const shiftRowLeft = useCallback((idx) => {
     setMenuVisible(false)
     if(idx-1 < 0){
       alert("cannot shift left")
       return;
     }
-    console.log("moved to left")
     const head = [...data.headers];
     const curr = head[idx]
     head[idx] = head[idx-1]
     head[idx-1] = curr
     setData({...data,headers:head})
-  }
+  },[data,isMenuColVisible])
 
   //function to move the row at right side
-  const shiftRowRight = (idx) => {
+  const shiftRowRight = useCallback((idx) => {
     setMenuVisible(false)
     if(idx == data.headers.length-1){
       alert("cannot shift right")
       return;
     }
-    console.log("moved to right")
     const head = [...data.headers];
     const curr = head[idx]
     head[idx] = head[idx+1]
     head[idx+1] = curr
     setData({...data,headers:head})
-  }
+  },[data,isMenuColVisible])
 
   //function to delete the row
-  const deleteRow = () => {
+  const deleteRow = useCallback((index) => {
     setMenuVisible(false)
     if(data.headers.length == 1){
       alert("cannot be delete")
@@ -112,20 +110,20 @@ function EditableTable({tableData,setFinalData}) {
     data.items.map(item => delete item[head[index]])
     head.splice(index,1)
     setData({...data,headers:head})
-  }
+  },[data,isMenuColVisible])
 
   //function to open columns menu on right click
-  const openColMenu = (idx) => {
+  const openColMenu = useCallback((idx) => {
     if(isMenuVisible){
       setMenuVisible(false)
     }
     setMenuColVisible(true)
     setMenuPosition({x: event.clientX, y: event.clientY})
     setIndex(idx)
-  }
+  },[data,isMenuColVisible])
 
   //function to move col up
-  const moveColUp = (idx) => {
+  const moveColUp = useCallback((idx) => {
     setMenuColVisible(false)
     if(idx-1 < 0){
       alert("cannot move up")
@@ -136,10 +134,10 @@ function EditableTable({tableData,setFinalData}) {
     item[idx-1] = item[idx]
     item[idx] = prev
     setData({...data,items:item})
-  }
+  },[data,isMenuColVisible])
 
   //function to move col down
-  const moveColDown = (idx) => {
+  const moveColDown = useCallback((idx) => {
     setMenuColVisible(false)
     if(idx == data.items.length-1){
       alert("cannot move down")
@@ -150,10 +148,10 @@ function EditableTable({tableData,setFinalData}) {
     item[idx+1] = item[idx]
     item[idx] = prev
     setData({...data,items:item})
-  }
+  },[data,isMenuColVisible])
 
   //function to delete the col
-  const deleteCol = () => {
+  const deleteCol = useCallback(() => {
     setMenuColVisible(false)
     if(data.items.length == 1){
       alert("cannot be delete")
@@ -162,7 +160,7 @@ function EditableTable({tableData,setFinalData}) {
     data.items.splice(index,1)
     console.log(data)
     setData({...data})
-  }
+  },[data,isMenuColVisible])
 
 
 

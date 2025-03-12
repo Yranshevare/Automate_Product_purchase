@@ -1,5 +1,5 @@
 // ProcessFlow.jsx
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../CSS/ProcessFlow.css';
 import { server } from '../constant';
@@ -20,7 +20,7 @@ export default function ProcessFlow() {
 
   
 
-    async function loadInformation() {
+    const loadInformation = useCallback(async () => {
         if(localStorage.getItem('process') !== null){
             setSelectedProcess(localStorage.getItem('process'))
         }
@@ -48,7 +48,7 @@ export default function ProcessFlow() {
         } catch (error) {
             
         }
-    }
+    },[])
    useEffect(() => {
         loadInformation()
         
@@ -101,7 +101,7 @@ export default function ProcessFlow() {
         localStorage.setItem('process', pro.process_id)
     },[isNavOpen])
 
-    async function logout(){
+    const logout = useCallback(async() => {
         try {
             const res = await axios.get(`${server}auth/logout/`,{
                 withCredentials: true
@@ -113,7 +113,7 @@ export default function ProcessFlow() {
         } catch (error) {
             console.log(error)
         }
-    }
+    },[])
 
     
     

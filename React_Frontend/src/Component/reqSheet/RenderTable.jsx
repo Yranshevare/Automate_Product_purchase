@@ -1,6 +1,4 @@
 
-import ParseData from "../../util/MTX";
-  
 function RenderTable(data) {
   return (
     <table border={1}>

@@ -7,15 +7,17 @@ import { server } from "../constant";
 import { useParams } from "react-router-dom";
 import EditableTable from "../Component/reqSheet/EditTable";
 import { useNavigate } from "react-router-dom";
+import { ThreeDot } from "react-loading-indicators";
 
 
 const ReqSheet = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [skuValue, setSkuValue] = useState("");
+  const [skuValue, setSkuValue] = useState("  ");
   const [requirementText, setRequirementText] = useState("");
   const [isBannerClosing, setIsBannerClosing] = useState(false);
   const [disable , setDisable] = useState(false)
   const [finalData,setFinalData] = useState()
+  const [getReq,setGetReq] = useState(false)
 
   const {proId} = useParams()
 
@@ -33,8 +35,12 @@ const ReqSheet = () => {
       }
       console.log(res.data.data)
       setDisable(res?.data?.data?.owner || false)
+      setGetReq(true)
     } catch (error) {
-      console.log(error.response.data || error.response.data)
+      console.log(error.response || error.response)
+      setGetReq(true)
+
+      // navigate("/")
     }
   },[]);
 
@@ -69,7 +75,7 @@ const ReqSheet = () => {
       if(error?.response?.data?.message == "SKU already exists"){
         alert("SKU already exists please give unique SKU")
       }
-      console.log(error.response.data.message || "message not found", error?.response?.data?.error || "error")
+      console.log(error)
     }
   },[requirementText,skuValue,finalData]);
 
@@ -85,6 +91,7 @@ const ReqSheet = () => {
   },[])
   
   return (
+    getReq ? 
     <div className="req-sheet-container">
       <div className={`main-content-reqSheet ${isSidebarOpen ? "with-sidebar" : ""}`}>
         {/* Info Banner */}
@@ -106,7 +113,10 @@ const ReqSheet = () => {
               onChange={(e) => setSkuValue(e.target.value)}
             />
             <h2 className="section-title">REQUIREMENT SHEET</h2>
-              <EditableTable tableData={requirementText} setFinalData={setFinalData} />
+             
+                <EditableTable tableData={requirementText} setFinalData={setFinalData} />
+                
+              
           </div>
           
         </form>
@@ -127,6 +137,8 @@ const ReqSheet = () => {
         setRequirementText={setRequirementText}
       />
     </div>
+    :
+    <ThreeDot color="#d6d6d6" size="small" text="" textColor="" />
   );
 };
 

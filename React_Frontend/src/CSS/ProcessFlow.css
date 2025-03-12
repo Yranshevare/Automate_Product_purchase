@@ -612,3 +612,9 @@
   scale: 1.05;
   background-color: #ff6262;
 }
+
+.pro-loader{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

@@ -19,16 +19,16 @@ export default function ChatBox({isSidebarOpen,setSidebarOpen,setRequirementText
 
     
 
-    const handleInsert = () => {
+    const handleInsert = useCallback(() => {
       // setRequirementText((prev) => (prev ? `${prev}\n\n${sampleText}` : sampleText))
       setRequirementText(message)
       setSidebarOpen(!isSidebarOpen);
-    }
+    },[message,isSidebarOpen])
 
     
-    const toggleSidebar = () => {
+    const toggleSidebar = useCallback(() => {
         setSidebarOpen(!isSidebarOpen);
-    };
+    },[isSidebarOpen]);
 
     
 

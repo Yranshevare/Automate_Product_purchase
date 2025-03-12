@@ -10,4 +10,4 @@ class stepOneModel(models.Model):
     SKU = models.CharField(unique=True,max_length=500)
 
     def __str__(self):
-        return self.process.title
+        return self.SKU

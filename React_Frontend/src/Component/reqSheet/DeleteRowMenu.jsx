@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 function DeleteRowMenu({isMenuVisible,menuPosition,setMenuVisible,index,shiftRowLeft,shiftRowRight,deleteRow}) {
 
@@ -6,13 +6,13 @@ function DeleteRowMenu({isMenuVisible,menuPosition,setMenuVisible,index,shiftRow
 
   
 
-  const handleClickOutside = (event) => {
+  const handleClickOutside =useCallback( (event) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
       setMenuVisible(false);
     }
-  };
+  },[]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener('click', handleClickOutside);
     return () => {
       document.removeEventListener('click', handleClickOutside);
