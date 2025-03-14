@@ -18,6 +18,13 @@ def send_for_primary(request):
             # data = request.GET.get('email')
             data = json.loads(request.body)['email']
 
+            if "message" in json.loads(request.body) :
+                message = json.loads(request.body)['message']
+            else:
+                message= """We hope this message finds you well. We are in the process of preparing a Request for Quotation (RFQ) for an upcoming project, and your approval is required to proceed with the next steps.</p>
+                            <p>Please review the requirement sheet at the following link:"""
+            # print(data,message)
+
             if not data:
                 return JsonResponse({'error': 'email is required'}, status=400)
             
@@ -53,8 +60,7 @@ def send_for_primary(request):
                             <h2>RFQ Approval Request</h2>
                         </div>
                         <div >
-                            <p>We hope this message finds you well. We are in the process of preparing a Request for Quotation (RFQ) for an upcoming project, and your approval is required to proceed with the next steps.</p>
-                            <p>Please review the requirement sheet at the following link:</p>
+                            <p>{message}</p>
                             <p><a href={settings.FRONTEND}/reqSheet/{encode_id(process._id)} >Review Requirement Sheet</a></p>
                             <p>Once you have reviewed the document, kindly provide your approval or feedback so we can continue with the RFQ process.</p>
                             <p>If you have any questions or need additional information, feel free to reach out.</p>
@@ -76,12 +82,12 @@ def send_for_primary(request):
             res = email.send()
 
             if res != 1:
-                return JsonResponse({"error": "email not sent"},status = 200)
+                return JsonResponse({"error": "email not sent properly"},status = 500)
             
 
             approval = ApprovalModel.objects.filter(email = data).first()
             if approval:    
-                return JsonResponse({'message': 'email is re sended successfully'}, status=200)
+                return JsonResponse({'message': 'email is re sended successfully'}, status=500)
 
 
             approve = ApprovalModel(
