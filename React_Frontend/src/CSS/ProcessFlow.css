@@ -430,6 +430,7 @@
   height: 20px;
   position: relative;
   width: 30px;
+  transition: transform 0.3s ease-in-out;
   /* top */
 }
 
@@ -442,14 +443,194 @@
   position: absolute;
   right: 6px;
   top: 50%;
-  transform: translateY(-50%) rotate(-45deg);
+  transform: translateY(-20%) rotate(-45deg);
+  transition: transform 0.3s ease-in-out;
 }
+
+.chevron-down {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  width: 30px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.chevron-down::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #666;
+  border-right: 2px solid #666;
+  top: 2px;
+  right: 8px;
+  transform: translateY(-20%) rotate(135deg);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Expanded Content */
+.expanded-content {
+  padding: 6px;
+  background-color: white;
+  margin-top: -5px;
+  border: none;
+  border-top: none;
+  position: relative;
+  left: -5px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.expanded-content.open {
+  max-height: 500px;
+  opacity: 1;
+}
+
+
+/* Email Input Container */
+.email-input-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.add-email-btn {
+  background-color: #dddddd;
+  color: #333;
+  border: 1px solid #000000;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+}
+
+.add-email-btn:hover {
+  background-color: #f0f0f0;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  color: #fff;
+  text-align: center;
+  flex: 1;
+  min-width: 100px;
+  background-color: #8eb3ff;
+}
+
+.action-btn:hover{
+  background-color: #556ED9;
+}
+
+/* Message Modal */
+.message-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.message-modal {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 500px;
+  padding: 20px;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 5px;
+  right: 1px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.message-textarea {
+  width: 93%;
+  height: 200px;
+  padding: 15px;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  resize: none;
+  font-family: inherit;
+}
+
+.message-textarea:focus {
+  outline: none;
+  border-color: #819efc;
+}
+
+.send-message-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #819efc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: Inter;
+}
+
+.send-message-btn:hover {
+  background-color: #6b8ae7;
+}
+
+
 
 .step-description {
   margin: 0;
   color: #666;
   font-size: 14px;
+  opacity: 1;
+  transition: all 0.5s ease-in-out;
 }
+
+.step-description.close{
+  opacity: 0;
+}
+
 .nav-but{
   position: fixed;
   bottom: 0;
