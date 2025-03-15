@@ -3,16 +3,14 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { server } from '../../constant'
 import {  useNavigate } from 'react-router-dom';
 import { ThreeDot } from 'react-loading-indicators';
+import StepTwo from './stepTwo';
 
 const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
 
     const navigate = useNavigate();
     const [processData, setProcessData] = useState(null);
     const [getProcess,setGetProcess] = useState(false)
-    const [expandedStep, setExpandedStep] = useState(null)
-    const [email, setEmail] = useState("")
-    const [showMessageModal, setShowMessageModal] = useState(false)
-  const [message, setMessage] = useState("")
+    
 
   async function loadInformation() {
     try {
@@ -49,43 +47,6 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
     }
   },[process,loadInfo])
 
-  const toggleStep = (stepNumber) => {
-    if (expandedStep === stepNumber) {
-      setExpandedStep(null)
-    } else {
-      setExpandedStep(stepNumber)
-    }
-  }
-
-  const handleAddEmail = () => {
-    setEmail("")
-  }
-
-  const handleSend = () => {
-    console.log("Sending email")
-  }
-
-  const handleAddMessage = () => {
-    setShowMessageModal(true)
-  }
-
-  const handleCloseModal = () => {
-    setShowMessageModal(false)
-    setMessage("")
-  }
-
-  const handleSendMessage = () => {
-    setShowMessageModal(false)
-    setMessage("")
-  }
-
-  const handleResponse = () => {
-    console.log("Response action")
-  }
-
-  const handleRemove = () => {
-    console.log("Remove action")
-  }
 
   
   return (
@@ -119,57 +80,7 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
         </div>
         <div  className={processData?.step_two =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
             <div className="step-number">2</div>
-            <button
-                className="step-button" onClick={()=>toggleStep(2)}
-            >
-                <div className="step-content">
-                    <div className='step-inner-content'>
-                        <div className="step-header">
-                            <div>
-                                <span className={processData?.step_two == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_two}</span>
-                                <h3>Send for primary approval</h3>
-                            </div>
-                        </div>
-                        <hr />
-                        {expandedStep === 2 ? <p className="step-description close">mention the email of the person whose approval is needed</p>
-                        :
-                        <p className="step-description">mention the email of the person whose approval is needed</p>}
-                        
-                    </div>
-                    <span className={expandedStep === 2 ? "chevron-down" : "chevron-right"}></span>
-                </div>
-                
-               <div className={`expanded-content ${expandedStep === 2 ? "open" : ""}`} onClick={(e)=>e.stopPropagation()}>
-               <div className="email-input-container">
-                 <input
-                   type="email"
-                   placeholder="mention the email of the person whose approval is needed"
-                   value={email}
-                   onChange={(e) => setEmail(e.target.value)}
-                   className='input'
-                   required
-                 />
-                 <button className="add-email-btn" onClick={handleAddEmail}>
-                   add email
-                 </button>
-               </div>
-               <div className="action-buttons">
-                 <button className="action-btn" onClick={handleSend}>
-                   send
-                 </button>
-                 <button className="action-btn message-btn" onClick={handleAddMessage}>
-                   add message
-                 </button>
-                 <button className="action-btn" onClick={handleResponse}>
-                   response
-                 </button>
-                 <button className="action-btn" onClick={handleRemove}>
-                   remove
-                 </button>
-               </div>
-             </div> 
-            
-            </button>
+            <StepTwo processData={processData}/>   
         </div>
         <div  className={processData?.step_three =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
             <div className="step-number">3</div>
@@ -257,24 +168,7 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
         onClick={deleteProcess}
         >Delete this process</button>
     </div>
-    {showMessageModal && (
-        <div className="message-modal-overlay">
-          <div className="message-modal">
-            <button className="close-modal-btn" onClick={handleCloseModal}>
-              ×
-            </button>
-            <textarea
-              className="message-textarea"
-              placeholder="write someting soo person will esaily understand what purchase"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            ></textarea>
-            <button className="send-message-btn" onClick={handleSendMessage}>
-              send
-            </button>
-          </div>
-        </div>
-      )}
+    
     </>
     :
     <div className='pro-loader'>

@@ -434,6 +434,13 @@
   /* top */
 }
 
+.chevron-down {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  width: 30px;
+  transition: transform 0.3s ease-in-out;
+}
 .chevron-right::after {
   content: '';
   width: 8px;
@@ -444,16 +451,9 @@
   right: 6px;
   top: 50%;
   transform: translateY(-20%) rotate(-45deg);
-  transition: transform 0.3s ease-in-out;
+  /* transition: transform 0.3s ease-in-out; */
 }
 
-.chevron-down {
-  position: relative;
-  width: 20px;
-  height: 20px;
-  width: 30px;
-  transition: transform 0.3s ease-in-out;
-}
 
 .chevron-down::after {
   content: "";
@@ -465,13 +465,13 @@
   top: 2px;
   right: 8px;
   transform: translateY(-20%) rotate(135deg);
-  transition: transform 0.3s ease-in-out;
+  /* transition: transform 0.3s ease-in-out; */
 }
 
 /* Expanded Content */
 .expanded-content {
   padding: 6px;
-  background-color: white;
+  background-color: transparent;
   margin-top: -5px;
   border: none;
   border-top: none;
@@ -495,21 +495,25 @@
   align-items: center;
   margin-bottom: 15px;
   gap: 10px;
+  background-color: transparent;
 }
 
 .add-email-btn {
   background-color: #dddddd;
   color: #333;
-  border: 1px solid #000000;
+  border: 0px;
   padding: 8px 12px;
   font-size: 14px;
   cursor: pointer;
   white-space: nowrap;
   position: relative;
+  border-radius: 10px;
+  transition-duration: 0.3s;
 }
 
 .add-email-btn:hover {
-  background-color: #f0f0f0;
+  background-color: #8a8a8a;
+  color: white;
 }
 
 /* Action Buttons */
@@ -530,6 +534,7 @@
   flex: 1;
   min-width: 100px;
   background-color: #8eb3ff;
+  transition-duration: 0.3s;
 }
 
 .action-btn:hover{
@@ -548,6 +553,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(3px);
 }
 
 .message-modal {
@@ -559,6 +565,7 @@
   padding: 20px;
   position: relative;
   animation: fadeIn 0.3s ease;
+  margin: 10px;
 }
 
 @keyframes fadeIn {
@@ -798,4 +805,11 @@
   width: 100%;
   display: flex;
   justify-content: center;
+}
+
+.add-email-but{
+  text-align: end;
+}
+.email-container{
+  margin-top: 10px;
 }
