@@ -15,18 +15,18 @@ def home(request):
 def send_for_primary(request):
     if request.method == 'GET':
         try:
-            # data = request.GET.get('email')
-            data = json.loads(request.body)['email']
-
-            if "message" in json.loads(request.body) :
-                message = json.loads(request.body)['message']
-            else:
-                message= """We hope this message finds you well. We are in the process of preparing a Request for Quotation (RFQ) for an upcoming project, and your approval is required to proceed with the next steps.</p>
-                            <p>Please review the requirement sheet at the following link:"""
-            # print(data,message)
-
+            data = request.GET.get('email')
+            # data = json.loads(request.body)['email']
             if not data:
                 return JsonResponse({'error': 'email is required'}, status=400)
+            # print(data)
+            message = request.GET.get('message')
+            # print(message)
+
+            if message == "":
+                message = """We hope this message finds you well. We are in the process of preparing a Request for Quotation (RFQ) for an upcoming project, and your approval is required to proceed with the next steps.</p>"""
+            print(data,message)
+
             
 
 
@@ -49,6 +49,7 @@ def send_for_primary(request):
 
             
             
+            
 
             subject = "Primary approval"
             from_email = decrypt_access_token['username'] or settings.EMAIL_HOST_USER
@@ -61,6 +62,7 @@ def send_for_primary(request):
                         </div>
                         <div >
                             <p>{message}</p>
+                            <p>Please review the requirement sheet at the following link:</p>
                             <p><a href={settings.FRONTEND}/reqSheet/{encode_id(process._id)} >Review Requirement Sheet</a></p>
                             <p>Once you have reviewed the document, kindly provide your approval or feedback so we can continue with the RFQ process.</p>
                             <p>If you have any questions or need additional information, feel free to reach out.</p>
@@ -79,15 +81,16 @@ def send_for_primary(request):
             email.content_subtype = "html"  # Mark content as HTML
 
 
+            
             res = email.send()
 
             if res != 1:
                 return JsonResponse({"error": "email not sent properly"},status = 500)
             
 
-            approval = ApprovalModel.objects.filter(email = data).first()
-            if approval:    
-                return JsonResponse({'message': 'email is re sended successfully'}, status=500)
+            approval = ApprovalModel.objects.filter(email = data ).first()
+            if approval and approval.process == process:    
+                return JsonResponse({'message': 'email is re sended successfully'}, status=200)
 
 
             approve = ApprovalModel(
@@ -98,9 +101,11 @@ def send_for_primary(request):
             process.stepTwo = processModel.steps.PENDING
 
             
-            process.save()
-            approve.save()
-
+            try:
+                 process.save()
+                 approve.save()
+            except Exception as e:
+                return JsonResponse({'error': 'unauthorize request',"error": str(e)}, status=401)
 
             return JsonResponse({"message": "request send successfully"},status = 200)
         except Exception as e:
@@ -116,17 +121,31 @@ def get(request,process_id):
     if request.method == 'GET':
         try:
             process_id = decode_id(process_id)
-            approve = ApprovalModel.objects.filter(process = process_id).first()
+            approve = ApprovalModel.objects.filter(process = process_id)
             if not approve:
                 return JsonResponse({'message':'request not found'},status = 404)
             
-            data = {
-                "id":approve._id,
-                "status":approve.status,
-                "accepted_by_email":approve.email,
-                "response":approve.response,
-                'type':approve.type
-            }
+            data = []
+            
+            for a in approve:
+                newData = {
+                    "id":a._id,
+                    "status":a.status,
+                    "accepted_by_email":a.email,
+                    "response":a.response
+                }
+                data.append(newData)
+            
+            
+
+            
+            # data = {
+            #     "id":approve._id,
+            #     "status":approve.status,
+            #     "accepted_by_email":approve.email,
+            #     "response":approve.response,
+            #     'type':approve.type
+            # }
             return JsonResponse({"data":data},status = 200)
         except Exception as e:
             return JsonResponse({'message':'error while getting the request','error':str(e)},status=500)
