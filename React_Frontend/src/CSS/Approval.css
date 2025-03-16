@@ -1,0 +1,261 @@
+/* Main Container */
+.approval-page {
+  font-family: Arial, sans-serif;
+  width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  height: auto;
+}
+
+/* Content Container - for shifting animation */
+.content-container {
+  transition: transform 0.4s ease;
+}
+
+.content-container.shifted {
+  transform: translateY(-0px);
+}
+
+/* SKU Banner */
+.sku-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sku-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.sku-title {
+  color: #301f7b;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.sku-id {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.user-details {
+  text-align: right;
+  margin-right: 15px;
+}
+
+.username {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.user-email {
+  color: #666;
+  font-size: 14px;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  background-color: #c4c4c4;
+  border-radius: 50%;
+}
+
+/* Data Sheet */
+.data-sheet {
+  background-color: #c4c4c4;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  min-height: 250px;
+}
+
+/* Approval Buttons */
+.approval-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  transition: opacity 0.5s ease-in-out, display 0.5s ease-in-out;
+}
+
+.approval-buttons.shifted {
+  opacity: 0;
+  pointer-events: none;
+  display: none;
+}
+
+.approve-btn,
+.reject-btn {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.approve-btn {
+  background-color: #ff8a8a;
+}
+
+.reject-btn {
+  background-color: #ff8a8a;
+}
+
+.approve-btn:hover,
+.reject-btn:hover {
+  background-color: #f56b6b;
+}
+
+/* Rejection Form */
+.rejection-form-container {
+  padding: 20px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out;
+}
+
+.rejection-form-container.shifted {
+  opacity: 1;
+  max-height: 300px;
+}
+
+textarea {
+  width: 854px;
+  height: 200px;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  resize: none;
+  font-family: inherit;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #ff8a8a;
+}
+
+.submit-btn {
+  width: 50%;
+  margin: 0 auto;
+  display: block;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: #ff8a8a;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.submit-btn:hover {
+  background-color: #f56b6b;
+}
+
+@media (max-width: 942px) {
+  .approval-page {
+    width: 700px;
+  }
+  .content-container {
+    width: 700px;
+  }
+  textarea {
+    width: 650px;
+  }
+}
+@media (max-width: 718px) {
+  .approval-page {
+    width: 600px;
+  }
+  .content-container {
+    width: 600px;
+  }
+  textarea {
+    width: 555px;
+  }
+}
+@media (max-width: 624px) {
+  .approval-page {
+    width: 400px;
+  }
+  .content-container {
+    width: 400px;
+  }
+  textarea {
+    width: 357px;
+  }
+  .sku-title {
+    font-size: 10px;
+  }
+  .sku-id {
+    font-size: 19px;
+  }
+  .username {
+    font-size: 12px;
+  }
+  .user-email {
+    font-size: 10px;
+  }
+  .user-avatar {
+    width: 25px;
+    height: 25px;
+  }
+  .user-details {
+    margin-right: 5px;
+  }
+}
+@media (max-width: 412px) {
+  .approval-page {
+    width: 300px;
+  }
+  .content-container {
+    width: 300px;
+  }
+  textarea {
+    width: 258px;
+  }
+  .sku-title {
+    font-size: 10px;
+  }
+  .sku-id {
+    font-size: 15px;
+  }
+  .username {
+    font-size: 12px;
+  }
+  .user-email {
+    font-size: 10px;
+  }
+  .user-avatar {
+    width: 25px;
+    height: 25px;
+  }
+  .user-details {
+    margin-right: 5px;
+  }
+}
