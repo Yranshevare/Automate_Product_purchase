@@ -1,12 +1,37 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { server } from '../../constant'
+import axios from 'axios'
 
 export default function StepTwo({processData}) {
     const [email, setEmail] = useState([""])
     const [showMessageModal, setShowMessageModal] = useState(false)
     const [expandedStep, setExpandedStep] = useState(null)
     const [message, setMessage] = useState("")
+    const [sendBut, setSendBut] = useState(["send"])
+
+    const loadInfo = useCallback(async() => {
+      try {
+        const res = await axios.get(`${server}approve/get/${localStorage.getItem('process')}/`,{withCredentials: true})
+        console.log(res.data)
+        if (res.status === 200) {
+          const e = []
+          const s = []
+          res.data.data.forEach(val => {
+            e.push(val.accepted_by_email)
+            s.push("resend")
+          });
+          setEmail(e)
+          setSendBut(s)
+        }
+        
+      } catch (error) {
+        console.log(error)
+      }
+    },[processData])
+
     
     useEffect(() => {
+        loadInfo()
         const handleClickOutside = (e) => {
             if (!e.target.closest('.message-modal')) {
                 setShowMessageModal(false)
@@ -24,16 +49,40 @@ export default function StepTwo({processData}) {
     
     
     const handleSend = useCallback(async(i) => {
-        if(email[i] === ""){ 
-            alert("Please enter an email")
-            return
+      if(email[i] === ""){ 
+          alert("Please enter an email")
+          return
+      }
+      const sb = [...sendBut]
+      sb[i] = "sending..."
+      setSendBut(sb)
+      try {
+        const res = await axios.get(`${server}approve/send_for_primary/`,{
+          params: { email: email[i], message: message },
+          withCredentials: true
+        })
+        console.log(res)
+        if(res.data.message === "request send successfully"){
+          processData.step_two = "pending"
         }
-        console.log("Sending email",email[i])
-        console.log(message,"message")
+      } catch (error) {
+        console.log(error.data)
+      }
+      finally{
+        const sb = [...sendBut]
+        sb[i] = "send"
+        setSendBut(sb)
+      }
+      console.log("Sending email",email[i])
+      console.log(message,"message")
     },[email,message])
 
 
     const toggleStep = useCallback((stepNumber) => {
+        if(processData?.step_one !== "Complete"){
+          alert("Please complete step 1 first")
+          return
+        }
         if (expandedStep === stepNumber) {
           setExpandedStep(null)
           
@@ -81,6 +130,7 @@ export default function StepTwo({processData}) {
 
     const handleAddEmail = useCallback(() => {
         setEmail([...email, ""]);
+        setSendBut([...sendBut, "send"])
     },[email])
 
 
@@ -131,7 +181,7 @@ export default function StepTwo({processData}) {
                 </div>
                 <div className="action-buttons">
                   <button className="action-btn" onClick={()=>handleSend(i)}>
-                    send
+                    {sendBut[i]}
                   </button>
                   <button className="action-btn message-btn" onClick={()=>setShowMessageModal(true)}>
                     add message

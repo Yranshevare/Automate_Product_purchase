@@ -39,3 +39,8 @@ class processModel(models.Model):
         choices=steps.choices, 
         default=steps.INCOMPLETE
     )
+    stepSix = models.CharField(
+        max_length=100, 
+        choices=steps.choices, 
+        default=steps.INCOMPLETE
+    )
