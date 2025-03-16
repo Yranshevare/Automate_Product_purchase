@@ -8,6 +8,7 @@ export default function StepTwo({processData}) {
     const [expandedStep, setExpandedStep] = useState(null)
     const [message, setMessage] = useState("")
     const [sendBut, setSendBut] = useState(["send"])
+    const [resBut, setResBut] = useState(["response"]) 
 
     const loadInfo = useCallback(async() => {
       try {
@@ -16,12 +17,15 @@ export default function StepTwo({processData}) {
         if (res.status === 200) {
           const e = []
           const s = []
+          const r = []
           res.data.data.forEach(val => {
             e.push(val.accepted_by_email)
             s.push("resend")
+            r.push(val.status)
           });
           setEmail(e)
           setSendBut(s)
+          setResBut(r)
         }
 
       } catch (error) {
@@ -50,8 +54,8 @@ export default function StepTwo({processData}) {
     
     const handleSend = useCallback(async(i) => {
       if(email[i] === ""){ 
-          alert("Please enter an email")
-          return
+        alert("Please enter an email")
+        return
       }
       const sb = [...sendBut]
       sb[i] = "sending..."
@@ -64,6 +68,9 @@ export default function StepTwo({processData}) {
         console.log(res)
         if(res.data.message === "request send successfully"){
           processData.step_two = "pending"
+          const r = [...resBut]
+          r[i] = "pending"
+          setResBut(r)
         }
       } catch (error) {
         console.log(error.data)
@@ -103,9 +110,13 @@ export default function StepTwo({processData}) {
     },[showMessageModal])
     
 
-    const handleResponse = (i) => {
+    const handleResponse = useCallback((i) => {
+      if(resBut[i] !== 'Accepted' && resBut[i] !== 'Rejected'){
+        alert("no response available") 
+        return
+      }
       console.log("Response action",email[i])
-    }
+    },[resBut,email])
 
 
 
@@ -131,6 +142,7 @@ export default function StepTwo({processData}) {
     const handleAddEmail = useCallback(() => {
         setEmail([...email, ""]);
         setSendBut([...sendBut, "send"])
+        setResBut([...resBut, "response"])
     },[email])
 
 
@@ -186,10 +198,15 @@ export default function StepTwo({processData}) {
                   <button className="action-btn message-btn" onClick={()=>setShowMessageModal(true)}>
                     add message
                   </button>
-                  <button className="action-btn" onClick={()=>handleResponse(i)}>
-                    response
+                  <button 
+                    className={
+                      resBut[i] === 'Accepted'? 'action-btn-accepted ' : " action-btn-pending" 
+                    } 
+                    onClick={()=>handleResponse(i)}
+                  >
+                    {resBut[i]}
                   </button>
-                  <button className="action-btn" onClick={()=>handleRemove(i)}>
+                  <button className=" action-btn-pending" onClick={()=>handleRemove(i)}>
                     remove
                   </button>
                 </div>

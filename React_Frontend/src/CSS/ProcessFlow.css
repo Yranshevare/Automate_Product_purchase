@@ -522,6 +522,42 @@
   gap: 10px;
   flex-wrap: wrap;
 }
+.incomplete-border{
+  border: 1px solid #f57d7d;
+  background-color: tomato;
+}
+.action-btn-accepted{
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  color: #fff;
+  text-align: center;
+  flex: 1;
+  min-width: 100px;
+  background-color: #8eff92;
+  transition-duration: 0.3s;
+}
+.action-btn-accepted:hover{
+  background-color: #36ff36;
+}
+.action-btn-pending{
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  color: #fff;
+  text-align: center;
+  flex: 1;
+  min-width: 100px;
+  background-color: #ff8e8e;
+  transition-duration: 0.3s;
+}
+.action-btn-pending:hover{
+  background-color: #ff4b4b;
+}
 
 .action-btn {
   padding: 8px 15px;
