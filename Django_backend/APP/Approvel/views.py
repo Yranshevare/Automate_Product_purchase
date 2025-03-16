@@ -25,7 +25,13 @@ def send_for_primary(request):
 
             if message == "":
                 message = """We hope this message finds you well. We are in the process of preparing a Request for Quotation (RFQ) for an upcoming project, and your approval is required to proceed with the next steps.</p>"""
-            print(data,message)
+            # print(data,message)
+
+            token = request.GET.get('token')
+            if not token:
+                return JsonResponse({'error': 'unauthorize request'}, status=401)
+            # print(token)
+            
 
             
 
@@ -63,7 +69,7 @@ def send_for_primary(request):
                         <div >
                             <p>{message}</p>
                             <p>Please review the requirement sheet at the following link:</p>
-                            <p><a href={settings.FRONTEND}/reqSheet/{encode_id(process._id)} >Review Requirement Sheet</a></p>
+                            <p><a href={settings.FRONTEND}/approval/{token} >Review Requirement Sheet</a></p>
                             <p>Once you have reviewed the document, kindly provide your approval or feedback so we can continue with the RFQ process.</p>
                             <p>If you have any questions or need additional information, feel free to reach out.</p>
                             <p>Thank you for your attention to this matter.</p>

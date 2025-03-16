@@ -1,9 +1,22 @@
-import React, { useState } from "react";
+import React, { use, useCallback, useEffect, useState } from "react";
 import "../CSS/Approval.css";
+import { useParams } from "react-router-dom";
+import { decryptData } from "../util/encryptToken";
 
 function Approval() {
   const [showRejectForm, setShowRejectForm] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+  const {data} = useParams()
+  console.log(data)
+
+  const load = useCallback(async() => {
+    const dec = await decryptData(data)
+    console.log(dec)
+  })
+  useEffect(() => {
+    load()
+  },[])
+
 
   const handleReject = () => {
     setShowRejectForm(true);

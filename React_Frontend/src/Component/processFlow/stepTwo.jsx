@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { server } from '../../constant'
 import axios from 'axios'
+import { encryptData } from '../../util/encryptToken'
+import { useNavigate } from 'react-router-dom'
 
 export default function StepTwo({processData}) {
     const [email, setEmail] = useState([""])
@@ -9,6 +11,7 @@ export default function StepTwo({processData}) {
     const [message, setMessage] = useState("")
     const [sendBut, setSendBut] = useState(["send"])
     const [resBut, setResBut] = useState(["response"]) 
+    const navigate = useNavigate()
 
     const loadInfo = useCallback(async() => {
       try {
@@ -49,8 +52,7 @@ export default function StepTwo({processData}) {
     
     
    
-    
-    
+
     
     const handleSend = useCallback(async(i) => {
       if(email[i] === ""){ 
@@ -61,8 +63,20 @@ export default function StepTwo({processData}) {
       sb[i] = "sending..."
       setSendBut(sb)
       try {
+
+
+        const payload = {
+          processData:processData,
+          owner:false,
+          email:email[i]
+        }
+
+        const token = await encryptData(payload)
+
+
+        
         const res = await axios.get(`${server}approve/send_for_primary/`,{
-          params: { email: email[i], message: message },
+          params: { email: email[i], message: message,token:token },
           withCredentials: true
         })
         console.log(res)
@@ -71,18 +85,21 @@ export default function StepTwo({processData}) {
           const r = [...resBut]
           r[i] = "pending"
           setResBut(r)
+          alert("request send successfully")
         }
       } catch (error) {
         console.log(error.data)
       }
       finally{
-        const sb = [...sendBut]
-        sb[i] = "send"
-        setSendBut(sb)
+        setSendBut(prevSendBut => {
+          const sb = [...prevSendBut]; 
+          sb[i] = "resend";
+          return sb;
+        });
       }
       console.log("Sending email",email[i])
-      console.log(message,"message")
     },[email,message,sendBut])
+    
 
 
     const toggleStep = useCallback((stepNumber) => {
@@ -110,12 +127,19 @@ export default function StepTwo({processData}) {
     },[showMessageModal])
     
 
-    const handleResponse = useCallback((i) => {
+    const handleResponse = useCallback(async (i) => {
       if(resBut[i] !== 'Accepted' && resBut[i] !== 'Rejected'){
         alert("no response available") 
-        return
+        // return
       }
-      console.log("Response action",email[i])
+      const payload = {
+        processData:processData,
+        owner:true,
+        email:email[i]
+      }
+      const enc = await encryptData(payload)
+      navigate(`/approval/${enc}`)
+      
     },[resBut,email])
 
 
