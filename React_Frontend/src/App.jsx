@@ -6,6 +6,7 @@ import "./CSS/App.css"
 import ProcessFlow from "./pages/ProcessFlow.jsx"
 import Auth from "./pages/Auth.jsx"
 import ReqSheet from "./pages/ReqSheet.jsx"
+import Approval from "./pages/Approval.jsx"
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
               <Route path="verify/:email" element={<VerifyEmail />}></Route>
           </Route>
           <Route path="/reqSheet/:proId" element={<ReqSheet />}></Route>
+          <Route path="/approval" element={<Approval />}></Route>
         </Routes>
       </div>
     </Router>
