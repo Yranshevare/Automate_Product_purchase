@@ -120,11 +120,8 @@ def send_for_primary(request):
 def get(request,process_id):
     if request.method == 'GET':
         try:
-            print("lll")
             process_id = decode_id(process_id)
-            print(process_id,"lll")
             approve = ApprovalModel.objects.filter(process = process_id)
-            print(approve)
             if not approve:
                 return JsonResponse({'message':'request not found'},status = 404)
             

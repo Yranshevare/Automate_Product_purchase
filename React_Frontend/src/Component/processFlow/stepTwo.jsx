@@ -23,7 +23,7 @@ export default function StepTwo({processData}) {
           setEmail(e)
           setSendBut(s)
         }
-        
+
       } catch (error) {
         console.log(error)
       }
@@ -75,7 +75,7 @@ export default function StepTwo({processData}) {
       }
       console.log("Sending email",email[i])
       console.log(message,"message")
-    },[email,message])
+    },[email,message,sendBut])
 
 
     const toggleStep = useCallback((stepNumber) => {
@@ -90,7 +90,7 @@ export default function StepTwo({processData}) {
           setExpandedStep(stepNumber)
         }
         
-    },[expandedStep])
+    },[expandedStep,processData])
     
 
     const handleCloseModal = useCallback(() => {
@@ -207,7 +207,7 @@ export default function StepTwo({processData}) {
             </button>
             <textarea
               className="message-textarea"
-              placeholder="write someting soo person will esaily understand what purchase"
+              placeholder="write something soo person will easily understand what purchase"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             ></textarea>
