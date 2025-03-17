@@ -4,7 +4,7 @@ import axios from 'axios'
 import { encryptData } from '../../util/encryptToken'
 import { useNavigate } from 'react-router-dom'
 
-export default function StepTwo({processData}) {
+export default function StepTwo({processData,user}) {
     const [email, setEmail] = useState([""])
     const [showMessageModal, setShowMessageModal] = useState(false)
     const [expandedStep, setExpandedStep] = useState(null)
@@ -66,6 +66,8 @@ export default function StepTwo({processData}) {
 
 
         const payload = {
+          user:user,
+          id:localStorage.getItem('process'),
           processData:processData,
           owner:false,
           email:email[i]
@@ -133,6 +135,8 @@ export default function StepTwo({processData}) {
         // return
       }
       const payload = {
+        user:user,
+        id:localStorage.getItem('process'),
         processData:processData,
         owner:true,
         email:email[i]
