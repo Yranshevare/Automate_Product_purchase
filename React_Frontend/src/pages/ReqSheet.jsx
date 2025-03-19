@@ -64,7 +64,7 @@ const ReqSheet = () => {
   
   const handleSubmit = useCallback(async(e) => {
     e.preventDefault();
-    if( skuValue === ""){
+    if( skuValue.trim() === ""){
       alert("please fill all the places")
       return
     }

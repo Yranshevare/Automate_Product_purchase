@@ -1,4 +1,4 @@
-import React, { use, useCallback, useEffect, useState } from "react";
+import React, {  useCallback, useEffect, useState } from "react";
 import "../CSS/Approval.css";
 import { useParams } from "react-router-dom";
 import { decryptData } from "../util/encryptToken";
@@ -14,13 +14,12 @@ function Approval() {
   const [reqSheet, setReqSheet] = useState({})
   const [info,setInfo] = useState({})
   const [loading, setLoading] = useState(false);
+  const [responding, setResponding] = useState("");
 
   const {data} = useParams()
   // console.log(data)
 
-  useEffect(() => {
-    console.log(reqSheet)
-  },[reqSheet])
+ 
 
   useEffect(() => {
     console.log(info)
@@ -28,17 +27,23 @@ function Approval() {
       setShowRejectForm(true)
     }
   },[info])
-  let dec = undefined
   const load = useCallback(async() => {
     try{
       let dec = await decryptData(data)
       setInfo(dec)
-      const step = await axios.get(`${server}stepOne/get/${dec.id}/`,{withCredentials: true}); 
+      const [step,approve] = await axios.all([
+        axios.get(`${server}stepOne/get/${dec.id}/`,{withCredentials: true}),
+        axios.get(`${server}approve/get_one/`,{
+          params: { process_id: dec.id , email:dec.email },
+          withCredentials: true
+        })
+      ])
       if(step.data?.message === "successfully fetched the data"){
         setReqSheet(step?.data?.data)
       }
       setLoading(true)
-      console.log(step)
+      setRejectReason(approve?.data?.data?.response)
+      console.log(step,approve)
     }
     catch (error) {
       console.log(error.response)
@@ -49,19 +54,46 @@ function Approval() {
   },[])
 
 
-  const handleReject = () => {
-    setShowRejectForm(true);
-  };
+  const handleApprove = useCallback(async() => {
+    // setShowRejectForm(false);
+    try {
+      setResponding("Approving")
+      const res = await axios.get(`${server}approve/approve_request/`,{
+        params: { process_id: info.id , email:info.email },
+        withCredentials: true
+      })
+      if(res.data.message === "your request has been approve"){
+        alert(res.data.message)
+      }
+      console.log(res)
+    } catch (error) {
+      console.log(error.response)
+    }finally{
+      setResponding("")
+    }
 
-  const handleApprove = () => {
-    setShowRejectForm(false);
-  };
+  },[info]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = useCallback(async(e) => {
     e.preventDefault();
-    setShowRejectForm(false);
-    setRejectReason("");
-  };
+    if(rejectReason.trim()===""){
+      alert("Please enter a reason for rejection")
+      return
+    }
+    try {
+      const res = await axios .get(`${server}approve/reject_request/`,{
+        params: { process_id: info.id , email:info.email , reason:rejectReason },
+        withCredentials: true
+      })
+      console.log(res)
+      alert(res.data.message)
+    } catch (error) {
+      alert(error.response.data.message)
+      console.log(error.response)
+    }
+    
+    console.log(info,rejectReason)
+  },[info,rejectReason]);
 
   return (
     loading ? 
@@ -102,9 +134,9 @@ function Approval() {
           !info.owner && 
         <div className={`approval-buttons ${showRejectForm ? "shifted" : ""}`}>
           <button className="approve-btn" onClick={handleApprove}>
-            Approve
+            {responding === "Approving" ? "Approving..." : "Approve"}
           </button>
-          <button className="reject-btn" onClick={handleReject}>
+          <button className="reject-btn" onClick={()=>setShowRejectForm(true)}>
             Reject
           </button>
         </div>
@@ -117,13 +149,16 @@ function Approval() {
               placeholder="Please provide your response here..."
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
-              required
+              // required
             ></textarea>
             {
               !info.owner && 
-              <button type="submit" className="submit-btn">
-              Submit
-            </button>
+              <div className="approval-buttons">
+                <button type="button" onClick={()=>setShowRejectForm(false)} className="approve-btn">Cancel</button>
+                <button type="submit" className="reject-btn">
+                {responding === "Rejecting" ? "Rejecting..." : "submit"}
+                </button>
+              </div>
             }
           </form>
         </div>

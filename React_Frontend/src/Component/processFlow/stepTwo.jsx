@@ -40,7 +40,9 @@ export default function StepTwo({processData,user}) {
     useEffect(() => {
         loadInfo()
         const handleClickOutside = (e) => {
+          
             if (!e.target.closest('.message-modal')) {
+              
                 setShowMessageModal(false)
             }
         };
@@ -55,6 +57,9 @@ export default function StepTwo({processData,user}) {
 
     
     const handleSend = useCallback(async(i) => {
+      if(!confirm(`Are you sure you want to send this request? to ${email[i]}`)){
+        return
+      }
       if(email[i] === ""){ 
         alert("Please enter an email")
         return
@@ -132,7 +137,7 @@ export default function StepTwo({processData,user}) {
     const handleResponse = useCallback(async (i) => {
       if(resBut[i] !== 'Accepted' && resBut[i] !== 'Rejected'){
         alert("no response available") 
-        // return
+        return
       }
       const payload = {
         user:user,
@@ -149,16 +154,17 @@ export default function StepTwo({processData,user}) {
 
 
     const handleRemove = useCallback((i) => {
-        if(email.length === 1){
-            setEmail([""])
-            return
-        }
-        if(confirm("Are you sure you want to remove this email?")){
-            const e = [...email]
-            e.splice(i, 1)
-            setEmail(e)
-        }
-        return
+      if(confirm("Are you sure you want to remove this email?")){
+        const e = [...email]
+        e.splice(i, 1)
+        setEmail(e)
+      }
+      if(email.length === 1){
+          setEmail([""])
+          return
+      }
+        
+      return
     },[email])
 
     const setEmails = useCallback((i,val) => {

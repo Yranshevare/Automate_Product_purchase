@@ -101,6 +101,10 @@ def save(request):
                 step_one = stepOneModel.objects.filter(process_id = process._id).first()
               
                 step_one.requirementSHeet = data['requirementSHeet']
+                step_one.SKU = data['SKU']
+                step_one.indenting_department = data['indenting_department']
+                step_one.type_of_item = data['type_of_item']
+                step_one.justification_for_indenting = data['justification_for_indenting']
                 try:
                     step_one.save()
                 except Exception as e:
@@ -115,7 +119,10 @@ def save(request):
                 step_one = stepOneModel(
                     requirementSHeet = data['requirementSHeet'],
                     SKU = data['SKU'],
-                    process = process
+                    process = process,
+                    indenting_department = data['indenting_department'],
+                    type_of_item = data['type_of_item'],
+                    justification_for_indenting = data['justification_for_indenting'],
                 )
                 process.stepOne = process.steps.COMPLETE
                 try:
@@ -160,6 +167,9 @@ def get(request,process_id):
                 "process_id":step_one._id,
                 "requirementSHeet":step_one.requirementSHeet,
                 "SKU":step_one.SKU,
+                "indenting_department":step_one.indenting_department,
+                "type_of_item":step_one.type_of_item,
+                "justification_for_indenting":step_one.justification_for_indenting,
                 'owner': False
             }
             

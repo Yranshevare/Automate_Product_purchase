@@ -34,7 +34,7 @@ export default function ProcessFlow() {
                     withCredentials: true
                 })
             ])
-            console.log(user)
+            console.log(user,pro)
             if(user?.data !== null){
                 setUser(user.data)
                 
