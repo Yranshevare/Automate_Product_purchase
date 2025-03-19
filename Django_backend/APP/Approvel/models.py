@@ -21,6 +21,7 @@ class ApprovalModel(models.Model):
     type = models.CharField(max_length=20,choices=Type.choices, default=Type.PRIMARY)
 
     process = models.ForeignKey(settings.PROCESS_MODEL, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
 
     def __str__(self):
             return self.process.title

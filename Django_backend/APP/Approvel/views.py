@@ -16,6 +16,7 @@ def send_for_primary(request):
     if request.method == 'GET':
         try:
             data = request.GET.get('email')
+            name = request.GET.get('name')
             # data = json.loads(request.body)['email']
             if not data:
                 return JsonResponse({'error': 'email is required'}, status=400)
@@ -101,7 +102,8 @@ def send_for_primary(request):
 
             approve = ApprovalModel(
                 email = data,
-                process = process
+                process = process,
+                name = name
             ) 
 
             process.stepTwo = processModel.steps.PENDING
@@ -138,7 +140,8 @@ def get(request,process_id):
                     "id":a._id,
                     "status":a.status,
                     "accepted_by_email":a.email,
-                    "response":a.response
+                    "response":a.response,
+                    "name ": a.name
                 }
                 data.append(newData)
             
