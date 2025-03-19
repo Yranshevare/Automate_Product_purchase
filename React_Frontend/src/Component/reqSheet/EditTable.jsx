@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { use, useCallback, useEffect, useRef, useState } from 'react';
 import DeleteRowMenu from './DeleteRowMenu';
 import ColumnMenu from './ColumnMenu';
 
 function EditableTable({tableData,setFinalData}) {
   
   const initialState = {
-    headers:["mention your headers"],
-    items:[{"mention your headers":'description'}]
+    headers:["sr no.","Particulars with Specifications","Existing if any","Quantity","Estimated Cost","Remark"],
+    items:[{"sr no.":'1',"Particulars with Specifications":'',"Existing if any":'',"Quantity":'',"Estimated Cost":'',"Remark":''}]
   }
 
 
@@ -15,6 +15,28 @@ function EditableTable({tableData,setFinalData}) {
   const [isMenuColVisible, setMenuColVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [index , setIndex] = useState(null)
+  
+
+  const setWidth = useCallback((index) => {
+    if(index == 0){
+      return "50px"
+    }else if(index == 1){
+      return "300px"
+    }else if(index == 2){
+      return "150px"
+    }else if(index == 3){
+      return "100px"
+    }else if(index == 4){
+      return "150px"
+    }else if(index == 5){
+      return "100px"
+    }
+    else{
+      return "200px"
+    }
+  },[])
+
+
 
 
   useEffect(() => {
@@ -55,6 +77,7 @@ function EditableTable({tableData,setFinalData}) {
     const emptyObj = {}
     const updatedData = [...data.items];
     data.headers.map(header => emptyObj[header] = '')
+    emptyObj["sr no."]= data.items.length+1
     updatedData.push(emptyObj);
     setData({...data, items: updatedData});
   },[data])
@@ -130,9 +153,12 @@ function EditableTable({tableData,setFinalData}) {
       return;
     }
     const item = data.items
-    const prev = item[idx-1]
+    const prev = item[idx-1]  
     item[idx-1] = item[idx]
     item[idx] = prev
+    for (let i = 0; i < data.items.length; i++) {
+      data.items[i]["sr no."]= i+1
+    }
     setData({...data,items:item})
   },[data,isMenuColVisible])
 
@@ -147,6 +173,9 @@ function EditableTable({tableData,setFinalData}) {
     const prev = item[idx+1]
     item[idx+1] = item[idx]
     item[idx] = prev
+    for (let i = 0; i < data.items.length; i++) {
+      data.items[i]["sr no."]= i+1
+    }
     setData({...data,items:item})
   },[data,isMenuColVisible])
 
@@ -158,6 +187,9 @@ function EditableTable({tableData,setFinalData}) {
       return
     }
     data.items.splice(index,1)
+    for (let i = 0; i < data.items.length; i++) {
+      data.items[i]["sr no."]= i+1
+    }
     console.log(data)
     setData({...data})
   },[data,isMenuColVisible])
@@ -204,10 +236,11 @@ useEffect(() => {
       
       <table border="1" cellPadding="10">
         <thead>
-          <tr>
+          <tr >
             {
               data ? data?.headers?.map((header,idx) => 
                 <th 
+                style={{maxWidth:`${setWidth(idx)}` }}
                   onContextMenu={(e) => {
                     e.preventDefault();
                     openRowMenu(idx)
@@ -232,7 +265,10 @@ useEffect(() => {
               key={rowIndex}>
                 {
                   data?.headers?.map((header, colIndex) => (
-                    <td key={colIndex}>
+                    <td key={colIndex}
+                      style={{maxWidth:`${setWidth(colIndex)}` }}
+                    >
+                      
                       <textarea
                       className='table-textarea'
                         type="text"

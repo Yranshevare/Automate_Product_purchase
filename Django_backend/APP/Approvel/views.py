@@ -208,6 +208,7 @@ def Approve(request):
             if isApprovalAccepted:
                 process.stepTwo = processModel.steps.COMPLETE
             #   process.save()
+                # function to send email to store for quotations
 
 
             # app.save()
