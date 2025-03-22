@@ -11,6 +11,7 @@ export default function StepTwo({processData,user}) {
     const [message, setMessage] = useState("")
     const [sendBut, setSendBut] = useState(["send"])
     const [resBut, setResBut] = useState(["response"]) 
+    const [name, setName] = useState("")
     const navigate = useNavigate()
 
     const loadInfo = useCallback(async() => {
@@ -83,7 +84,7 @@ export default function StepTwo({processData,user}) {
 
         
         const res = await axios.get(`${server}approve/send_for_primary/`,{
-          params: { email: email[i], message: message,token:token },
+          params: { email: email[i], message: message,token:token,name:name },
           withCredentials: true
         })
         console.log(res)
@@ -137,7 +138,7 @@ export default function StepTwo({processData,user}) {
     const handleResponse = useCallback(async (i) => {
       if(resBut[i] !== 'Accepted' && resBut[i] !== 'Rejected'){
         alert("no response available") 
-        return
+        // return
       }
       const payload = {
         user:user,
@@ -215,6 +216,13 @@ export default function StepTwo({processData,user}) {
             email.map((e,i) => 
                 <div key={i } className='email-container'>
                 <div className="email-input-container" >
+                  <input
+                  placeholder='mention the name or role of that person' 
+                  type="text" 
+                  className='input'
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  />
                 <input
                   type="email"
                   placeholder="mention the email of the person whose approval is needed"

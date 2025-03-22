@@ -30,6 +30,7 @@ function Approval() {
   const load = useCallback(async() => {
     try{
       let dec = await decryptData(data)
+      // let dec = data
       setInfo(dec)
       const [step,approve] = await axios.all([
         axios.get(`${server}stepOne/get/${dec.id}/`,{withCredentials: true}),
@@ -39,11 +40,31 @@ function Approval() {
         })
       ])
       if(step.data?.message === "successfully fetched the data"){
-        setReqSheet(step?.data?.data)
+
+
+        const sheet = step?.data?.data
+        const a = sheet.type_of_item  || undefined
+        if(a){
+          const b = JSON.parse(a.replace(/'/g, '"'))
+          console.log(b)
+          let newStr = ""
+          b.map((item,idx) => {
+             newStr = newStr + item 
+             if(idx !== b.length-1){
+               newStr = newStr + " , " 
+             }
+          })
+          sheet.type_of_item=newStr
+          console.log(newStr)
+        }
+
+
+        setReqSheet(sheet)
       }
       setLoading(true)
       setRejectReason(approve?.data?.data?.response)
-      console.log(step,approve)
+      console.log(step.data.data)
+      console.log(approve.data,'kkk')
     }
     catch (error) {
       console.log(error.response)
@@ -52,6 +73,11 @@ function Approval() {
   useEffect(() => {
     load()
   },[])
+
+  useEffect(()=>{
+    // console.log(reqSheet.type_of_item,"sheet ")
+    
+  },[reqSheet])
 
 
   const handleApprove = useCallback(async() => {
@@ -102,7 +128,7 @@ function Approval() {
         <div className="sku-banner">
           <div className="section-info">
             <div className="section-title">STOCK KEEPING UNIT</div>
-            <div className="section-id">lnskhdk/djskhdks-khksd</div>
+            <div className="section-id">{reqSheet?.SKU}</div>
           </div>
           <div className="user-info">
            {<> 
@@ -121,18 +147,15 @@ function Approval() {
         </div>
         <div className="section-info">
             <div className="section-title">INDENTING DEPARTMENT</div>
-            <div className="section-id">information technology</div>
+            <div className="section-id">{reqSheet?.indenting_department}</div>
         </div>
         <div className="section-info">
             <div className="section-title">ITEM TYPES</div>
-            <div className="section-id">lnskhdk/djskhdks-khksd</div>
+            <div className="section-id">{reqSheet.type_of_item}</div>
         </div>
 
-        <div className="data-sheet"></div>
 
         <div className="section-info">
-            <div className="section-title">JUSTIFICATION FOR INTENDATION</div>
-            <div className="section-id">lnskhdk/djskhdks-khksd</div>
           {
             reqSheet?.requirementSHeet ? (
               <div className='table'>
@@ -142,6 +165,8 @@ function Approval() {
             :
             <div className="data-sheet"></div>
           }
+            <div className="section-title">JUSTIFICATION FOR INTENDATION</div>
+            <div className="section-id">{reqSheet?.justification_for_indenting}</div>
 
         {/* Rejection Form */}
         <div className={`rejection-form-container`}>
