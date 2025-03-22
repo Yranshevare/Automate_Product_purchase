@@ -166,8 +166,8 @@ def get(request,process_id):
 def Approve(request):
     if request.method == 'GET':
         try:
-            # process_id = request.GET.get('process_id')
-            process_id = json.loads(request.body)['process_id']
+            process_id = request.GET.get('process_id')
+            # process_id = json.loads(request.body)['process_id']
             process_id = decode_id(process_id)
 
             process = processModel.objects.filter(_id = process_id).first()
@@ -177,8 +177,8 @@ def Approve(request):
             if(process.stepOne != processModel.steps.COMPLETE):
                 return JsonResponse({'message':'no requirement sheet is available'},status = 404)
             
-            # email = request.GET.get('email')
-            email = json.loads(request.body)['email']
+            email = request.GET.get('email')
+            # email = json.loads(request.body)['email']
 
             approve = ApprovalModel.objects.filter(process = process_id)
 
@@ -207,11 +207,11 @@ def Approve(request):
 
             if isApprovalAccepted:
                 process.stepTwo = processModel.steps.COMPLETE
-            #   process.save()
+                process.save()
                 # function to send email to store for quotations
 
 
-            # app.save()
+            app.save()
             return JsonResponse({'message':'your request has been approve'},status = 200)
         except Exception as e:
             return JsonResponse({'message':'error while approving the request','error':str(e)},status=500)
