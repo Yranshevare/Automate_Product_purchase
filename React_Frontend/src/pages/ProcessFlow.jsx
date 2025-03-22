@@ -34,7 +34,7 @@ export default function ProcessFlow() {
                     withCredentials: true
                 })
             ])
-            console.log(user)
+            console.log(user,pro)
             if(user?.data !== null){
                 setUser(user.data)
                 
@@ -200,7 +200,7 @@ export default function ProcessFlow() {
                             className='no-process-selected'
                             onClick={() => setIsNavOpen(!isNavOpen)}>select the process first</p>
                         ):(
-                            <MainContainer process={selectedProcess} setSelectedProcess={setSelectedProcess} loadInfo={loadInformation}/>
+                            <MainContainer process={selectedProcess} setSelectedProcess={setSelectedProcess} loadInfo={loadInformation} user={user}/>
                         )
                     }   
 

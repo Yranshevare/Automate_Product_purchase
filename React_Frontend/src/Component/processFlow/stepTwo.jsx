@@ -1,13 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { server } from '../../constant'
 import axios from 'axios'
+import { encryptData } from '../../util/encryptToken'
+import { useNavigate } from 'react-router-dom'
 
-export default function StepTwo({processData}) {
+export default function StepTwo({processData,user}) {
     const [email, setEmail] = useState([""])
     const [showMessageModal, setShowMessageModal] = useState(false)
     const [expandedStep, setExpandedStep] = useState(null)
     const [message, setMessage] = useState("")
     const [sendBut, setSendBut] = useState(["send"])
+    const [resBut, setResBut] = useState(["response"]) 
+    const navigate = useNavigate()
 
     const loadInfo = useCallback(async() => {
       try {
@@ -16,12 +20,15 @@ export default function StepTwo({processData}) {
         if (res.status === 200) {
           const e = []
           const s = []
+          const r = []
           res.data.data.forEach(val => {
             e.push(val.accepted_by_email)
             s.push("resend")
+            r.push(val.status)
           });
           setEmail(e)
           setSendBut(s)
+          setResBut(r)
         }
 
       } catch (error) {
@@ -33,7 +40,9 @@ export default function StepTwo({processData}) {
     useEffect(() => {
         loadInfo()
         const handleClickOutside = (e) => {
+          
             if (!e.target.closest('.message-modal')) {
+              
                 setShowMessageModal(false)
             }
         };
@@ -45,37 +54,59 @@ export default function StepTwo({processData}) {
     
     
    
-    
-    
+
     
     const handleSend = useCallback(async(i) => {
+      if(!confirm(`Are you sure you want to send this request? to ${email[i]}`)){
+        return
+      }
       if(email[i] === ""){ 
-          alert("Please enter an email")
-          return
+        alert("Please enter an email")
+        return
       }
       const sb = [...sendBut]
       sb[i] = "sending..."
       setSendBut(sb)
       try {
+
+
+        const payload = {
+          user:user,
+          id:localStorage.getItem('process'),
+          processData:processData,
+          owner:false,
+          email:email[i]
+        }
+
+        const token = await encryptData(payload)
+
+
+        
         const res = await axios.get(`${server}approve/send_for_primary/`,{
-          params: { email: email[i], message: message },
+          params: { email: email[i], message: message,token:token },
           withCredentials: true
         })
         console.log(res)
         if(res.data.message === "request send successfully"){
           processData.step_two = "pending"
+          const r = [...resBut]
+          r[i] = "pending"
+          setResBut(r)
+          alert("request send successfully")
         }
       } catch (error) {
         console.log(error.data)
       }
       finally{
-        const sb = [...sendBut]
-        sb[i] = "send"
-        setSendBut(sb)
+        setSendBut(prevSendBut => {
+          const sb = [...prevSendBut]; 
+          sb[i] = "resend";
+          return sb;
+        });
       }
       console.log("Sending email",email[i])
-      console.log(message,"message")
     },[email,message,sendBut])
+    
 
 
     const toggleStep = useCallback((stepNumber) => {
@@ -103,23 +134,37 @@ export default function StepTwo({processData}) {
     },[showMessageModal])
     
 
-    const handleResponse = (i) => {
-      console.log("Response action",email[i])
-    }
+    const handleResponse = useCallback(async (i) => {
+      if(resBut[i] !== 'Accepted' && resBut[i] !== 'Rejected'){
+        alert("no response available") 
+        return
+      }
+      const payload = {
+        user:user,
+        id:localStorage.getItem('process'),
+        processData:processData,
+        owner:true,
+        email:email[i]
+      }
+      const enc = await encryptData(payload)
+      navigate(`/approval/${enc}`)
+      
+    },[resBut,email])
 
 
 
     const handleRemove = useCallback((i) => {
-        if(email.length === 1){
-            setEmail([""])
-            return
-        }
-        if(confirm("Are you sure you want to remove this email?")){
-            const e = [...email]
-            e.splice(i, 1)
-            setEmail(e)
-        }
-        return
+      if(confirm("Are you sure you want to remove this email?")){
+        const e = [...email]
+        e.splice(i, 1)
+        setEmail(e)
+      }
+      if(email.length === 1){
+          setEmail([""])
+          return
+      }
+        
+      return
     },[email])
 
     const setEmails = useCallback((i,val) => {
@@ -131,6 +176,7 @@ export default function StepTwo({processData}) {
     const handleAddEmail = useCallback(() => {
         setEmail([...email, ""]);
         setSendBut([...sendBut, "send"])
+        setResBut([...resBut, "response"])
     },[email])
 
 
@@ -186,10 +232,15 @@ export default function StepTwo({processData}) {
                   <button className="action-btn message-btn" onClick={()=>setShowMessageModal(true)}>
                     add message
                   </button>
-                  <button className="action-btn" onClick={()=>handleResponse(i)}>
-                    response
+                  <button 
+                    className={
+                      resBut[i] === 'Accepted'? 'action-btn-accepted ' : " action-btn-pending" 
+                    } 
+                    onClick={()=>handleResponse(i)}
+                  >
+                    {resBut[i]}
                   </button>
-                  <button className="action-btn" onClick={()=>handleRemove(i)}>
+                  <button className=" action-btn-pending" onClick={()=>handleRemove(i)}>
                     remove
                   </button>
                 </div>

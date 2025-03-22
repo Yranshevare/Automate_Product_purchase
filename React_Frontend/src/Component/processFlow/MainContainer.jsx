@@ -5,7 +5,7 @@ import {  useNavigate } from 'react-router-dom';
 import { ThreeDot } from 'react-loading-indicators';
 import StepTwo from './stepTwo';
 
-const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
+const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo,user }) => {
 
     const navigate = useNavigate();
     const [processData, setProcessData] = useState(null);
@@ -80,7 +80,7 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo }) => {
         </div>
         <div  className={processData?.step_two =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
             <div className="step-number">2</div>
-            <StepTwo processData={processData}/>   
+            <StepTwo processData={processData} user={user}/>   
         </div>
         <div  className={processData?.step_three =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
             <div className="step-number">3</div>

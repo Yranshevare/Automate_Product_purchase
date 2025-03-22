@@ -427,12 +427,13 @@
 }
 .table table {
   border-collapse: collapse;  /* Collapses borders to remove the double border */
-  width: 100%;
+  /* width: 100%; */
 }
 .table th, td {
   border: 1px solid black; /* Adds a border to the cells */
   padding: 8px;
   text-align: left;
+  /* max-width: 200px; */
 }
 .table th{
   background-color: rgba(85,110,217,1);
@@ -468,7 +469,7 @@
   font-size: large;
   font-weight: 600;
   color: white;
-  
+  width: 100%;
 }
 
 .edit-table-but{
@@ -529,49 +530,4 @@
 .delete:hover{
   background-color: rgb(249, 60, 60);
   scale: 1.1;
-}
-
-@media (max-width:1079px) {
-  .main-content-reqSheet{
-    
-  }
-  .section-input{
-    width: 800px;
-  }
-  .requirement-sheet{
-    width: 800px;
-  }
-  .justification-textarea{
-    width: 800px;
-  }
-}
-@media (max-width:946px) {
-  .main-content-reqSheet{
-    
-  }
-  .section-input{
-    width: 600px;
-  }
-  .requirement-sheet{
-    width: 600px;
-  }
-  .justification-textarea{
-    width: 600px;
-  }
-
-}
-@media (max-width:946px) {
-  .main-content-reqSheet{
-    
-  }
-  .section-input{
-    width: 500px;
-  }
-  .requirement-sheet{
-    width: 500px;
-  }
-  .justification-textarea{
-    width: 500px;
-  }
-
 }

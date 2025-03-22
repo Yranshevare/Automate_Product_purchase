@@ -16,6 +16,7 @@ def send_for_primary(request):
     if request.method == 'GET':
         try:
             data = request.GET.get('email')
+            name = request.GET.get('name')
             # data = json.loads(request.body)['email']
             if not data:
                 return JsonResponse({'error': 'email is required'}, status=400)
@@ -25,7 +26,13 @@ def send_for_primary(request):
 
             if message == "":
                 message = """We hope this message finds you well. We are in the process of preparing a Request for Quotation (RFQ) for an upcoming project, and your approval is required to proceed with the next steps.</p>"""
-            print(data,message)
+            # print(data,message)
+
+            token = request.GET.get('token')
+            if not token:
+                return JsonResponse({'error': 'unauthorize request'}, status=401)
+            # print(token)
+            
 
             
 
@@ -62,8 +69,8 @@ def send_for_primary(request):
                         </div>
                         <div >
                             <p>{message}</p>
-                            <p>Please review the requirement sheet at the following link:</p>
-                            <p><a href={settings.FRONTEND}/reqSheet/{encode_id(process._id)} >Review Requirement Sheet</a></p>
+                            <p>Please review the requirement sheet for <b>{process.title}</b> at the following link:</p>
+                            <p><a href={settings.FRONTEND}/approval/{token} >Review Requirement Sheet</a></p>
                             <p>Once you have reviewed the document, kindly provide your approval or feedback so we can continue with the RFQ process.</p>
                             <p>If you have any questions or need additional information, feel free to reach out.</p>
                             <p>Thank you for your attention to this matter.</p>
@@ -95,7 +102,8 @@ def send_for_primary(request):
 
             approve = ApprovalModel(
                 email = data,
-                process = process
+                process = process,
+                name = name
             ) 
 
             process.stepTwo = processModel.steps.PENDING
@@ -132,7 +140,8 @@ def get(request,process_id):
                     "id":a._id,
                     "status":a.status,
                     "accepted_by_email":a.email,
-                    "response":a.response
+                    "response":a.response,
+                    "name ": a.name
                 }
                 data.append(newData)
             
@@ -154,9 +163,11 @@ def get(request,process_id):
     
 
 @csrf_exempt
-def Approve(request,process_id):
+def Approve(request):
     if request.method == 'GET':
         try:
+            # process_id = request.GET.get('process_id')
+            process_id = json.loads(request.body)['process_id']
             process_id = decode_id(process_id)
 
             process = processModel.objects.filter(_id = process_id).first()
@@ -166,17 +177,41 @@ def Approve(request,process_id):
             if(process.stepOne != processModel.steps.COMPLETE):
                 return JsonResponse({'message':'no requirement sheet is available'},status = 404)
             
+            # email = request.GET.get('email')
+            email = json.loads(request.body)['email']
 
-            approve = ApprovalModel.objects.filter(process = process_id).first()
-            if not approve:
-                return JsonResponse({'message':'request not found'},status = 404)
+            approve = ApprovalModel.objects.filter(process = process_id)
+
+            app = None
+            for x in approve:
+                if x.email == email:
+                    app = x
+                
+
+            if not app:
+                return JsonResponse({'message':'request not found, invalid email'},status = 404)
+            
+            # if(process.stepTwo == processModel.steps.REJECTED):
+            #     return JsonResponse({'message':'request already rejected'},status = 422)
             
 
-            approve.status = ApprovalModel.Status.ACCEPTED
-            approve.response = "approved"
-            process.stepTwo = processModel.steps.PENDING
-            process.save()
-            approve.save()
+            app.status = ApprovalModel.Status.ACCEPTED
+            app.response = f"approved by {app.email} "
+
+            isApprovalAccepted = True
+
+            for x in approve:
+                if x.status != ApprovalModel.Status.ACCEPTED:
+                    isApprovalAccepted = False
+                    break
+
+            if isApprovalAccepted:
+                process.stepTwo = processModel.steps.COMPLETE
+            #   process.save()
+                # function to send email to store for quotations
+
+
+            # app.save()
             return JsonResponse({'message':'your request has been approve'},status = 200)
         except Exception as e:
             return JsonResponse({'message':'error while approving the request','error':str(e)},status=500)
@@ -188,10 +223,11 @@ def Approve(request,process_id):
 def Reject(request):
     if request.method == 'GET':
         try:
-            # process_id = request.GET.get('process_id')
-            # response = request.GET.get('response')
-            process_id = json.loads(request.body)['process_id']
-            response = json.loads(request.body)['response']
+            process_id = request.GET.get('process_id')
+            response = request.GET.get('reason')
+            email = request.GET.get('email')
+            # process_id = json.loads(request.body)['process_id']
+            # response = json.loads(request.body)['response']
             process_id = decode_id(process_id)
 
 
@@ -203,9 +239,13 @@ def Reject(request):
                 return JsonResponse({'message':'no requirement sheet is available'},status = 404)
             
 
-            approve = ApprovalModel.objects.filter(process = process_id).first()
+            approve = ApprovalModel.objects.filter(process = process_id,email = email).first()
             if not approve:
                 return JsonResponse({'message':'request not found'},status = 404)
+            
+            if (process.stepTwo == processModel.steps.COMPLETE):
+                
+                return JsonResponse({'message':'request already accepted'},status = 422)
             
 
             approve.status = ApprovalModel.Status.REJECTED
@@ -216,6 +256,38 @@ def Reject(request):
             approve.save()
             return JsonResponse({'message':'your request has been rejected'},status = 200)
         except Exception as e:
+
             return JsonResponse({'message':'error while rejecting the request','error':str(e)},status=500)
+    else:
+        return JsonResponse({"message":"invalid request type"},status=405)
+    
+def get_one(request):
+    if request.method == 'GET':
+        try:
+            process_id = request.GET.get('process_id')
+            print(process_id)
+            # process_id = json.loads(request.body)['process_id']
+            process_id = decode_id(process_id)
+            process = processModel.objects.filter(_id = process_id).first()
+            if not process:
+                return JsonResponse({'message':'process not found'},status = 404)
+            
+            email = request.GET.get('email')
+            # email = json.loads(request.body)['email']
+            
+            approve = ApprovalModel.objects.filter(process = process_id,email = email).first()
+            if not approve:
+                return JsonResponse({'message':'request not found'},status = 404)
+            
+            data = {
+                "id":approve._id,
+                "status":approve.status,
+                "accepted_by_email":approve.email,
+                "response":approve.response
+            }
+            
+            return JsonResponse({"data":data},status = 200)
+        except Exception as e:
+            return JsonResponse({'message':'error while getting the request','error':str(e)},status=500)
     else:
         return JsonResponse({"message":"invalid request type"},status=405)

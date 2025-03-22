@@ -20,7 +20,7 @@ function App() {
               <Route path="verify/:email" element={<VerifyEmail />}></Route>
           </Route>
           <Route path="/reqSheet/:proId" element={<ReqSheet />}></Route>
-          <Route path="/approval" element={<Approval />}></Route>
+          <Route path="/approval/:data" element={<Approval />}></Route>
         </Routes>
       </div>
     </Router>

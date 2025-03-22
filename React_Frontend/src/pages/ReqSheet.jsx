@@ -48,29 +48,26 @@ const ReqSheet = () => {
     loadInfo();
   }, []);
 
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      if (skuValue === "") {
-        alert("please fill all the places");
-        return;
+
+  
+ 
+  
+  const handleSubmit = useCallback(async(e) => {
+    e.preventDefault();
+    if( skuValue === ""){
+      alert("please fill all the places")
+      return
+    }
+    try {
+      const res = await axios.post(`${server}stepOne/save/`,{requirementSHeet:JSON.stringify(finalData),SKU:skuValue},{withCredentials: true});
+      alert(res.data.message)
+    } catch (error) { 
+      if(error?.response?.data?.message == "SKU already exists"){
+        alert("SKU already exists please give unique SKU")
       }
-      try {
-        const res = await axios.post(
-          `${server}stepOne/save/`,
-          { requirementSHeet: JSON.stringify(finalData), SKU: skuValue },
-          { withCredentials: true }
-        );
-        alert(res.data.message);
-      } catch (error) {
-        if (error?.response?.data?.message == "SKU already exists") {
-          alert("SKU already exists please give unique SKU");
-        }
-        console.log(error);
-      }
-    },
-    [requirementText, skuValue, finalData]
-  );
+      console.log(error)
+    }
+  },[requirementText,skuValue,finalData]);
 
 
   const deleteStepOne = useCallback(async () => {
