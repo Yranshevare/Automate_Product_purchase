@@ -23,9 +23,9 @@ function Approval() {
     <div className="approval-page">
       <div className={`content-container ${showRejectForm ? "shifted" : ""}`}>
         <div className="sku-banner">
-          <div className="sku-info">
-            <div className="sku-title">STOCK KEEPING UNIT</div>
-            <div className="sku-id">lnskhdk/djskhdks-khksd</div>
+          <div className="section-info">
+            <div className="section-title">STOCK KEEPING UNIT</div>
+            <div className="section-id">lnskhdk/djskhdks-khksd</div>
           </div>
           <div className="user-info">
             <div className="user-details">
@@ -35,21 +35,24 @@ function Approval() {
             <div className="user-avatar"></div>
           </div>
         </div>
+        <div className="section-info">
+            <div className="section-title">INDENTING DEPARTMENT</div>
+            <div className="section-id">information technology</div>
+        </div>
+        <div className="section-info">
+            <div className="section-title">ITEM TYPES</div>
+            <div className="section-id">lnskhdk/djskhdks-khksd</div>
+        </div>
 
         <div className="data-sheet"></div>
 
-        {/* Approval Buttons */}
-        <div className={`approval-buttons ${showRejectForm ? "shifted" : ""}`}>
-          <button className="approve-btn" onClick={handleApprove}>
-            Approve
-          </button>
-          <button className="reject-btn" onClick={handleReject}>
-            Reject
-          </button>
+        <div className="section-info">
+            <div className="section-title">JUSTIFICATION FOR INTENDATION</div>
+            <div className="section-id">lnskhdk/djskhdks-khksd</div>
         </div>
 
         {/* Rejection Form */}
-        <div className={`rejection-form-container ${showRejectForm ? "shifted" : ""}`}>
+        <div className={`rejection-form-container`}>
           <form onSubmit={handleSubmit}>
             <textarea
               placeholder="Please provide your response here..."

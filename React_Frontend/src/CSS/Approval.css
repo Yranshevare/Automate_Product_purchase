@@ -16,6 +16,9 @@
 /* Content Container - for shifting animation */
 .content-container {
   transition: transform 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  
 }
 
 .content-container.shifted {
@@ -28,21 +31,24 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  width: 920px;
 }
 
-.sku-info {
+.section-info {
   display: flex;
   flex-direction: column;
+  padding: 10px;
 }
 
-.sku-title {
+.section-title {
   color: #301f7b;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 5px;
 }
 
-.sku-id {
+.section-id {
   font-size: 24px;
   font-weight: 700;
 }
@@ -79,36 +85,9 @@
 .data-sheet {
   background-color: #c4c4c4;
   border-radius: 8px;
-  padding: 20px;
+  width: 920px;
   margin-bottom: 30px;
   min-height: 250px;
-}
-
-/* Approval Buttons */
-.approval-buttons {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  transition: opacity 0.5s ease-in-out, display 0.5s ease-in-out;
-}
-
-.approval-buttons.shifted {
-  opacity: 0;
-  pointer-events: none;
-  display: none;
-}
-
-.approve-btn,
-.reject-btn {
-  flex: 1;
-  padding: 15px;
-  border: none;
-  border-radius: 8px;
-  font-size: 18px;
-  font-weight: 600;
-  color: white;
-  cursor: pointer;
-  transition: opacity 0.2s;
 }
 
 .approve-btn {
@@ -131,18 +110,18 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  opacity: 0;
-  max-height: 0;
+  align-items: center;
+  max-height: 300PX;
   overflow: hidden;
-  transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out;
+  position: relative;
+  left: -15px;
+  width: 920px;
 }
 
-.rejection-form-container.shifted {
-  opacity: 1;
-  max-height: 300px;
-}
+
 
 textarea {
+  padding: 20px;
   width: 854px;
   height: 200px;
   border: 1px solid #000000;
@@ -177,7 +156,7 @@ textarea:focus {
   background-color: #f56b6b;
 }
 
-@media (max-width: 942px) {
+@media (max-width: 976px) {
   .approval-page {
     width: 700px;
   }
@@ -187,8 +166,11 @@ textarea:focus {
   textarea {
     width: 650px;
   }
+  .sku-banner{
+    width: 700px;
+  }
 }
-@media (max-width: 718px) {
+@media (max-width: 751px) {
   .approval-page {
     width: 600px;
   }
@@ -199,12 +181,12 @@ textarea:focus {
     width: 555px;
   }
 }
-@media (max-width: 624px) {
+@media (max-width: 651px) {
   .approval-page {
-    width: 400px;
+    width: 450px;
   }
   .content-container {
-    width: 400px;
+    width: 450px;
   }
   textarea {
     width: 357px;
@@ -229,7 +211,7 @@ textarea:focus {
     margin-right: 5px;
   }
 }
-@media (max-width: 412px) {
+@media (max-width: 502px) {
   .approval-page {
     width: 300px;
   }
@@ -257,5 +239,54 @@ textarea:focus {
   }
   .user-details {
     margin-right: 5px;
+  }
+  .section-title{
+    font-size: 10px;
+    position: relative;
+    left: -8px;
+  }
+  .section-id{
+    font-size: 12px;
+  }
+}
+@media (max-width: 352px) {
+  .approval-page {
+    width: 250px;
+  }
+  .content-container {
+    width: 250px;
+  }
+  textarea {
+    width: 208px;
+  }
+  .sku-title {
+    font-size: 10px;
+  }
+  .sku-id {
+    font-size: 15px;
+  }
+  .username {
+    font-size: 12px;
+  }
+  .user-email {
+    font-size: 10px;
+  }
+  .user-avatar {
+    width: 25px;
+    height: 25px;
+  }
+  .user-details {
+    margin-right: 5px;
+  }
+  .section-info{
+    padding: 5px;
+  }
+  .section-title{
+    font-size: 10px;
+    position: relative;
+    left: -8px;
+  }
+  .section-id{
+    font-size: 12px;
   }
 }
