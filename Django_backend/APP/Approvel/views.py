@@ -141,7 +141,7 @@ def get(request,process_id):
                     "status":a.status,
                     "accepted_by_email":a.email,
                     "response":a.response,
-                    "name ": a.name
+                    "name": a.name
                 }
                 data.append(newData)
             

@@ -1,7 +1,6 @@
-import ChatBox from "../Component/reqSheet/Chatbox";
+
 import { useCallback, useEffect, useState } from "react";
 import "../CSS/ReqSheet.css";
-import Toast from "../Component/reqSheet/Toast";
 import axios from "axios";
 import { server } from "../constant";
 import { useParams } from "react-router-dom";
@@ -9,7 +8,6 @@ import EditableTable from "../Component/reqSheet/EditTable";
 import { useNavigate } from "react-router-dom";
 import { ThreeDot } from "react-loading-indicators";
 import Checkbox from "/src/Component/reqSheet/Checkbox";
-import RenderTable from "../Component/reqSheet/RenderTable";
 
 const ReqSheet = () => {
   const [skuValue, setSkuValue] = useState("  ");
@@ -86,7 +84,9 @@ const ReqSheet = () => {
 
 
   const deleteStepOne = useCallback(async () => {
-    alert("are you sure! do you really want to delete this step");
+    if(!confirm("are you sure! do you really want to delete this step")){
+      return
+    }
     try {
       const res = await axios.delete(`${server}stepOne/delete/`, {
         withCredentials: true,
@@ -204,7 +204,11 @@ const ReqSheet = () => {
         <button type="submit" onClick={handleSubmit} className="submit-button">
           submit
         </button>
+        {
+        disable && <button className="delete" onClick={deleteStepOne}>Delete this process</button>
+        }
       </div>
+      
     </div>
   ) : (
     <ThreeDot color="#d6d6d6" size="small" text="" textColor="" />

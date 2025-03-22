@@ -1,6 +1,6 @@
 import React, {  useCallback, useEffect, useState } from "react";
 import "../CSS/Approval.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { decryptData } from "../util/encryptToken";
 import { server } from "../constant";
 import axios from "axios";
@@ -17,6 +17,8 @@ function Approval() {
   const [responding, setResponding] = useState("");
 
   const {data} = useParams()
+
+  const navigate = useNavigate()
   // console.log(data)
 
  
@@ -45,6 +47,7 @@ function Approval() {
         const sheet = step?.data?.data
         const a = sheet.type_of_item  || undefined
         if(a){
+          //to convert the string to array
           const b = JSON.parse(a.replace(/'/g, '"'))
           console.log(b)
           let newStr = ""
@@ -67,7 +70,11 @@ function Approval() {
       console.log(approve.data,'kkk')
     }
     catch (error) {
-      console.log(error.response)
+      if(error?.response?.data?.message === "step doesn't exits"){
+        alert("Requirement sheet dose not exist")
+        navigate("/auth/login")
+      }
+      console.log(error.response.data.message)
     }
   })
   useEffect(() => {

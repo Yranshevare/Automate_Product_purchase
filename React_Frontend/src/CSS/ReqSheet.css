@@ -536,11 +536,9 @@ form{
   cursor: pointer;
   transition: background-color 0.2s, transform 0.3s ease,scale 0.2s ease;
 }
-.delete.closing{
-  transform: translateY(-110%);
-  
-}
+
 .delete:hover{
-  background-color: rgb(249, 60, 60);
+  background-color: rgb(222, 74, 74);
   scale: 1.1;
+  color: white;
 }
