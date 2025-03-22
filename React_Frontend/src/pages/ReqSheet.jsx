@@ -9,6 +9,7 @@ import EditableTable from "../Component/reqSheet/EditTable";
 import { useNavigate } from "react-router-dom";
 import { ThreeDot } from "react-loading-indicators";
 import Checkbox from "/src/Component/reqSheet/Checkbox";
+import RenderTable from "../Component/reqSheet/RenderTable";
 
 const ReqSheet = () => {
   const [skuValue, setSkuValue] = useState("  ");
@@ -32,8 +33,15 @@ const ReqSheet = () => {
       if (res.data.message === "successfully fetched the data") {
         setSkuValue(res?.data?.data?.SKU);
         setRequirementText(JSON.parse(res?.data?.data.requirementSHeet));
+
+        const a = res?.data?.data?.type_of_item;
+        setSelectedValues(JSON.parse(a.replace(/'/g, '"')));
+        setJustification(res?.data?.data?.justification_for_indenting);
+        setDepartment(res?.data?.data?.indenting_department);
       }
       console.log(res.data.data);
+     
+
       setDisable(res?.data?.data?.owner || false);
       setGetReq(true);
     } catch (error) {
@@ -59,15 +67,22 @@ const ReqSheet = () => {
       return
     }
     try {
-      const res = await axios.post(`${server}stepOne/save/`,{requirementSHeet:JSON.stringify(finalData),SKU:skuValue},{withCredentials: true});
+      const res = await axios.post(`${server}stepOne/save/`,{
+        requirementSHeet:JSON.stringify(finalData),
+        SKU:skuValue,
+        indenting_department:department,
+        justification_for_indenting:justification,
+        type_of_item:selectedValues
+      },{withCredentials: true});
       alert(res.data.message)
+      
     } catch (error) { 
       if(error?.response?.data?.message == "SKU already exists"){
         alert("SKU already exists please give unique SKU")
       }
       console.log(error)
     }
-  },[requirementText,skuValue,finalData]);
+  },[requirementText,skuValue,finalData,selectedValues,department,justification]);
 
 
   const deleteStepOne = useCallback(async () => {
@@ -83,11 +98,14 @@ const ReqSheet = () => {
   }, []);
 
   const handleCheckboxChange = (event) => {
+    console.log(selectedValues)
     const { value, checked } = event.target;
     setSelectedValues((prevValues) =>
       checked ? [...prevValues, value] : prevValues.filter((v) => v !== value)
     );
+    
   };
+
 
 
   return getReq ? (
@@ -168,7 +186,11 @@ const ReqSheet = () => {
               </div>
 
               <h2 className="section-title">REQUIREMENT SHEET</h2>
-              <div className="requirement-sheet"></div>
+             
+                  <div className="table-container">
+                  <EditableTable tableData={requirementText} setFinalData={setFinalData} />
+                  </div>
+                
               <h2 className="section-title">JUSTIFICATION FOR INDENTING</h2>
               <textarea
                 name="justification"

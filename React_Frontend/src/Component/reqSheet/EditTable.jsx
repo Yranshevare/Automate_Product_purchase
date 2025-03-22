@@ -253,7 +253,7 @@ useEffect(() => {
             {
               data ? data?.headers?.map((header,idx) => 
                 <th 
-                style={{maxWidth:`${setWidth(idx)}` }}
+                style={{minWidth:`${setWidth(idx)}` }}
                   onContextMenu={(e) => {
                     e.preventDefault();
                     openRowMenu(idx)
@@ -279,7 +279,7 @@ useEffect(() => {
                 {
                   data?.headers?.map((header, colIndex) => (
                     <td key={colIndex}
-                      style={{maxWidth:`${setWidth(colIndex)}` }}
+                      style={{minWidth:`${setWidth(colIndex)}` }}
                     >
                       
                       <textarea
@@ -299,11 +299,7 @@ useEffect(() => {
         </tbody>
       </table>
     </div>
-      <div className='table-submit-but'>
-        <button type="submit" className={`submit-button `}>
-              submit
-        </button>
-      </div>
+      
     </>
     )
   );

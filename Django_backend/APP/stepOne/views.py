@@ -90,6 +90,7 @@ def save(request):
                 return JsonResponse({"message":"not the owner"}, status=401)
 
             data = json.loads(request.body)
+            print(data)
 
             if data['requirementSHeet'] == "":
                 return JsonResponse({"message":"requirement sheet is empty"},status=400)
