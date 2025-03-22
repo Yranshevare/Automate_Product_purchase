@@ -20,7 +20,6 @@ def send_for_primary(request):
             # data = json.loads(request.body)['email']
             if not data:
                 return JsonResponse({'error': 'email is required'}, status=400)
-            # print(data)
             message = request.GET.get('message')
             # print(message)
 
@@ -46,6 +45,7 @@ def send_for_primary(request):
             decrypt_process_token = decrypt_data(process_token)
             decrypt_access_token = decrypt_data(access_token)
 
+            print(token)
 
             process = processModel.objects.filter(_id = decrypt_process_token['id']).first()
             if not process:

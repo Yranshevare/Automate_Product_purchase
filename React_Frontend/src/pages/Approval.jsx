@@ -175,27 +175,47 @@ function Approval() {
             <div className="section-title">JUSTIFICATION FOR INTENDATION</div>
             <div className="section-id">{reqSheet?.justification_for_indenting}</div>
 
-        {/* Rejection Form */}
-        <div className={`rejection-form-container`}>
-          <form onSubmit={handleSubmit}>
-            <textarea
-              placeholder="Please provide your response here..."
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-              // required
-            ></textarea>
-            {
-              !info.owner && 
-              <div className="approval-buttons">
-                <button type="button" onClick={()=>setShowRejectForm(false)} className="approve-btn">Cancel</button>
-                <button type="submit" className="reject-btn">
-                {responding === "Rejecting" ? "Rejecting..." : "submit"}
-                </button>
-              </div>
-            }
-          </form>
-        </div>
       </div>
+        {/* Rejection Form */}
+          {
+            !info.owner && 
+            <>
+              {
+                !showRejectForm &&
+                <div className={`approval-buttons ${showRejectForm ? "shifted" : ""}`}>
+                  <button className="approve-btn" onClick={handleApprove}>
+                    {responding === "Approving" ? "Approving..." : "Approve"}
+                  </button>
+                  <button className="reject-btn" onClick={()=>setShowRejectForm(true)}>
+                    Reject
+                  </button>
+                </div>
+              }
+            </>
+          }
+
+          {
+            showRejectForm &&
+            <div className={`rejection-form-container ${showRejectForm ? "shifted" : ""}`}>
+              <form onSubmit={handleSubmit}>
+                <textarea
+                  placeholder="Please provide your response here..."
+                  value={rejectReason}
+                  onChange={(e) => setRejectReason(e.target.value)}
+                  // required
+                ></textarea>
+                {
+                  !info.owner && 
+                  <div className="approval-buttons">
+                    <button type="button" onClick={()=>setShowRejectForm(false)} className="approve-btn">Cancel</button>
+                    <button type="submit" className="reject-btn">
+                    {responding === "Rejecting" ? "Rejecting..." : "submit"}
+                    </button>
+                  </div>
+                }
+              </form>
+            </div>
+          }
       </div>
     </div>
     :

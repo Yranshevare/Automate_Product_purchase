@@ -13,6 +13,43 @@
   height: auto;
 }
 
+.approval-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  transition: opacity 0.5s ease-in-out, display 0.5s ease-in-out;
+  margin-top: 10px;
+}
+
+.approve-btn,
+.reject-btn {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition-duration: 0.3s;
+}
+
+.approve-btn {
+  background-color: #8affbd;
+}
+
+.reject-btn {
+  background-color: #ff8a8a;
+}
+
+.approve-btn:hover{
+  background-color: #32c873;
+}
+.reject-btn:hover {
+  background-color: #f56b6b;
+  
+}
+
 /* Content Container - for shifting animation */
 .content-container {
   transition: transform 0.4s ease;
@@ -43,13 +80,16 @@
   display: flex;
   flex-direction: column;
   padding: 10px;
+  margin-bottom: 20px;
 }
+
 
 .section-title {
   color: #301f7b;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 5px;
+  margin-top: 20px;
 }
 
 .section-id {
@@ -94,18 +134,9 @@
   min-height: 250px;
 }
 
-.approve-btn {
-  background-color: #ff8a8a;
-}
 
-.reject-btn {
-  background-color: #ff8a8a;
-}
 
-.approve-btn:hover,
-.reject-btn:hover {
-  background-color: #f56b6b;
-}
+
 
 /* Rejection Form */
 .rejection-form-container {
@@ -119,7 +150,6 @@
   overflow: hidden;
   position: relative;
   left: -15px;
-  width: 920px;
 }
 
 
