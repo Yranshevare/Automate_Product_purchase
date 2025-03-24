@@ -13,15 +13,10 @@ def home(request):
 
 @csrf_exempt
 def send_for_primary(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         try:
-            # data = request.GET.get('email')
-            # name = request.GET.get('name')
-            # sequence_number = request.GET.get('seq_num')
             data = json.loads(request.body)['data']
-            # name = json.loads(request.body)['name']
-            # sequence_number = json.loads(request.body)['seq_num']
-            # print(data)
+            # print(json.loads(request.body))
 
 
             if not data:
@@ -64,7 +59,7 @@ def send_for_primary(request):
             if process.stepOne != process.steps.COMPLETE:
                 return JsonResponse({"error":"no requirement sheet is available"},status=405)
             
-            if process.stepTwo != process.steps.REJECTED:
+            if process.stepTwo == process.steps.REJECTED:
                 return JsonResponse({"error":"request already rejected"},status=405)
 
             sender_email = ""
@@ -125,7 +120,6 @@ def send_for_primary(request):
 
             if res != 1:
                 # delete the approval models
-               
                 return JsonResponse({"error": "email not sent properly"},status = 500)
             
 
@@ -154,7 +148,7 @@ def send_for_primary(request):
 
             
             
-            return JsonResponse({"message": "request send successfully"},status = 200)
+            return JsonResponse({"message": "request send successfully","email":sender_email},status = 200)
         except Exception as e:
             
             return JsonResponse({'error': 'unauthorize request',"error": str(e)}, status=401)

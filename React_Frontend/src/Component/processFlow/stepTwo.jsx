@@ -9,28 +9,29 @@ export default function StepTwo({processData,user}) {
     const [showMessageModal, setShowMessageModal] = useState(false)
     const [expandedStep, setExpandedStep] = useState(null)
     const [message, setMessage] = useState("")
-    const [sendBut, setSendBut] = useState(["send"])
+    const [sendBut, setSendBut] = useState("send")
     const [resBut, setResBut] = useState(["response"]) 
     const [name, setName] = useState([""])
     const navigate = useNavigate()
 
     const loadInfo = useCallback(async() => {
+      console.log(processData)
+      if(processData.step_two === "Incomplete"){
+        return
+      }
       try {
         const res = await axios.get(`${server}approve/get/${localStorage.getItem('process')}/`,{withCredentials: true})
         console.log(res.data)
         if (res.status === 200) {
           const e = []
-          const s = []
           const r = []
           const n = []
           res.data.data.forEach(val => {
             e.push(val.accepted_by_email)
-            s.push("resend")
             r.push(val.status)
             n.push(val.name)
           });
           setEmail(e)
-          setSendBut(s)
           setResBut(r)
           setName(n)
         }
@@ -60,21 +61,12 @@ export default function StepTwo({processData,user}) {
    
 
     
-    const handleSend = useCallback(async(i) => {
-      if(email[i] === ""){ 
-        alert("Please enter an email")
+    const handleSend = useCallback(async() => {
+    
+      if(!confirm(`Are you sure you want to send this request? `)){
         return
       }
-      if(name[i] === ""){
-        alert("Please enter a name")
-        return
-      }
-      if(!confirm(`Are you sure you want to send this request? to ${email[i]}`)){
-        return
-      }
-      const sb = [...sendBut]
-      sb[i] = "sending..."
-      setSendBut(sb)
+      setSendBut("sending...")
       try {
 
 
@@ -83,36 +75,48 @@ export default function StepTwo({processData,user}) {
           id:localStorage.getItem('process'),
           processData:processData,
           owner:false,
-          email:email[i]
+          // email:email[i]
         }
 
         const token = await encryptData(payload)
+        console.log(email,name)
+
+        if(email.length !== name.length){
+          alert("problem at handling the data at frontend")
+          return
+        }
+        const newData = []
+        for(let i=0;i<email.length;i++){
+          if(email[i] === "" || name[i] === ""){
+            alert("Please enter an email and name")
+            return
+          }
+          newData.push({
+            email:email[i],
+            name:name[i],
+            sqe_num:i+1
+          })
+        }
 
 
         
-        const res = await axios.get(`${server}approve/send_for_primary/`,{
-          params: { email: email[i], message: message,token:token,name:name[i] },
+        const res = await axios.post(`${server}approve/send_for_primary/`,{
+          data:newData,token:token
+        },{
           withCredentials: true
         })
         console.log(res)
         if(res.data.message === "request send successfully"){
           processData.step_two = "pending"
-          const r = [...resBut]
-          r[i] = "pending"
-          setResBut(r)
           alert("request send successfully")
         }
       } catch (error) {
-        console.log(error.data)
+        console.log(error.response)
       }
       finally{
-        setSendBut(prevSendBut => {
-          const sb = [...prevSendBut]; 
-          sb[i] = "resend";
-          return sb;
-        });
+        setSendBut("send");
       }
-      console.log("Sending email",email[i])
+      // console.log("Sending email",email[i])
     },[email,message,sendBut])
     
 
@@ -142,17 +146,17 @@ export default function StepTwo({processData,user}) {
     },[showMessageModal])
     
 
-    const handleResponse = useCallback(async (i) => {
-      if(resBut[i] !== 'Accepted' && resBut[i] !== 'Rejected'){
-        alert("no response available") 
-        // return
-      }
+    const handleResponse = useCallback(async () => {
+      // if(resBut[i] !== 'Accepted' && resBut[i] !== 'Rejected'){
+      //   alert("no response available") 
+      //   // return
+      // }
       const payload = {
         user:user,
         id:localStorage.getItem('process'),
         processData:processData,
         owner:true,
-        email:email[i]
+        // email:email[i]
       }
       const enc = await encryptData(payload)
       navigate(`/approval/${enc}`)
@@ -161,15 +165,16 @@ export default function StepTwo({processData,user}) {
 
 
 
-    const handleRemove = useCallback((i) => {
-      if(confirm("Are you sure you want to remove this email?")){
-        const e = [...email]
-        e.splice(i, 1)
-        setEmail(e)
-      }
+    const handleRemove = useCallback(() => {
       if(email.length === 1){
           setEmail([""])
+          setName([""])
           return
+      }
+      if(confirm("Are you sure you want to remove this email?")){
+        const e = [...email]
+        e.splice(e.length - 1, 1)
+        setEmail(e)
       }
         
       return
@@ -228,6 +233,7 @@ export default function StepTwo({processData,user}) {
             email.map((e,i) => 
                 <div key={i } className='email-container'>
                 <div className="email-input-container" >
+                  <div>{i+1+")"}</div>
                   <input
                   placeholder='mention the name or role of that person' 
                   type="text" 
@@ -237,36 +243,41 @@ export default function StepTwo({processData,user}) {
                   />
                 <input
                   type="email"
-                  placeholder="mention the email of the person whose approval is needed"
+                  placeholder="mention the email of the person "
                   value={email[i]}
                   onChange={(e) => setEmails(i,e.target.value)}
                   className='input'
                   required
                 />
-            
+                {/* <div>
+                response
+                </div> */}
                 </div>
-                <div className="action-buttons">
-                  <button className="action-btn" onClick={()=>handleSend(i)}>
-                    {sendBut[i]}
-                  </button>
-                  <button className="action-btn message-btn" onClick={()=>setShowMessageModal(true)}>
-                    add message
-                  </button>
-                  <button 
-                    className={
-                      resBut[i] === 'Accepted'? 'action-btn-accepted ' : " action-btn-pending" 
-                    } 
-                    onClick={()=>handleResponse(i)}
-                  >
-                    {resBut[i]}
-                  </button>
-                  <button className=" action-btn-pending" onClick={()=>handleRemove(i)}>
-                    remove
-                  </button>
-                </div>
+                
+                
                 </div>
             )
         }
+        <div className="action-buttons">
+                  <button className="action-btn" onClick={()=>handleSend()}>
+                    {sendBut}
+                  </button>
+                  {/* <button className="action-btn message-btn" onClick={()=>setShowMessageModal(true)}>
+                    add message
+                  </button> */}
+                  <button 
+                    className={
+                      // resBut[i] === 'Accepted'? 'action-btn-accepted ' : " action-btn-pending" 
+                     'action-btn-accepted '
+                    } 
+                    onClick={()=>handleResponse()}
+                  >
+                    response
+                  </button>
+                  <button className=" action-btn-pending" onClick={()=>handleRemove()}>
+                    remove
+                  </button>
+                </div>
         
     </div> 
     </div>

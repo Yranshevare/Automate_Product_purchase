@@ -60,11 +60,12 @@ const ReqSheet = () => {
   
   const handleSubmit = useCallback(async(e) => {
     e.preventDefault();
-    if( skuValue === ""){
+    if(skuValue.trim() === "" || department.trim() === "" || justification.trim() === "" || selectedValues.length === 0){
       alert("please fill all the places")
       return
     }
     try {
+      // console.log(skuValue,"kkk")
       const res = await axios.post(`${server}stepOne/save/`,{
         requirementSHeet:JSON.stringify(finalData),
         SKU:skuValue,
