@@ -17,7 +17,7 @@
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  transition: opacity 0.5s ease-in-out, display 0.5s ease-in-out;
+  transition: opacity 0.4s ease-in-out, display 0.4s ease-in-out;
   margin-top: 10px;
 }
 
@@ -63,7 +63,7 @@
   border-radius: 50%;
 }
 .content-container.shifted {
-  transform: translateY(-0px);
+  transform: translateY(-40px);
 }
 
 /* SKU Banner */
@@ -214,6 +214,9 @@ textarea:focus {
   textarea {
     width: 555px;
   }
+  .sku-banner{
+    width: 600px;
+  }
 }
 @media (max-width: 651px) {
   .approval-page {
@@ -222,8 +225,11 @@ textarea:focus {
   .content-container {
     width: 450px;
   }
+  .section-info{
+    margin-bottom: 0px;
+  }
   textarea {
-    width: 357px;
+    width: 389px;
   }
   .sku-title {
     font-size: 10px;
@@ -244,6 +250,9 @@ textarea:focus {
   .user-details {
     margin-right: 5px;
   }
+  .sku-banner{
+    width: 450px;
+  }
 }
 @media (max-width: 502px) {
   .approval-page {
@@ -252,8 +261,11 @@ textarea:focus {
   .content-container {
     width: 300px;
   }
+  .section-info{
+    margin-bottom: 0px;
+  }
   textarea {
-    width: 258px;
+    width: 238px;
   }
   .sku-title {
     font-size: 10px;
@@ -281,6 +293,9 @@ textarea:focus {
   }
   .section-id{
     font-size: 12px;
+  }
+  .sku-banner{
+    width: 310px;
   }
 }
 @media (max-width: 352px) {
@@ -323,4 +338,8 @@ textarea:focus {
   .section-id{
     font-size: 12px;
   }
+  .sku-banner{
+    width: 280px;
+  }
+
 }
