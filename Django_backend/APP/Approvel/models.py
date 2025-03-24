@@ -22,6 +22,7 @@ class ApprovalModel(models.Model):
 
     process = models.ForeignKey(settings.PROCESS_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    sequence_number = models.IntegerField()
 
     def __str__(self):
             return self.process.title

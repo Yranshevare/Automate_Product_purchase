@@ -15,19 +15,30 @@ def home(request):
 def send_for_primary(request):
     if request.method == 'GET':
         try:
-            data = request.GET.get('email')
-            name = request.GET.get('name')
-            # data = json.loads(request.body)['email']
+            # data = request.GET.get('email')
+            # name = request.GET.get('name')
+            # sequence_number = request.GET.get('seq_num')
+            data = json.loads(request.body)['data']
+            # name = json.loads(request.body)['name']
+            # sequence_number = json.loads(request.body)['seq_num']
+            # print(data)
+
+
             if not data:
                 return JsonResponse({'error': 'email is required'}, status=400)
+            
+
             message = request.GET.get('message')
             # print(message)
 
             if message == "":
                 message = """We hope this message finds you well. We are in the process of preparing a Request for Quotation (RFQ) for an upcoming project, and your approval is required to proceed with the next steps.</p>"""
-            # print(data,message)
+   
 
-            token = request.GET.get('token')
+
+
+            # token = request.GET.get('token')
+            token = json.loads(request.body)['token']
             if not token:
                 return JsonResponse({'error': 'unauthorize request'}, status=401)
             # print(token)
@@ -45,7 +56,6 @@ def send_for_primary(request):
             decrypt_process_token = decrypt_data(process_token)
             decrypt_access_token = decrypt_data(access_token)
 
-            print(token)
 
             process = processModel.objects.filter(_id = decrypt_process_token['id']).first()
             if not process:
@@ -53,14 +63,36 @@ def send_for_primary(request):
             
             if process.stepOne != process.steps.COMPLETE:
                 return JsonResponse({"error":"no requirement sheet is available"},status=405)
-
             
+            if process.stepTwo != process.steps.REJECTED:
+                return JsonResponse({"error":"request already rejected"},status=405)
+
+            sender_email = ""
+            for x in data:
+
+                existed_approval_model =  ApprovalModel.objects.filter(email = x["email"],process = decrypt_process_token['id']).first()
+
+                if not existed_approval_model:
+                    
+                    if(sender_email == ""):
+                        sender_email = x["email"]
+
+                elif existed_approval_model.status == ApprovalModel.Status.PENDING: 
+
+                    if sender_email == "":
+                        sender_email = existed_approval_model.email
+
+                    
+
+                
+                
+
             
             
 
             subject = "Primary approval"
             from_email = decrypt_access_token['username'] or settings.EMAIL_HOST_USER
-            recipient_list = [data]
+            recipient_list = [sender_email]
             html_content = f"""
                 <body>
                     <div >
@@ -92,29 +124,36 @@ def send_for_primary(request):
             res = email.send()
 
             if res != 1:
+                # delete the approval models
+               
                 return JsonResponse({"error": "email not sent properly"},status = 500)
             
 
-            approval = ApprovalModel.objects.filter(email = data ).first()
-            if approval and approval.process == process:    
-                return JsonResponse({'message': 'email is re sended successfully'}, status=200)
+
+            for x in data:
+
+                existed_approval_model =  ApprovalModel.objects.filter(email = x["email"],process = decrypt_process_token['id']).first()
+                if not existed_approval_model:
+                    # create the new model and save it
+                    approval = ApprovalModel(
+                        email = x["email"],
+                        name = x["name"],
+                        sequence_number = x["sqe_num"],
+                        process = process
+                    )
+
+                    process.stepTwo = processModel.steps.PENDING
+
+                    try:
+                        process.save()
+                        approval.save()
+                    except Exception as e:
+                        return JsonResponse({'error': 'unauthorize request',"error": str(e)}, status=401)
 
 
-            approve = ApprovalModel(
-                email = data,
-                process = process,
-                name = name
-            ) 
-
-            process.stepTwo = processModel.steps.PENDING
 
             
-            try:
-                 process.save()
-                 approve.save()
-            except Exception as e:
-                return JsonResponse({'error': 'unauthorize request',"error": str(e)}, status=401)
-
+            
             return JsonResponse({"message": "request send successfully"},status = 200)
         except Exception as e:
             
@@ -141,7 +180,8 @@ def get(request,process_id):
                     "status":a.status,
                     "accepted_by_email":a.email,
                     "response":a.response,
-                    "name": a.name
+                    "name": a.name,
+                    "sqe_num": a.sequence_number
                 }
                 data.append(newData)
             

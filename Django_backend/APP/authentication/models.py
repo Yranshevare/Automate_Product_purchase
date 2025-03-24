@@ -13,9 +13,9 @@ class UserModel(models.Model):
     isEmailVerified = models.BooleanField(default=False)
 
     class Gender(models.TextChoices):
-        MALE = 'M', 'Male'
-        FEMALE = 'F', 'Female'
-        OTHER = 'O', 'Other'
+        MALE = 'Male', 'Male'
+        FEMALE = 'Female', 'Female'
+        OTHER = 'Other', 'Other'
 
     gender = models.CharField(
         max_length=10, 
