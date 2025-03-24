@@ -190,6 +190,26 @@ textarea:focus {
   background-color: #f56b6b;
 }
 
+.authority-section{
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 95%;
+}
+
+.authority-members{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.approval-container{
+  border: 0px solid black;
+  background-color: #f56b6b;
+  height: 30px;
+  width: 30%;
+}
+
 @media (max-width: 976px) {
   .approval-page {
     width: 700px;
@@ -295,7 +315,7 @@ textarea:focus {
     font-size: 12px;
   }
   .sku-banner{
-    width: 310px;
+    width: 300px;
   }
 }
 @media (max-width: 352px) {
@@ -306,7 +326,7 @@ textarea:focus {
     width: 250px;
   }
   textarea {
-    width: 208px;
+    width: 180px;
   }
   .sku-title {
     font-size: 10px;
@@ -317,6 +337,9 @@ textarea:focus {
   .username {
     font-size: 12px;
   }
+  .user-info{
+    flex-direction: column-reverse;
+  }
   .user-email {
     font-size: 10px;
   }
@@ -326,6 +349,9 @@ textarea:focus {
   }
   .user-details {
     margin-right: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .section-info{
     padding: 5px;
@@ -339,7 +365,7 @@ textarea:focus {
     font-size: 12px;
   }
   .sku-banner{
-    width: 280px;
+    width: 270px;
   }
 
 }
