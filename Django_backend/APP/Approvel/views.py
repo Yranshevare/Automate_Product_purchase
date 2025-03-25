@@ -161,6 +161,7 @@ def send_for_primary(request):
 def get(request,process_id):
     if request.method == 'GET':
         try:
+            print(process_id,"LLL")
             process_id = decode_id(process_id)
             approve = ApprovalModel.objects.filter(process = process_id)
             if not approve:
@@ -200,6 +201,7 @@ def get(request,process_id):
 def Approve(request):
     if request.method == 'GET':
         try:
+            
             process_id = request.GET.get('process_id')
             # process_id = json.loads(request.body)['process_id']
             process_id = decode_id(process_id)

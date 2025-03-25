@@ -21,7 +21,7 @@ export default function StepTwo({processData,user}) {
       }
       try {
         const res = await axios.get(`${server}approve/get/${localStorage.getItem('process')}/`,{withCredentials: true})
-        console.log(res.data)
+        console.log(res.data,"data")
         if (res.status === 200) {
           const e = []
           const r = []
@@ -155,8 +155,7 @@ export default function StepTwo({processData,user}) {
         user:user,
         id:localStorage.getItem('process'),
         processData:processData,
-        owner:true,
-        email:email[0]
+        owner:true
       }
       const enc = await encryptData(payload)
       navigate(`/approval/${enc}`)
