@@ -217,6 +217,7 @@ def Approve(request):
                 return JsonResponse({'message':'no requirement sheet is available'},status = 404)
             
             email = request.GET.get('email')
+            print(email)
             # seq_num = request.GET.get('seq_num')
             token = request.GET.get('token')
             # print(token)
@@ -239,12 +240,16 @@ def Approve(request):
             #current approval model
             app = None
             for x in approve:
-                if x.sequence_number == curr_sqe[0]:
+                if x.email == email:
                     app = x
                     break
 
             if not app:
                 return JsonResponse({'message':'request not found, invalid email'},status = 404)
+            
+            if app.status == ApprovalModel.Status.ACCEPTED:
+                return JsonResponse({'message':'request already accepted'},status = 200)
+            
             
 
 
@@ -252,7 +257,7 @@ def Approve(request):
             nextApp = None
             if len(curr_sqe) > 1:
                 for x in approve:
-                    if x.sequence_number == curr_sqe[1]:
+                    if x.sequence_number == app.sequence_number + 1:
                         nextApp = x
                         break
             # print("sending email to ",nextApp.email)
@@ -310,6 +315,7 @@ def Approve(request):
             isApprovalAccepted = True
 
             for x in approve:
+                print(x.status)
                 if x.status != ApprovalModel.Status.ACCEPTED:
                     isApprovalAccepted = False
                     break
@@ -320,7 +326,7 @@ def Approve(request):
                 process.save()
                 # function to send email to store for quotations
 
-
+            print(app.sequence_number)
             app.save()
             return JsonResponse({'message':'your request has been approve'},status = 200)
         except Exception as e:
@@ -385,18 +391,33 @@ def get_one(request):
             email = request.GET.get('email')
             # email = json.loads(request.body)['email']
             
-            approve = ApprovalModel.objects.filter(process = process_id,email = email).first()
+            approve = ApprovalModel.objects.filter(process = process_id)
             if not approve:
                 return JsonResponse({'message':'request not found'},status = 404)
             
-            data = {
-                "id":approve._id,
-                "status":approve.status,
-                "accepted_by_email":approve.email,
-                "response":approve.response
-            }
+            app = None
+            for a in approve:
+                if a.email == email:
+                    app = a
             
-            return JsonResponse({"data":data},status = 200)
+
+            next_app = None
+            for a in approve:
+                if a.sequence_number == app.sequence_number + 1:
+                    next_app = a
+            
+            if next_app:
+                 data = {
+                "id":next_app._id,
+                "status":next_app.status,
+                "next_email":next_app.email,
+                "response":next_app.response
+                }
+            else:
+                data = {
+                    "message":"last approval needed"
+                }
+            return JsonResponse({"data":data,"message":"request found"},status = 200)
         except Exception as e:
             return JsonResponse({'message':'error while getting the request','error':str(e)},status=500)
     else:

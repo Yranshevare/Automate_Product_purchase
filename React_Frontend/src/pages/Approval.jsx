@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "../CSS/Approval.css";
 import { useNavigate, useParams } from "react-router-dom";
-import { decryptData } from "../util/encryptToken";
+import { decryptData, encryptData } from "../util/encryptToken";
 import { server } from "../constant";
 import axios from "axios";
 import { Suspense } from "react";
@@ -17,12 +17,10 @@ function Approval() {
   const [loading, setLoading] = useState(true);
   const [responding, setResponding] = useState("");
   const [approve_email, setApproval_email] = useState("");
+  const [nextEmail, setNextEmail] = useState("");
 
 
 
-  useEffect(()=>{
-    console.log(approve_email,"aa")
-  },[approve_email])
 
 
 
@@ -39,23 +37,34 @@ function Approval() {
     }
   }, [info]);
   const load = useCallback(async () => {
+    let dec = await decryptData(data);
     try {
-      let dec = await decryptData(data);
       // let dec = data
       setInfo(dec);
-      const [step, all_approve] = await axios.all([
+      const [step, all_approve,curr_approval] = await axios.all([
         axios.get(`${server}stepOne/get/${dec.id}/`, { withCredentials: true }),
-        axios.get(`${server}approve/get/${dec.id}/`,{withCredentials: true})
+        axios.get(`${server}approve/get/${dec.id}/`,{withCredentials: true}),
+        axios.get(`${server}approve/get_one/`,{
+          params: { process_id: dec.id ,email:dec.email},
+          withCredentials: true
+        })
       ]);
       
-      console.log(step,all_approve.data)
+      console.log(step,all_approve.data,curr_approval.data)
+      if(curr_approval.data.message === "request found"){
+        setNextEmail(curr_approval.data.data.next_email)
+      }
+     
+
+
+
       if (step.data?.message === "successfully fetched the data") {
         const sheet = step?.data?.data;
         const a = sheet.type_of_item || undefined;
         if (a) {
           //to convert the string to array
           const b = JSON.parse(a.replace(/'/g, '"'));
-          console.log(b);
+
           let newStr = "";
           b.map((item, idx) => {
             newStr = newStr + item;
@@ -64,15 +73,13 @@ function Approval() {
             }
           });
           sheet.type_of_item = newStr;
-          console.log(newStr);
         } 
         setApproval_email(all_approve?.data?.data)
         setReqSheet(sheet);
       }
       setLoading(true)
       // setRejectReason(approve?.data?.data?.response)
-      console.log(step.data.data)
-      console.log(approve.data,'kkk')
+     
     }
     catch (error) {
       if(error?.response?.data?.message === "step doesn't exits"){
@@ -94,11 +101,22 @@ function Approval() {
     // setShowRejectForm(false);
     try {
       setResponding("Approving");
+      let dec = await decryptData(data);
+
+      const payload = {
+          ...dec,
+          email: nextEmail
+        }
+      
+      const token = await encryptData(payload)
+      
+
+
       const res = await axios.get(`${server}approve/approve_request/`, {
         params: { 
           process_id: info.id, 
           email: info.email,
-          token:data,
+          token:token,
           owner_email:info?.user?.email,
           owner_username : info?.user?.username
         },
@@ -107,13 +125,16 @@ function Approval() {
       if (res.data.message === "your request has been approve") {
         alert(res.data.message);
       }
+      if(res.data.message === "request already accepted"){
+        alert(res.data.message)
+      }
       console.log(res);
     } catch (error) {
       console.log(error.response);
     } finally {
       setResponding("");
     }
-  }, [info]);
+  }, [info,nextEmail]);
 
   const handleSubmit = useCallback(
     async (e) => {

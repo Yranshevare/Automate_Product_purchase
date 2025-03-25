@@ -12,6 +12,7 @@ export default function StepTwo({processData,user}) {
     const [sendBut, setSendBut] = useState("send")
     const [resBut, setResBut] = useState(["response"]) 
     const [name, setName] = useState([""])
+    
     const navigate = useNavigate()
 
     const loadInfo = useCallback(async() => {
@@ -63,23 +64,38 @@ export default function StepTwo({processData,user}) {
     
     const handleSend = useCallback(async() => {
     
-      if(!confirm(`Are you sure you want to send this request? `)){
-        return
-      }
+     
       setSendBut("sending...")
       try {
 
-
-        const payload = {
-          user:user,
-          id:localStorage.getItem('process'),
-          processData:processData,
-          owner:false,
-          email:email[0]
+        let payload 
+        
+        if(processData.step_two === "Pending"){
+          console.log(resBut)
+          for(let i = 0; i < resBut.length; i++){
+            if(resBut[i] === "Pending"){
+              console.log(email[i])
+              payload = { 
+                user:user,
+                id:localStorage.getItem('process'),
+                processData:processData,
+                owner:false,
+                email:email[i]
+              }
+              break
+            }
+          }
+        }else{
+            payload = { 
+            user:user,
+            id:localStorage.getItem('process'),
+            processData:processData,
+            owner:false,
+            email:email[0]
+          }
         }
 
         const token = await encryptData(payload)
-        console.log(email,name)
 
         if(email.length !== name.length){
           alert("problem at handling the data at frontend")
@@ -99,7 +115,9 @@ export default function StepTwo({processData,user}) {
         }
 
 
-        
+        if(!confirm(`Are you sure you want to send this request?${payload.email} `)){
+          return
+        }
         const res = await axios.post(`${server}approve/send_for_primary/`,{
           data:newData,token:token
         },{
@@ -155,7 +173,8 @@ export default function StepTwo({processData,user}) {
         user:user,
         id:localStorage.getItem('process'),
         processData:processData,
-        owner:true
+        owner:true,
+        email:email[0]
       }
       const enc = await encryptData(payload)
       navigate(`/approval/${enc}`)
@@ -191,7 +210,6 @@ export default function StepTwo({processData,user}) {
     },[name])
     const handleAddEmail = useCallback(() => {
         setEmail([...email, ""]);
-        setSendBut([...sendBut, "send"])
         setResBut([...resBut, "response"])
         setName([...name, ""])
     },[email])
