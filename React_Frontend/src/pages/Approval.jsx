@@ -11,9 +11,15 @@ import { ThreeDot } from "react-loading-indicators";
 function Approval() {
   const [showRejectForm, setShowRejectForm] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+<<<<<<< HEAD
   const [reqSheet, setReqSheet] = useState({});
   const [info, setInfo] = useState({});
   const [loading, setLoading] = useState(false);
+=======
+  const [reqSheet, setReqSheet] = useState({})
+  const [info,setInfo] = useState({})
+  const [loading, setLoading] = useState(true);
+>>>>>>> main
   const [responding, setResponding] = useState("");
 
   const { data } = useParams();
@@ -31,6 +37,7 @@ function Approval() {
     try {
       let dec = await decryptData(data);
       // let dec = data
+<<<<<<< HEAD
       setInfo(dec);
       const [step, approve] = await axios.all([
         axios.get(`${server}stepOne/get/${dec.id}/`, { withCredentials: true }),
@@ -43,6 +50,23 @@ function Approval() {
         const sheet = step?.data?.data;
         const a = sheet.type_of_item || undefined;
         if (a) {
+=======
+      setInfo(dec)
+      const [step,approve] = await axios.all([
+        axios.get(`${server}stepOne/get/${dec.id}/`,{withCredentials: true}),
+        axios.get(`${server}approve/get_one/`,{
+          params: { process_id: dec.id , email:dec.email },
+          withCredentials: true
+        })
+      ])
+      console.log(step,approve)
+      if(step.data?.message === "successfully fetched the data"){
+
+
+        const sheet = step?.data?.data
+        const a = sheet.type_of_item  || undefined
+        if(a){
+>>>>>>> main
           //to convert the string to array
           const b = JSON.parse(a.replace(/'/g, '"'));
           console.log(b);
