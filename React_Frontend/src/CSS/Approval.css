@@ -207,8 +207,7 @@ textarea:focus {
 
 .approval-container{
   border: 0px solid black;
-  background-color:#ff8a8a;
-  ;
+ 
   height: 30px;
   width: 30%;
   display: flex;
@@ -218,7 +217,17 @@ textarea:focus {
   border-radius: 10px;
   transition-duration: 0.3s;
 }
-.approval-container:hover{
+.app-accepted{
+ background-color: #8affbd ; 
+}
+.app-accepted:hover{
+  background-color: #32c873;
+}
+.app-rejected{
+  background-color:#ff8a8a;
+  ;
+}
+.app-rejected:hover{
   background-color: #f56b6b;
 }
 .approval-container p{
@@ -377,3 +386,6 @@ textarea:focus {
   }
 
 }
+
+
+

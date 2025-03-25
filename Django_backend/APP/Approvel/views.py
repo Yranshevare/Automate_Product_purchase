@@ -203,6 +203,9 @@ def Approve(request):
         try:
             
             process_id = request.GET.get('process_id')
+            owner_email = request.GET.get('owner_email')
+            owner_username = request.GET.get('owner_username')
+            
             # process_id = json.loads(request.body)['process_id']
             process_id = decode_id(process_id)
 
@@ -214,14 +217,79 @@ def Approve(request):
                 return JsonResponse({'message':'no requirement sheet is available'},status = 404)
             
             email = request.GET.get('email')
+            # seq_num = request.GET.get('seq_num')
+            token = request.GET.get('token')
+            # print(token)
             # email = json.loads(request.body)['email']
 
             approve = ApprovalModel.objects.filter(process = process_id)
 
+
+
+
+            curr_sqe = []
+            for x in approve:
+                if x.status == ApprovalModel.Status.PENDING:
+                    curr_sqe.append(x.sequence_number)
+                    
+            curr_sqe.sort()
+            print(curr_sqe) 
+
             app = None
             for x in approve:
-                if x.email == email:
+                if x.sequence_number == curr_sqe[0]:
                     app = x
+                    break
+
+                
+            nextApp = ApprovalModel.objects.filter(process = process_id,sequence_number = curr_sqe[0] + 1).first()
+            # print("sending email to ",nextApp.email)
+            print(nextApp)
+
+            if nextApp:
+            
+
+                subject = "Primary approval"
+                from_email = owner_username  or settings.EMAIL_HOST_USER
+                recipient_list = [nextApp.email]
+                html_content = f"""
+                    <body>
+                        <div >
+                            <div >
+                                <h2>RFQ Approval Request</h2>
+                            </div>
+                            <div >
+                                <p>We hope this message finds you well. We are in the process of preparing a Request for Quotation (RFQ) for an upcoming project, and your approval is required to proceed with the next steps.</p>
+                                <p>Please review the requirement sheet for <b>{process.title}</b> at the following link:</p>
+                                <p><a href={settings.FRONTEND}/approval/{token} >Review Requirement Sheet</a></p>
+                                <p>Once you have reviewed the document, kindly provide your approval or feedback so we can continue with the RFQ process.</p>
+                                <p>If you have any questions or need additional information, feel free to reach out.</p>
+                                <p>Thank you for your attention to this matter.</p>
+                                <p>Best regards,</p>
+                                <p>{owner_username}<br>{owner_email}</p>
+                            </div>
+                            <div >
+                                <p>This email was sent by Automate product purchase platform. If you did not request this email, please disregard it.</p>
+                            </div>
+                        </div>
+                    </body>
+                """
+
+                email = EmailMessage(subject, html_content, from_email, recipient_list)
+                email.content_subtype = "html"  # Mark content as HTML
+
+
+
+                res = email.send()
+
+                if res != 1:
+                    # delete the approval models
+                    return JsonResponse({"error": "email not sent properly"},status = 500)
+                
+                print('sending email to ',nextApp.email)
+            
+
+            
                 
 
             if not app:
@@ -243,6 +311,7 @@ def Approve(request):
 
             if isApprovalAccepted:
                 process.stepTwo = processModel.steps.COMPLETE
+                print("send email to store for quotations")
                 process.save()
                 # function to send email to store for quotations
 

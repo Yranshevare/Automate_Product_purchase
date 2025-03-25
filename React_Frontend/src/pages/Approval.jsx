@@ -95,7 +95,13 @@ function Approval() {
     try {
       setResponding("Approving");
       const res = await axios.get(`${server}approve/approve_request/`, {
-        params: { process_id: info.id, email: info.email },
+        params: { 
+          process_id: info.id, 
+          email: info.email,
+          token:data,
+          owner_email:info?.user?.email,
+          owner_username : info?.user?.username
+        },
         withCredentials: true,
       });
       if (res.data.message === "your request has been approve") {
@@ -138,11 +144,16 @@ function Approval() {
   );
 
   const handelShowRejection = useCallback((val)=>{
-    if(val.trim() === ""){
+    console.log(val)
+    if(val.status === 'Accepted'){
+      alert("request is accepted")
+      return
+    }
+    if(val.response.trim() === ""){
       alert("no response is available")
       return
     }
-    setRejectReason(val)
+    setRejectReason(val.response)
   },[rejectReason])
 
   return loading ? (
@@ -273,10 +284,10 @@ function Approval() {
                   approve_email.map((email, index) => {
                     return (
                       <div className="authority-members" 
-                      onClick={() => handelShowRejection(email.response)}
+                      onClick={() => handelShowRejection(email)}
                       key={index}>
-                        <div className="section-id">{email.accepted_by_email}</div>
-                        <div className="approval-container">
+                        <div className="section-id">{email.accepted_by_email}</div> 
+                        <div className={`${email.status === "Accepted" ? "app-accepted approval-container" : 'app-rejected approval-container' }`}>
                           <p>{email.status}</p>
                         </div>
                       </div>
