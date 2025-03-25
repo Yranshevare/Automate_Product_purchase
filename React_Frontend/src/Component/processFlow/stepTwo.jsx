@@ -75,7 +75,7 @@ export default function StepTwo({processData,user}) {
           id:localStorage.getItem('process'),
           processData:processData,
           owner:false,
-          // email:email[i]
+          email:email[0]
         }
 
         const token = await encryptData(payload)
@@ -156,7 +156,7 @@ export default function StepTwo({processData,user}) {
         id:localStorage.getItem('process'),
         processData:processData,
         owner:true,
-        // email:email[i]
+        email:email[0]
       }
       const enc = await encryptData(payload)
       navigate(`/approval/${enc}`)

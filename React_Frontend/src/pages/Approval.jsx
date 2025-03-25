@@ -13,7 +13,7 @@ function Approval() {
   const [rejectReason, setRejectReason] = useState("");
   const [reqSheet, setReqSheet] = useState({})
   const [info,setInfo] = useState({})
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [responding, setResponding] = useState("");
 
   const {data} = useParams()
@@ -41,6 +41,7 @@ function Approval() {
           withCredentials: true
         })
       ])
+      console.log(step,approve)
       if(step.data?.message === "successfully fetched the data"){
 
 
@@ -65,7 +66,7 @@ function Approval() {
         setReqSheet(sheet)
       }
       setLoading(true)
-      setRejectReason(approve?.data?.data?.response)
+      // setRejectReason(approve?.data?.data?.response)
       console.log(step.data.data)
       console.log(approve.data,'kkk')
     }
@@ -74,7 +75,7 @@ function Approval() {
         alert("Requirement sheet dose not exist")
         navigate("/auth/login")
       }
-      console.log(error.response.data.message)
+      // console.log(error.response.data.message)
     }
   })
   useEffect(() => {
