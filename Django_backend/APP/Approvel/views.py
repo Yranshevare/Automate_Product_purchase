@@ -235,14 +235,26 @@ def Approve(request):
             curr_sqe.sort()
             print(curr_sqe) 
 
+
+            #current approval model
             app = None
             for x in approve:
                 if x.sequence_number == curr_sqe[0]:
                     app = x
                     break
 
-                
-            nextApp = ApprovalModel.objects.filter(process = process_id,sequence_number = curr_sqe[0] + 1).first()
+            if not app:
+                return JsonResponse({'message':'request not found, invalid email'},status = 404)
+            
+
+
+            #next approval model
+            nextApp = None
+            if len(curr_sqe) > 1:
+                for x in approve:
+                    if x.sequence_number == curr_sqe[1]:
+                        nextApp = x
+                        break
             # print("sending email to ",nextApp.email)
             print(nextApp)
 
@@ -287,13 +299,6 @@ def Approve(request):
                     return JsonResponse({"error": "email not sent properly"},status = 500)
                 
                 print('sending email to ',nextApp.email)
-            
-
-            
-                
-
-            if not app:
-                return JsonResponse({'message':'request not found, invalid email'},status = 404)
             
             # if(process.stepTwo == processModel.steps.REJECTED):
             #     return JsonResponse({'message':'request already rejected'},status = 422)
