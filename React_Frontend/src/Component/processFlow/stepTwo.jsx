@@ -1,8 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { server } from '../../constant'
 import axios from 'axios'
 import { encryptData } from '../../util/encryptToken'
 import { useNavigate } from 'react-router-dom'
+import html2canvas from 'html2canvas'
+import JsPDF from 'jspdf'
+import Tp from '../../util/Tp'
 
 export default function StepTwo({processData,user}) {
     const [email, setEmail] = useState([""])
@@ -12,6 +15,7 @@ export default function StepTwo({processData,user}) {
     const [sendBut, setSendBut] = useState("send")
     const [resBut, setResBut] = useState(["response"]) 
     const [name, setName] = useState([""])
+    const printRef = useRef()
     
     const navigate = useNavigate()
 
@@ -59,13 +63,48 @@ export default function StepTwo({processData,user}) {
     },[])
     
     
-   
+    const generatePdf = async()=>{
+  
+      const element = printRef.current
+      console.log(element) 
+        if(!element){
+            console.log("element not found")
+            return
+        }   
+        const canvas = await html2canvas(element)
+        const data = canvas.toDataURL("image/png")
+  
+        const pdf = new JsPDF({
+            orientation: "portrait",
+            unit: "px",
+            format: "a4"
+        });
+  
+        const impProps = pdf.getImageProperties(data)
+  
+  
+        const pdfWidth = pdf.internal.pageSize.getWidth() 
+        const pdfHeight = (impProps.height * pdfWidth / impProps.width) 
+        pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
+        pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
+        const pdfBlob = pdf.output("blob");
+        // pdf.save("document.pdf")
+        const pdfFile = new File([pdfBlob], "document.pdf", { type: "application/pdf" });
+        const fromData = new FormData()
+        fromData.append("pdf", pdfFile);
+        // pdf.save("document.pdf")
+        
+  
+  
+        return fromData
+    }
 
     
     const handleSend = useCallback(async() => {
     
      
       setSendBut("sending...")
+      
       try {
 
         let payload 
@@ -91,11 +130,12 @@ export default function StepTwo({processData,user}) {
             id:localStorage.getItem('process'),
             processData:processData,
             owner:false,
-            email:email[0]
+            email:"store@gmail.com"
           }
         }
 
         const token = await encryptData(payload)
+        console.log(payload)
 
         if(email.length !== name.length){
           alert("problem at handling the data at frontend")
@@ -113,14 +153,24 @@ export default function StepTwo({processData,user}) {
             sqe_num:i+1
           })
         }
-
+        
 
         if(!confirm(`Are you sure you want to send this request?${payload.email} `)){
           return
         }
-        const res = await axios.post(`${server}approve/send_for_primary/`,{
-          data:newData,token:token
-        },{
+
+
+
+        const pdf = await generatePdf()
+        pdf.append("token",token)
+        pdf.append("data",JSON.stringify(newData))
+        // pdf.forEach((value, key) => {
+        //   console.log(`${key}:`, value);
+        // });
+
+
+
+        const res = await axios.post(`${server}approve/send_for_primary/`,pdf,{
           withCredentials: true
         })
         console.log(res)
@@ -220,6 +270,9 @@ export default function StepTwo({processData,user}) {
     <div
         className="step-button" onClick={()=>toggleStep(2)}
     >
+      {
+        expandedStep === 2 && <Tp printRef={printRef}/>
+      }
     <div className="step-content">
         <div className='step-inner-content'>
             <div className="step-header">

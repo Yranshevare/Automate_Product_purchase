@@ -101,6 +101,7 @@ body {
 
 
 .print{
+  position: absolute;
   transform: translateX(-1000px);
 }
 

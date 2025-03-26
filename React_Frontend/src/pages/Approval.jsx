@@ -9,6 +9,7 @@ import RenderTable from "../Component/reqSheet/RenderTable";
 import { ThreeDot } from "react-loading-indicators";
 import html2canvas from "html2canvas";
 import JsPDF from "jspdf";
+import Tp from "../util/Tp";
 
 function Approval() {
   const [showRejectForm, setShowRejectForm] = useState(false);
@@ -103,7 +104,7 @@ function Approval() {
 
 
   const generatePdf = async()=>{
-    setShowRejectForm(true)
+  
     const element = printRef.current
     // console.log(element) 
       if(!element){
@@ -131,8 +132,7 @@ function Approval() {
       const pdfFile = new File([pdfBlob], "document.pdf", { type: "application/pdf" });
       const fromData = new FormData()
       fromData.append("pdf", pdfFile);
-      pdf.save("document.pdf")
-      setShowRejectForm(false)
+      // pdf.save("document.pdf")
       
 
 
@@ -152,9 +152,10 @@ function Approval() {
         const pdf = await generatePdf()
         pdf.forEach((value, key) => {
           console.log(`${key}:`, value);
-      });
+        });
 
-
+        // const fromData = new FormData()
+        // fromData.append("pdf", pdf);
 
 
 
@@ -169,23 +170,23 @@ function Approval() {
       
 
 
-      // const res = await axios.get(`${server}approve/approve_request/`, {
-      //   params: { 
-      //     process_id: info.id, 
-      //     email: info.email,
-      //     token:token,
-      //     owner_email:info?.user?.email,
-      //     owner_username : info?.user?.username
-      //   },
-      //   withCredentials: true,
-      // });
-      // if (res.data.message === "your request has been approve") {
-      //   alert(res.data.message);
-      // }
-      // if(res.data.message === "request already accepted"){
-      //   alert(res.data.message)
-      // }
-      // console.log(res,"lll");
+      const res = await axios.post(`${server}approve/approve_request/`,pdf, {
+        params: { 
+          process_id: info.id, 
+          email: info.email,
+          token:token,
+          owner_email:info?.user?.email,
+          owner_username : info?.user?.username
+        },
+        withCredentials: true,
+      });
+      if (res.data.message === "your request has been approve") {
+        alert(res.data.message);
+      }
+      if(res.data.message === "request already accepted"){
+        alert(res.data.message)
+      }
+      console.log(res,"lll");
     } catch (error) {
       console.log(error.response || error);
     } finally {
@@ -236,8 +237,10 @@ function Approval() {
 
   return loading ? (
     <div 
-    ref={printRef}
     className="approval-page">
+    {
+      !showRejectForm && <Tp printRef={printRef}/>
+    }
       <div className={`content-container ${showRejectForm ? "shifted" : ""}`}>
         <div className="sku-banner">
           <div className="section-info">

@@ -35,9 +35,13 @@ def home(request):
 @csrf_exempt
 def send_for_primary(request):
     if request.method == 'POST':
+        print(request.FILES,"LLL")
+        # print(json.loads(request.body))
+        # print(request.POST.get('data'))
         try:
-            data = json.loads(request.body)['data']
-            # print(json.loads(request.body))
+            # data = json.loads(request.body)
+            data = request.POST.get('data')
+            print(data,"data")
 
 
             if not data:
@@ -54,7 +58,8 @@ def send_for_primary(request):
 
 
             # token = request.GET.get('token')
-            token = json.loads(request.body)['token']
+            # token = json.loads(request.body)['token']
+            token = request.POST.get('token')
             if not token:
                 return JsonResponse({'error': 'unauthorize request'}, status=401)
             # print(token)
@@ -82,8 +87,10 @@ def send_for_primary(request):
             
             if process.stepTwo == process.steps.REJECTED:
                 return JsonResponse({"error":"request already rejected"},status=405)
+            print(token)
 
             sender_email = ""
+            data = json.loads(data)
             for x in data:
 
                 existed_approval_model =  ApprovalModel.objects.filter(email = x["email"],process = decrypt_process_token['id']).first()
@@ -104,44 +111,51 @@ def send_for_primary(request):
                 
 
             
-            
+            file = request.FILES.get('pdf')
+            print(file)
+            # print(sender_email,"email")
 
-            subject = "Primary approval"
-            from_email = decrypt_access_token['username'] or settings.EMAIL_HOST_USER
-            recipient_list = [sender_email]
-            html_content = f"""
-                <body>
-                    <div >
+            if sender_email != "":
+
+                subject = "Primary approval"
+                from_email = decrypt_access_token['username'] or settings.EMAIL_HOST_USER
+                recipient_list = [sender_email]
+                html_content = f"""
+                    <body>
                         <div >
-                            <h2>RFQ Approval Request</h2>
+                            <div >
+                                <h2>RFQ Approval Request</h2>
+                            </div>
+                            <div >
+                                <p>{message}</p>
+                                <p>Please review the requirement sheet for <b>{process.title}</b> at the following link:</p>
+                                <p><a href={settings.FRONTEND}/approval/{token} >Review Requirement Sheet</a></p>
+                                <p>Once you have reviewed the document, kindly provide your approval or feedback so we can continue with the RFQ process.</p>
+                                <p>If you have any questions or need additional information, feel free to reach out.</p>
+                                <p>Thank you for your attention to this matter.</p>
+                                <p>Best regards,</p>
+                                <p>{decrypt_access_token['username']}<br>{decrypt_access_token['email']}</p>
+                            </div>
+                            <div >
+                                <p>This email was sent by Automate product purchase platform. If you did not request this email, please disregard it.</p>
+                            </div>
                         </div>
-                        <div >
-                            <p>{message}</p>
-                            <p>Please review the requirement sheet for <b>{process.title}</b> at the following link:</p>
-                            <p><a href={settings.FRONTEND}/approval/{token} >Review Requirement Sheet</a></p>
-                            <p>Once you have reviewed the document, kindly provide your approval or feedback so we can continue with the RFQ process.</p>
-                            <p>If you have any questions or need additional information, feel free to reach out.</p>
-                            <p>Thank you for your attention to this matter.</p>
-                            <p>Best regards,</p>
-                            <p>{decrypt_access_token['username']}<br>{decrypt_access_token['email']}</p>
-                        </div>
-                        <div >
-                            <p>This email was sent by Automate product purchase platform. If you did not request this email, please disregard it.</p>
-                        </div>
-                    </div>
-                </body>
-            """
+                    </body>
+                """
 
-            email = EmailMessage(subject, html_content, from_email, recipient_list)
-            email.content_subtype = "html"  # Mark content as HTML
+                email = EmailMessage(subject, html_content, from_email, recipient_list)
+                email.attach(file.name, file.read(), file.content_type)
+                email.content_subtype = "html"  # Mark content as HTML
 
 
-            
-            res = email.send()
 
-            if res != 1:
-                # delete the approval models
-                return JsonResponse({"error": "email not sent properly"},status = 500)
+                # res = email.send()
+
+                # if res != 1:
+                #     # delete the approval models
+                #     return JsonResponse({"error": "email not sent properly"},status = 500)
+            else:
+                print("sending email to store")
             
 
 
@@ -159,11 +173,11 @@ def send_for_primary(request):
 
                     process.stepTwo = processModel.steps.PENDING
 
-                    try:
-                        process.save()
-                        approval.save()
-                    except Exception as e:
-                        return JsonResponse({'error': 'unauthorize request',"error": str(e)}, status=401)
+                    # try:
+                    #     process.save()
+                    #     approval.save()
+                    # except Exception as e:
+                    #     return JsonResponse({'error': 'unauthorize request',"error": str(e)}, status=401)
 
 
 
@@ -172,7 +186,7 @@ def send_for_primary(request):
             return JsonResponse({"message": "request send successfully","email":sender_email},status = 200)
         except Exception as e:
             
-            return JsonResponse({'error': 'unauthorize request',"error": str(e)}, status=401)
+            return JsonResponse({'error': 'not a valid json request',"error": str(e)}, status=401)
 
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -220,8 +234,11 @@ def get(request,process_id):
 
 @csrf_exempt
 def Approve(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         try:
+            # print(request.FILES,"LLL")
+            file = request.FILES.get('pdf')
+            print(file)
             
             process_id = request.GET.get('process_id')
             owner_email = request.GET.get('owner_email')
@@ -316,15 +333,16 @@ def Approve(request):
                 """
 
                 email = EmailMessage(subject, html_content, from_email, recipient_list)
+                email.attach(file.name, file.read(), file.content_type)
                 email.content_subtype = "html"  # Mark content as HTML
 
 
 
-                res = email.send()
+                # res = email.send()
 
-                if res != 1:
-                    # delete the approval models
-                    return JsonResponse({"error": "email not sent properly"},status = 500)
+                # if res != 1:
+                #     # delete the approval models
+                #     return JsonResponse({"error": "email not sent properly"},status = 500)
                 
                 print('sending email to ',nextApp.email)
             
@@ -346,11 +364,11 @@ def Approve(request):
             if isApprovalAccepted:
                 process.stepTwo = processModel.steps.COMPLETE
                 print("send email to store for quotations")
-                process.save()
+                # process.save()
                 # function to send email to store for quotations
 
             print(app.sequence_number)
-            app.save()
+            # app.save()
             return JsonResponse({'message':'your request has been approve'},status = 200)
         except Exception as e:
             return JsonResponse({'message':'error while approving the request','error':str(e)},status=500)
