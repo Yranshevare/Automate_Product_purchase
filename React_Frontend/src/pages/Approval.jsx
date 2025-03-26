@@ -14,7 +14,6 @@ import Tp from "../util/Tp";
 function Approval() {
   const [showRejectForm, setShowRejectForm] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
-
   const [reqSheet, setReqSheet] = useState({});
   const [info, setInfo] = useState({});
   const [loading, setLoading] = useState(true);

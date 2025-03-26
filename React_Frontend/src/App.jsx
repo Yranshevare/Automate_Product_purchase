@@ -8,6 +8,7 @@ import Auth from "./pages/Auth.jsx"
 import ReqSheet from "./pages/ReqSheet.jsx"
 import Approval from "./pages/Approval.jsx"
 import PDF from "./util/PDF.jsx"
+import PdfTemplate from "./util/PdfTemplate.jsx"
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/reqSheet/:proId" element={<ReqSheet />}></Route>
           <Route path="/approval/:data" element={<Approval />}></Route>
           <Route path="/PDF" element={<PDF />}/>
+          <Route path="/pdftemplate" element={<PdfTemplate />}/>
         </Routes>
       </div>
     </Router>
