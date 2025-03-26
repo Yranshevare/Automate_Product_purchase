@@ -149,11 +149,11 @@ def send_for_primary(request):
 
 
 
-                # res = email.send()
+                res = email.send()
 
-                # if res != 1:
-                #     # delete the approval models
-                #     return JsonResponse({"error": "email not sent properly"},status = 500)
+                if res != 1:
+                    # delete the approval models
+                    return JsonResponse({"error": "email not sent properly"},status = 500)
             else:
                 print("sending email to store")
             
@@ -173,11 +173,11 @@ def send_for_primary(request):
 
                     process.stepTwo = processModel.steps.PENDING
 
-                    # try:
-                    #     process.save()
-                    #     approval.save()
-                    # except Exception as e:
-                    #     return JsonResponse({'error': 'unauthorize request',"error": str(e)}, status=401)
+                    try:
+                        process.save()
+                        approval.save()
+                    except Exception as e:
+                        return JsonResponse({'error': 'unauthorize request',"error": str(e)}, status=401)
 
 
 
@@ -338,11 +338,11 @@ def Approve(request):
 
 
 
-                # res = email.send()
+                res = email.send()
 
-                # if res != 1:
-                #     # delete the approval models
-                #     return JsonResponse({"error": "email not sent properly"},status = 500)
+                if res != 1:
+                    # delete the approval models
+                    return JsonResponse({"error": "email not sent properly"},status = 500)
                 
                 print('sending email to ',nextApp.email)
             
@@ -364,11 +364,11 @@ def Approve(request):
             if isApprovalAccepted:
                 process.stepTwo = processModel.steps.COMPLETE
                 print("send email to store for quotations")
-                # process.save()
+                process.save()
                 # function to send email to store for quotations
 
             print(app.sequence_number)
-            # app.save()
+            app.save()
             return JsonResponse({'message':'your request has been approve'},status = 200)
         except Exception as e:
             return JsonResponse({'message':'error while approving the request','error':str(e)},status=500)

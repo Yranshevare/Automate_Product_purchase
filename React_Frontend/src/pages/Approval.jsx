@@ -10,6 +10,7 @@ import { ThreeDot } from "react-loading-indicators";
 import html2canvas from "html2canvas";
 import JsPDF from "jspdf";
 import Tp from "../util/Tp";
+import PdfTemplate from "../util/PdfTemplate";
 
 function Approval() {
   const [showRejectForm, setShowRejectForm] = useState(false);
@@ -95,9 +96,9 @@ function Approval() {
     load();
   }, []);
 
-  useEffect(() => {
-    // console.log(reqSheet.type_of_item,"sheet ")
-  }, [reqSheet]);
+  // useEffect(() => {
+  //   console.log(approve_email,"sheet ")
+  // }, [approve_email]);
 
 
 
@@ -105,7 +106,7 @@ function Approval() {
   const generatePdf = async()=>{
   
     const element = printRef.current
-    // console.log(element) 
+    console.log(element) 
       if(!element){
           console.log("element not found")
           return
@@ -238,7 +239,7 @@ function Approval() {
     <div 
     className="approval-page">
     {
-      !showRejectForm && <Tp printRef={printRef}/>
+      !showRejectForm && <PdfTemplate printRef={printRef} reqSheet={reqSheet} approve_email={approve_email}/>
     }
       <div className={`content-container ${showRejectForm ? "shifted" : ""}`}>
         <div className="sku-banner">

@@ -152,11 +152,17 @@ form{
 
 .date-section{
   display: flex;
-  flex-direction: row;
+  align-items: center;
   width: 40%;
   gap: 5%;
-  position: relative;
-  left: -30%;
+  height: auto;
+}
+.date-section p{
+  width: 50px !important;
+}
+.collage-name{
+  font-weight: 900 !important;
+  font-size: 1.2rem !important;
 }
 .date{
   border-bottom: 1px solid grey;
@@ -395,9 +401,10 @@ form{
 }
 
 .signature-section{
-  width: 150%;
+  width: 100%;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-evenly;
   position: relative;
   left: 2%;
@@ -409,12 +416,23 @@ form{
    flex-direction: column;
    justify-content: flex-end;
    align-items: center;
-   gap: 20px;
+   width: auto;
+   gap: 10px;
+   margin-left: 10px;
+   margin-right: 10px;
+   margin-top: 50px;
 }
 
 .signature{
   border-bottom: 1px solid grey;
-  width: 200%;
+  width: 100%;
+}
+
+
+.pdf-header{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 /* Responsive adjustments */

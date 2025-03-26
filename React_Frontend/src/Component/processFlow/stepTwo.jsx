@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import html2canvas from 'html2canvas'
 import JsPDF from 'jspdf'
 import Tp from '../../util/Tp'
+import PdfTemplate from '../../util/PdfTemplate'
 
 export default function StepTwo({processData,user}) {
     const [email, setEmail] = useState([""])
@@ -15,6 +16,9 @@ export default function StepTwo({processData,user}) {
     const [sendBut, setSendBut] = useState("send")
     const [resBut, setResBut] = useState(["response"]) 
     const [name, setName] = useState([""])
+    const [approve_email, setApprove_email] = useState()
+    const [reqSheet, setReqSheet] = useState(null)
+    
     const printRef = useRef()
     
     const navigate = useNavigate()
@@ -27,6 +31,7 @@ export default function StepTwo({processData,user}) {
       try {
         const res = await axios.get(`${server}approve/get/${localStorage.getItem('process')}/`,{withCredentials: true})
         console.log(res.data,"data")
+        setApprove_email(res.data.data)
         if (res.status === 200) {
           const e = []
           const r = []
@@ -61,6 +66,42 @@ export default function StepTwo({processData,user}) {
             document.removeEventListener('click', handleClickOutside);
         };
     },[])
+
+
+
+    const loadApprovals = useCallback(async() => {
+      try {
+        const res = await axios.get(`${server}stepOne/get/${localStorage.getItem('process')}/`, { withCredentials: true })
+        console.log(res.data,"app data")
+        if (res.data.message === "successfully fetched the data") {
+          const sheet = res?.data?.data;
+          const a = sheet.type_of_item || undefined;
+          if (a) {
+            //to convert the string to array
+            const b = JSON.parse(a.replace(/'/g, '"'));
+
+            let newStr = "";
+            b.map((item, idx) => {
+              newStr = newStr + item;
+              if (idx !== b.length - 1) {
+                newStr = newStr + " , ";
+              }
+            });
+            sheet.type_of_item = newStr;
+          } 
+          console.log(sheet)
+          setReqSheet(sheet);
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    })
+    useEffect(() => {
+      if(expandedStep !== 2 || reqSheet !== null){
+        return
+      }
+      loadApprovals()
+    },[expandedStep])
     
     
     const generatePdf = async()=>{
@@ -88,7 +129,7 @@ export default function StepTwo({processData,user}) {
         pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
         pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
         const pdfBlob = pdf.output("blob");
-        // pdf.save("document.pdf")
+        pdf.save("document.pdf")
         const pdfFile = new File([pdfBlob], "document.pdf", { type: "application/pdf" });
         const fromData = new FormData()
         fromData.append("pdf", pdfFile);
@@ -271,7 +312,7 @@ export default function StepTwo({processData,user}) {
         className="step-button" onClick={()=>toggleStep(2)}
     >
       {
-        expandedStep === 2 && <Tp printRef={printRef}/>
+        expandedStep === 2 && <PdfTemplate printRef={printRef} reqSheet={reqSheet} approve_email={approve_email}/>
       }
     <div className="step-content">
         <div className='step-inner-content'>

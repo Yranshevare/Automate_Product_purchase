@@ -2,117 +2,73 @@ import React from "react";
 import "../CSS/ReqSheet.css";
 import { useState } from "react";
 import Checkbox from "/src/Component/reqSheet/Checkbox";
+import RenderTable from "../Component/reqSheet/RenderTable";
 
-function PdfTemplate() {
-  const [skuValue, setSkuValue] = useState("  ");
-  const [department, setDepartment] = useState("  ");
-  const [justification, setJustification] = useState("  ");
-  const [selectedValues, setSelectedValues] = useState([]);
+function PdfTemplate({printRef,reqSheet, approve_email}) {
+  // const [skuValue, setSkuValue] = useState();
+  // const [department, setDepartment] = useState();
+  // const [justification, setJustification] = useState("  ");
+  // const [selectedValues, setSelectedValues] = useState([]);
+  let currentDate = new Date(); // Outputs the full date and time
+  let dateOnly = currentDate.toDateString();  // Example: "Wed Mar 26 2025"
+  let formattedDate = currentDate.toISOString().split('T')[0];  // Example: "2025-03-26"
+  console.log(approve_email)
 
-  const handleCheckboxChange = (event) => {
-    console.log(selectedValues);
-    const { value, checked } = event.target;
-    setSelectedValues((prevValues) =>
-      checked ? [...prevValues, value] : prevValues.filter((v) => v !== value)
-    );
-  };
+
 
   return (
-    <div className="req-sheet-container">
+    <div 
+    ref={printRef}
+    className="req-sheet-container print">
       <div className={`main-content-reqSheet`}>
-        <div className="date-section">
-          <span>Date : </span>
-          <div className="date"></div>
+        <div className="pdf-header">
+          <div className="section-title collage-name">TERNA ENGINEERING COLLAGE</div>
+          <div className="date-section">
+            <p>Date : </p>
+            <div >{formattedDate}</div>
+          </div>
         </div>
         {/* Form */}
 
         <form>
           <div className={`form-section`}>
             <h2 className="section-title">STOCK KEEPING UNIT</h2>
-            <p className="section-input"> {skuValue}</p>
+            <p className="section-input"> {reqSheet?.SKU}</p>
             <h2 className="section-title">INDENTING DEPARTMENT</h2>
-            <p className="section-input"> {department}</p>
+            <p className="section-input"> {reqSheet?.indenting_department}</p>
             <h2 className="section-title">TYPE OF ITEMS</h2>
-            <div className="checkbox-options">
-              {/* <div className="checkbox-column">
-                <Checkbox
-                  label="Consumable"
-                  value="consumable"
-                  checked={selectedValues.includes("consumable")}
-                  onChange={handleCheckboxChange}
-                />
-                <Checkbox
-                  label="Stationary"
-                  value="stationary"
-                  checked={selectedValues.includes("stationary")}
-                  onChange={handleCheckboxChange}
-                />
-                <Checkbox
-                  label="Furniture"
-                  value="furniture"
-                  checked={selectedValues.includes("furniture")}
-                  onChange={handleCheckboxChange}
-                />
-                <Checkbox
-                  label="Spares"
-                  value="spares"
-                  checked={selectedValues.includes("spares")}
-                  onChange={handleCheckboxChange}
-                />
-                <Checkbox
-                  label="Capital Equipment"
-                  value="capital_equipment"
-                  checked={selectedValues.includes("capital_equipment")}
-                  onChange={handleCheckboxChange}
-                />
-                <Checkbox
-                  label="Other"
-                  value="other"
-                  checked={selectedValues.includes("other")}
-                  onChange={handleCheckboxChange}
-                />
-                <Checkbox
-                  label="Printing"
-                  value="printing"
-                  checked={selectedValues.includes("printing")}
-                  onChange={handleCheckboxChange}
-                />
-                <Checkbox
-                  label="Capital Other"
-                  value="capital_other"
-                  checked={selectedValues.includes("capital_other")}
-                  onChange={handleCheckboxChange}
-                />
-              </div> */}
-              <div className="checkbox-column">
-                {selectedValues.join(" , ") || "None selected"}
-              </div>
-            </div>
+           
 
             <h2 className="section-title">REQUIREMENT SHEET</h2>
 
             <div className="table-container">
               {/* <EditableTable tableData={requirementText} setFinalData={setFinalData} /> */}
+              <div className="table">
+              {
+                reqSheet?.requirementSHeet && RenderTable(JSON.parse(reqSheet?.requirementSHeet))
+              }
+              </div>
             </div>
 
             <h2 className="section-title">JUSTIFICATION FOR INDENTING</h2>
-            <p className="justification-textarea">{justification}</p>
+            <p >{reqSheet?.justification_for_indenting}</p>
           </div>
         </form>
         <div className="signature-section">
-          <div className="signature-authority">
-            <div className="signature"></div>
-            <label>member</label>
-          </div>
-          <div className="signature-authority">
-            <div className="signature"></div>
-            <label>member</label>
-          </div>
-          <div className="signature-authority">
-            <div className="signature"></div>
-            <label>member</label>
-          </div>
+        {
+          approve_email && 
+            <>
+              {
+                approve_email.map((email,idx) => <div key={idx} className="signature-authority">
+                <div className="signature" ></div>
+                <label>{email.name}</label>
+                <label >{email.accepted_by_email}</label>
+              </div>)
+              }
+            </>
+        }
         </div>
+       
       </div>
     </div>
   );
