@@ -5,11 +5,32 @@ from .models import ApprovalModel
 from process.models import processModel
 from APP import settings
 from django.core.mail import EmailMessage
+from rest_framework.parsers import MultiPartParser
 import json
 
-
+@csrf_exempt
 def home(request):
-    return JsonResponse({"message": "Hello, world. You're at the Approvel home."})
+    try:
+        file = request.FILES.get('pdf')
+        print(request.FILES,"LLL")
+        print(file)
+        subject = "Primary approval"
+        from_email =  settings.EMAIL_HOST_USER
+        recipient_list = ["yranshevare2005@gmail.com"]
+        html_content = f"""
+       <div>pdf</div> 
+        """
+        email = EmailMessage(subject, html_content, from_email, recipient_list)
+        email.attach(file.name, file.read(), file.content_type)
+        email.content_subtype = "html"  # Mark content as HTML
+
+
+            
+        # res = email.send()
+        return JsonResponse({"message": "Hello, world. You're at the Approvel home."})
+    except Exception as e:
+        print(str(e))
+        return JsonResponse({"error": str(e)})
 
 @csrf_exempt
 def send_for_primary(request):
@@ -207,7 +228,9 @@ def Approve(request):
             owner_username = request.GET.get('owner_username')
             
             # process_id = json.loads(request.body)['process_id']
+            print(process_id,"   ")
             process_id = decode_id(process_id)
+            print(process_id)
 
             process = processModel.objects.filter(_id = process_id).first()
             if not process:

@@ -7,6 +7,7 @@ import ProcessFlow from "./pages/ProcessFlow.jsx"
 import Auth from "./pages/Auth.jsx"
 import ReqSheet from "./pages/ReqSheet.jsx"
 import Approval from "./pages/Approval.jsx"
+import PDF from "./util/PDF.jsx"
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           </Route>
           <Route path="/reqSheet/:proId" element={<ReqSheet />}></Route>
           <Route path="/approval/:data" element={<Approval />}></Route>
+          <Route path="/PDF" element={<PDF />}/>
         </Routes>
       </div>
     </Router>

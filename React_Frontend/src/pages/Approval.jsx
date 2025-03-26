@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import "../CSS/Approval.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { decryptData, encryptData } from "../util/encryptToken";
@@ -7,6 +7,8 @@ import axios from "axios";
 import { Suspense } from "react";
 import RenderTable from "../Component/reqSheet/RenderTable";
 import { ThreeDot } from "react-loading-indicators";
+import html2canvas from "html2canvas";
+import JsPDF from "jspdf";
 
 function Approval() {
   const [showRejectForm, setShowRejectForm] = useState(false);
@@ -19,7 +21,7 @@ function Approval() {
   const [approve_email, setApproval_email] = useState("");
   const [nextEmail, setNextEmail] = useState("");
 
-
+  const printRef = useRef()
 
 
 
@@ -97,9 +99,65 @@ function Approval() {
     // console.log(reqSheet.type_of_item,"sheet ")
   }, [reqSheet]);
 
+
+
+
+  const generatePdf = async()=>{
+    setShowRejectForm(true)
+    const element = printRef.current
+    // console.log(element) 
+      if(!element){
+          console.log("element not found")
+          return
+      }   
+      const canvas = await html2canvas(element)
+      const data = canvas.toDataURL("image/png")
+
+      const pdf = new JsPDF({
+          orientation: "portrait",
+          unit: "px",
+          format: "a4"
+      });
+
+      const impProps = pdf.getImageProperties(data)
+
+
+      const pdfWidth = pdf.internal.pageSize.getWidth() 
+      const pdfHeight = (impProps.height * pdfWidth / impProps.width) 
+      pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
+      pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
+      const pdfBlob = pdf.output("blob");
+      // pdf.save("document.pdf")
+      const pdfFile = new File([pdfBlob], "document.pdf", { type: "application/pdf" });
+      const fromData = new FormData()
+      fromData.append("pdf", pdfFile);
+      pdf.save("document.pdf")
+      setShowRejectForm(false)
+      
+
+
+      return fromData
+  }
   const handleApprove = useCallback(async () => {
     // setShowRejectForm(false);
     try {
+
+
+
+
+
+      // setShowRejectForm(true);
+
+        // setRejectReason(false)
+        const pdf = await generatePdf()
+        pdf.forEach((value, key) => {
+          console.log(`${key}:`, value);
+      });
+
+
+
+
+
       setResponding("Approving");
       let dec = await decryptData(data);
 
@@ -107,30 +165,29 @@ function Approval() {
           ...dec,
           email: nextEmail
         }
-      
       const token = await encryptData(payload)
       
 
 
-      const res = await axios.get(`${server}approve/approve_request/`, {
-        params: { 
-          process_id: info.id, 
-          email: info.email,
-          token:token,
-          owner_email:info?.user?.email,
-          owner_username : info?.user?.username
-        },
-        withCredentials: true,
-      });
-      if (res.data.message === "your request has been approve") {
-        alert(res.data.message);
-      }
-      if(res.data.message === "request already accepted"){
-        alert(res.data.message)
-      }
-      console.log(res);
+      // const res = await axios.get(`${server}approve/approve_request/`, {
+      //   params: { 
+      //     process_id: info.id, 
+      //     email: info.email,
+      //     token:token,
+      //     owner_email:info?.user?.email,
+      //     owner_username : info?.user?.username
+      //   },
+      //   withCredentials: true,
+      // });
+      // if (res.data.message === "your request has been approve") {
+      //   alert(res.data.message);
+      // }
+      // if(res.data.message === "request already accepted"){
+      //   alert(res.data.message)
+      // }
+      // console.log(res,"lll");
     } catch (error) {
-      console.log(error.response);
+      console.log(error.response || error);
     } finally {
       setResponding("");
     }
@@ -178,7 +235,9 @@ function Approval() {
   },[rejectReason])
 
   return loading ? (
-    <div className="approval-page">
+    <div 
+    ref={printRef}
+    className="approval-page">
       <div className={`content-container ${showRejectForm ? "shifted" : ""}`}>
         <div className="sku-banner">
           <div className="section-info">

@@ -99,3 +99,8 @@ body {
   padding: 1.5rem;
 }
 
+
+.print{
+  transform: translateX(-1000px);
+}
+
