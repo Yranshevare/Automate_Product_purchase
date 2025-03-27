@@ -1,16 +1,10 @@
 import React from "react";
 import "../CSS/ReqSheet.css";
-import { useState } from "react";
-import Checkbox from "/src/Component/reqSheet/Checkbox";
 import RenderTable from "../Component/reqSheet/RenderTable";
 
 function PdfTemplate({printRef,reqSheet, approve_email}) {
-  // const [skuValue, setSkuValue] = useState();
-  // const [department, setDepartment] = useState();
-  // const [justification, setJustification] = useState("  ");
-  // const [selectedValues, setSelectedValues] = useState([]);
   let currentDate = new Date(); // Outputs the full date and time
-  let dateOnly = currentDate.toDateString();  // Example: "Wed Mar 26 2025"
+  // let dateOnly = currentDate.toDateString();  // Example: "Wed Mar 26 2025"
   let formattedDate = currentDate.toISOString().split('T')[0];  // Example: "2025-03-26"
   console.log(approve_email)
 
