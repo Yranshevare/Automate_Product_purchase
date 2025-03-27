@@ -171,7 +171,7 @@ export default function StepTwo({processData,user}) {
             id:localStorage.getItem('process'),
             processData:processData,
             owner:false,
-            email:"store@gmail.com"
+            email:email[0]
           }
         }
 
@@ -308,12 +308,13 @@ export default function StepTwo({processData,user}) {
 
   return (
     <>
+    {
+        expandedStep === 2 && <PdfTemplate printRef={printRef} reqSheet={reqSheet} approve_email={approve_email}/>
+      }
     <div
         className="step-button" onClick={()=>toggleStep(2)}
     >
-      {
-        expandedStep === 2 && <PdfTemplate printRef={printRef} reqSheet={reqSheet} approve_email={approve_email}/>
-      }
+      
     <div className="step-content">
         <div className='step-inner-content'>
             <div className="step-header">

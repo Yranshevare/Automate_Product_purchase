@@ -102,6 +102,7 @@ body {
 
 .print{
   position: absolute;
-  transform: translateX(-1000px);
+  transform: translateX(-800000000px);
+  /* height: 100vh !important; */
 }
 

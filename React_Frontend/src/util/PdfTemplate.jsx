@@ -18,8 +18,9 @@ function PdfTemplate({printRef,reqSheet, approve_email}) {
 
   return (
     <div 
-    ref={printRef}
+    
     className="req-sheet-container print">
+      <div ref={printRef}>
       <div className={`main-content-reqSheet`}>
         <div className="pdf-header">
           <div className="section-title collage-name">TERNA ENGINEERING COLLAGE</div>
@@ -69,6 +70,7 @@ function PdfTemplate({printRef,reqSheet, approve_email}) {
         }
         </div>
        
+      </div>
       </div>
     </div>
   );

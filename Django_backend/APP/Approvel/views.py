@@ -150,6 +150,7 @@ def send_for_primary(request):
 
 
                 res = email.send()
+                print("email send")
 
                 if res != 1:
                     # delete the approval models
