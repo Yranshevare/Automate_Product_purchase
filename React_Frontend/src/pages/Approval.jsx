@@ -7,10 +7,8 @@ import axios from "axios";
 import { Suspense } from "react";
 import RenderTable from "../Component/reqSheet/RenderTable";
 import { ThreeDot } from "react-loading-indicators";
-import html2canvas from "html2canvas";
-import JsPDF from "jspdf";
-import Tp from "../util/Tp";
 import PdfTemplate from "../util/PdfTemplate";
+import generatePdf from "../util/generatePdf";
 
 function Approval() {
   const [showRejectForm, setShowRejectForm] = useState(false);
@@ -103,41 +101,7 @@ function Approval() {
 
 
 
-  const generatePdf = async()=>{
-  
-    const element = printRef.current
-    console.log(element) 
-      if(!element){
-          console.log("element not found")
-          return
-      }   
-      const canvas = await html2canvas(element)
-      const data = canvas.toDataURL("image/png")
 
-      const pdf = new JsPDF({
-          orientation: "portrait",
-          unit: "px",
-          format: "a4"
-      });
-
-      const impProps = pdf.getImageProperties(data)
-
-
-      const pdfWidth = pdf.internal.pageSize.getWidth() 
-      const pdfHeight = (impProps.height * pdfWidth / impProps.width) 
-      pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
-      pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
-      const pdfBlob = pdf.output("blob");
-      // pdf.save("document.pdf")
-      const pdfFile = new File([pdfBlob], "document.pdf", { type: "application/pdf" });
-      const fromData = new FormData()
-      fromData.append("pdf", pdfFile);
-      // pdf.save("document.pdf")
-      
-
-
-      return fromData
-  }
   const handleApprove = useCallback(async () => {
     // setShowRejectForm(false);
     try {
@@ -149,7 +113,7 @@ function Approval() {
       // setShowRejectForm(true);
 
         // setRejectReason(false)
-        const pdf = await generatePdf()
+        const pdf = await generatePdf(printRef)
         pdf.forEach((value, key) => {
           console.log(`${key}:`, value);
         });

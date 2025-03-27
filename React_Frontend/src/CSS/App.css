@@ -102,7 +102,12 @@ body {
 
 .print{
   position: absolute;
-  transform: translateX(-800000000px);
+  transform: translateX(-5000000px);
+  
+  z-index: 10000;
   /* height: 100vh !important; */
+}
+.pdf-container{
+  padding-bottom: 20px;
 }
 

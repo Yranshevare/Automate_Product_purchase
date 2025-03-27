@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { server } from '../../constant'
+import { server, storeEmail } from '../../constant'
 import axios from 'axios'
 import { encryptData } from '../../util/encryptToken'
 import { useNavigate } from 'react-router-dom'
-import html2canvas from 'html2canvas'
-import JsPDF from 'jspdf'
-import Tp from '../../util/Tp'
 import PdfTemplate from '../../util/PdfTemplate'
+import generatePdf from '../../util/generatePdf'
 
 export default function StepTwo({processData,user}) {
     const [email, setEmail] = useState([""])
@@ -104,41 +102,41 @@ export default function StepTwo({processData,user}) {
     },[expandedStep])
     
     
-    const generatePdf = async()=>{
+    // const generatePdf = async()=>{
   
-      const element = printRef.current
-      console.log(element) 
-        if(!element){
-            console.log("element not found")
-            return
-        }   
-        const canvas = await html2canvas(element)
-        const data = canvas.toDataURL("image/png")
+    //   const element = printRef.current
+    //   console.log(element) 
+    //     if(!element){
+    //         console.log("element not found")
+    //         return
+    //     }   
+    //     const canvas = await html2canvas(element)
+    //     const data = canvas.toDataURL("image/png")
   
-        const pdf = new JsPDF({
-            orientation: "portrait",
-            unit: "px",
-            format: "a4"
-        });
+    //     const pdf = new JsPDF({
+    //         orientation: "portrait",
+    //         unit: "px",
+    //         format: "a4"
+    //     });
   
-        const impProps = pdf.getImageProperties(data)
+    //     const impProps = pdf.getImageProperties(data)
   
   
-        const pdfWidth = pdf.internal.pageSize.getWidth() 
-        const pdfHeight = (impProps.height * pdfWidth / impProps.width) 
-        pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
-        pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
-        const pdfBlob = pdf.output("blob");
-        pdf.save("document.pdf")
-        const pdfFile = new File([pdfBlob], "document.pdf", { type: "application/pdf" });
-        const fromData = new FormData()
-        fromData.append("pdf", pdfFile);
-        // pdf.save("document.pdf")
+    //     const pdfWidth = pdf.internal.pageSize.getWidth() 
+    //     const pdfHeight = (impProps.height * pdfWidth / impProps.width) 
+    //     pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
+    //     pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
+    //     const pdfBlob = pdf.output("blob");
+    //     pdf.save("document.pdf")
+    //     const pdfFile = new File([pdfBlob], "document.pdf", { type: "application/pdf" });
+    //     const fromData = new FormData()
+    //     fromData.append("pdf", pdfFile);
+    //     // pdf.save("document.pdf")
         
   
   
-        return fromData
-    }
+    //     return fromData
+    // }
 
     
     const handleSend = useCallback(async() => {
@@ -164,6 +162,14 @@ export default function StepTwo({processData,user}) {
               }
               break
             }
+          }
+        }else if(processData.step_two === "Complete"){
+          payload = { 
+            user:user,
+            id:localStorage.getItem('process'),
+            processData:processData,
+            owner:false,
+            email: storeEmail
           }
         }else{
             payload = { 
@@ -202,7 +208,7 @@ export default function StepTwo({processData,user}) {
 
 
 
-        const pdf = await generatePdf()
+        const pdf = await generatePdf(printRef)
         pdf.append("token",token)
         pdf.append("data",JSON.stringify(newData))
         // pdf.forEach((value, key) => {

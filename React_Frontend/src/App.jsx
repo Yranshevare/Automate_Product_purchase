@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, RouterProvider } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import LoginForm from "./Component/Auth/LoginForm.jsx"
 import RegisterForm from "./Component/Auth/RegisterForm.jsx"
 import VerifyEmail from "./Component/Auth/VerifyEmail.jsx"
@@ -7,7 +7,6 @@ import ProcessFlow from "./pages/ProcessFlow.jsx"
 import Auth from "./pages/Auth.jsx"
 import ReqSheet from "./pages/ReqSheet.jsx"
 import Approval from "./pages/Approval.jsx"
-import PDF from "./util/PDF.jsx"
 import PdfTemplate from "./util/PdfTemplate.jsx"
 
 function App() {
@@ -23,7 +22,6 @@ function App() {
           </Route>
           <Route path="/reqSheet/:proId" element={<ReqSheet />}></Route>
           <Route path="/approval/:data" element={<Approval />}></Route>
-          <Route path="/PDF" element={<PDF />}/>
           <Route path="/pdftemplate" element={<PdfTemplate />}/>
         </Routes>
       </div>
