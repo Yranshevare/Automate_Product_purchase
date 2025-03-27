@@ -6,7 +6,7 @@ function PdfTemplate({printRef,reqSheet, approve_email}) {
   let currentDate = new Date(); // Outputs the full date and time
   // let dateOnly = currentDate.toDateString();  // Example: "Wed Mar 26 2025"
   let formattedDate = currentDate.toISOString().split('T')[0];  // Example: "2025-03-26"
-  console.log(approve_email)
+  console.log(reqSheet,"com")
 
 
 
@@ -34,7 +34,7 @@ function PdfTemplate({printRef,reqSheet, approve_email}) {
             <h2 className="section-title">INDENTING DEPARTMENT</h2>
             <p className="section-input"> {reqSheet?.indenting_department}</p>
             <h2 className="section-title">TYPE OF ITEMS</h2>
-           
+            <p className="section-input"> {reqSheet?.type_of_item}</p>
 
             <h2 className="section-title">REQUIREMENT SHEET</h2>
 
