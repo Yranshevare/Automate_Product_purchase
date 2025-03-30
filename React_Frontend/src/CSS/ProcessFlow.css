@@ -6,6 +6,10 @@
   background: #ffffff;
 }
 
+
+.nav-but{
+  z-index: 1000 !important;
+}
 /* Sidebar Styles */
 .sidebar {
   position: fixed;
@@ -28,9 +32,21 @@
 }
 @media (max-width: 500px) {
   .sidebar.open {
-    width: 70%;
+    width: 70% !important;
   }
-  
+  .title-input p{
+    font-size: 20px !important;
+  }
+}
+
+@media (max-height: 600px) {
+  /* .nav-but{
+    background: rgba(242, 242, 242, 1);
+  } */
+  .avatar{
+    width: 100px !important;
+    height: 100px !important;
+  }
 }
 .sidebar-content {
   padding: 20px;
@@ -76,17 +92,17 @@
   background: #f0f0f0;
   border-radius: 50%;
 }
-.user-info{
+.nav-user-info{
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.user-info h2 {
+.nav-user-info h2 {
   margin: 0;
   font-size: 18px;
 }
 
-.user-info p {
+.nav-user-info p {
   margin: 5px 0 0;
   color: #666;
   font-size: 14px;
@@ -210,7 +226,6 @@
 
 .add-button {
   padding: 0 15px;
-  background: white;
   border-style: none;
   border-radius: 4px;
   cursor: pointer;
@@ -227,7 +242,7 @@
 
 .title-inputs {
   display: flex;
-  height: 550px;
+  /* height: 550px; */
   flex-direction: column;
   gap: 20px;
   overflow-y: scroll;
@@ -252,9 +267,9 @@
   }
 }
 @media (max-height:670px) {
-  .title-inputs{
+  /* .title-inputs{
     height: 150px;
-  }
+  } */
 }
 @media (max-height:750px) and (min-height:670px) {
   .title-inputs{

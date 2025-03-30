@@ -126,7 +126,7 @@ export default function ProcessFlow() {
                         <div className="avatar">
                             <img src={user?.gender.toLowerCase() == 'male'  ? '/boy.png' : '/girl.png'} alt="" className='avatar'/>
                         </div>
-                        <div className="user-info">
+                        <div className="nav-user-info">
                             <h2>{ user?.username||"Username"}</h2>
                             <p>{user?.email||'abd@gmil.com'}</p>
                         </div>
