@@ -35,7 +35,7 @@ def home(request):
 @csrf_exempt
 def send_for_primary(request):
     if request.method == 'POST':
-        print(request.FILES,"LLL")
+        # print(request.FILES,"LLL")
         # print(json.loads(request.body))
         # print(request.POST.get('data'))
         try:
@@ -150,13 +150,14 @@ def send_for_primary(request):
 
 
                 res = email.send()
-                print("email send")
 
                 if res != 1:
                     # delete the approval models
                     return JsonResponse({"error": "email not sent properly"},status = 500)
             else:
-                print("sending email to store")
+                res = send_email_to_store(decrypt_access_token['username'] or settings.EMAIL_HOST_USER,decrypt_access_token['username'],decrypt_access_token['email'],file,process.title)
+                if  res != 1:
+                    return JsonResponse({"error": "email not sent properly"},status = 500)
             
 
 
@@ -366,6 +367,10 @@ def Approve(request):
                 process.stepTwo = processModel.steps.COMPLETE
                 print("send email to store for quotations")
                 process.save()
+                res = send_email_to_store(owner_username  or settings.EMAIL_HOST_USER,owner_username,owner_email,file,process.title)
+                if res != 1:
+                    # delete the approval models
+                    return JsonResponse({"error": "email not sent properly"},status = 500)
                 # function to send email to store for quotations
 
             print(app.sequence_number)
@@ -464,3 +469,38 @@ def get_one(request):
             return JsonResponse({'message':'error while getting the request','error':str(e)},status=500)
     else:
         return JsonResponse({"message":"invalid request type"},status=405)
+
+
+
+
+def send_email_to_store(from_email,owner_username,owner_email,file,title):
+    print(from_email,owner_username,owner_email)
+
+    subject = 'Asking for Quotations'
+    from_email = from_email
+    recipient_list = [settings.STORE_EMAIL]
+
+    html_content = f"""
+            <p>Dear [Store Name/Supplier’s Name],</p>
+
+            <p>I hope this email finds you well. I am interested in purchasing <strong>{title}</strong> and would like to request a quotation for the same.</p>
+
+
+            <p>For your reference, I have attached a PDF document with the details of the products I require.</p>
+
+            <p>Please let me know if you need any additional information to prepare the quotation. I would appreciate it if you could send the details at your earliest convenience.</p>
+
+            <p>Looking forward to your response.</p>
+
+            <p>Best regards,</p>
+            <p><strong>{owner_username}</strong><br>{owner_email}</p>
+
+    """
+
+    email = EmailMessage(subject, html_content, from_email, recipient_list)
+    email.attach(file.name, file.read(), file.content_type)
+    email.content_subtype = "html" 
+
+    res = email.send()
+
+    return res

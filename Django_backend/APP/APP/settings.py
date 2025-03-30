@@ -191,3 +191,6 @@ REST_FRAMEWORK = {
 }
 
 FRONTEND = 'http://localhost:5173'
+
+
+STORE_EMAIL = 'yranshevare2005@gmail.com'
