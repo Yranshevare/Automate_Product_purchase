@@ -42,19 +42,26 @@ function Approval() {
     try {
       // let dec = data
       setInfo(dec);
-      const [step, all_approve,curr_approval] = await axios.all([
+      const [step, all_approve] = await axios.all([
         axios.get(`${server}stepOne/get/${dec.id}/`, { withCredentials: true }),
         axios.get(`${server}approve/get/${dec.id}/`,{withCredentials: true}),
-        axios.get(`${server}approve/get_one/`,{
+        // axios.get(`${server}approve/get_one/`,{
+        //   params: { process_id: dec.id ,email:dec.email},
+        //   withCredentials: true
+        // })
+      ]);
+      
+      console.log(step,all_approve.data)
+      if(!dec.owner){
+        const curr_approval = await axios.get(`${server}approve/get_one/`,{
           params: { process_id: dec.id ,email:dec.email},
           withCredentials: true
         })
-      ]);
-      
-      console.log(step,all_approve.data,curr_approval.data)
-      if(curr_approval.data.message === "request found"){
-        setNextEmail(curr_approval.data.data.next_email)
-      }
+        console.log(curr_approval.data,"next email")
+        if(curr_approval.data.message === "request found"){
+          setNextEmail(curr_approval.data.data.next_email)
+        }
+      } 
      
 
 
@@ -94,11 +101,7 @@ function Approval() {
     load();
   }, []);
 
-  // useEffect(() => {
-  //   console.log(approve_email,"sheet ")
-  // }, [approve_email]);
-
-
+  
 
 
 
@@ -114,12 +117,10 @@ function Approval() {
 
         // setRejectReason(false)
         const pdf = await generatePdf(printRef)
-        pdf.forEach((value, key) => {
-          console.log(`${key}:`, value);
-        });
+        // pdf.forEach((value, key) => {
+        //   console.log(`${key}:`, value);
+        // });
 
-        // const fromData = new FormData()
-        // fromData.append("pdf", pdf);
 
 
 
@@ -310,6 +311,7 @@ function Approval() {
           </>
         )}
         {
+          info.owner &&
           rejectReason.trim() !== "" &&
           <>
             <div className="section-title">REJECTION REASON</div>
@@ -333,7 +335,10 @@ function Approval() {
                       <div className="authority-members" 
                       onClick={() => handelShowRejection(email)}
                       key={index}>
-                        <div className="section-id">{email.accepted_by_email}</div> 
+                        <div >
+                          <h3>{email.name}</h3>
+                          <p>{email.accepted_by_email}</p>
+                        </div> 
                         <div className={`${email.status === "Accepted" ? "app-accepted approval-container" : 'app-rejected approval-container' }`}>
                           <p>{email.status}</p>
                         </div>

@@ -204,6 +204,14 @@ textarea:focus {
   margin-top: 5px;
   margin-bottom: 5px;
 }
+.authority-members h3{
+  margin: 0;
+}
+.authority-members p{
+  margin: 0;
+  font-size: smaller;
+  color: #666;
+}
 
 .approval-container{
   border: 0px solid black;
