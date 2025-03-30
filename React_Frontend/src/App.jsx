@@ -7,7 +7,7 @@ import ProcessFlow from "./pages/ProcessFlow.jsx"
 import Auth from "./pages/Auth.jsx"
 import ReqSheet from "./pages/ReqSheet.jsx"
 import Approval from "./pages/Approval.jsx"
-import PdfTemplate from "./util/PdfTemplate.jsx"
+import QuoteSubmit from "./pages/qouteSubmit.jsx"
 import checkAuthentication from "./util/checkAuthentication"
 
 
@@ -26,7 +26,7 @@ function App() {
           </Route>
           <Route path="/reqSheet/:proId" element={<ReqSheet />}></Route>
           <Route path="/approval/:data" element={<Approval />}></Route>
-          <Route path="/pdftemplate" element={<PdfTemplate />}/>
+          <Route path="/quoteSubmit" element={<QuoteSubmit />}/>
         </Routes>
       </div>
     </Router>
