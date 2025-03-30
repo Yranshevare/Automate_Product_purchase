@@ -8,7 +8,11 @@ import Auth from "./pages/Auth.jsx"
 import ReqSheet from "./pages/ReqSheet.jsx"
 import Approval from "./pages/Approval.jsx"
 import PdfTemplate from "./util/PdfTemplate.jsx"
+import checkAuthentication from "./util/checkAuthentication"
 
+
+
+checkAuthentication()
 function App() {
   return (
     <Router>

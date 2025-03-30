@@ -118,10 +118,10 @@ def login(request):
             encrypted_data = encrypt_data(payload)
             # print(encrypt_data)
         
-            response = JsonResponse({"message":'login successfully'},status=200)
+            response = JsonResponse({"message":'login successfully',"token":encrypted_data},status=200)
 
             # setting cookies
-            response.set_cookie('access_token', encrypted_data, httponly=True,secure=True,max_age=3600,samesite='none')
+            response.set_cookie('access_token', encrypted_data,httponly=True,secure=True,max_age=3600,samesite='none')
             
 
             return response

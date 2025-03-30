@@ -24,6 +24,7 @@ function LoginForm() {
             console.log(res)
             if(res.status === 200){
                 localStorage.removeItem('process');
+                sessionStorage.setItem('token', res.data.token)
                 navigate("/")
             }
             

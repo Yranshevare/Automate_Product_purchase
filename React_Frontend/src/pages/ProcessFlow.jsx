@@ -7,6 +7,7 @@ import axios from 'axios';
 import MainContainer from '../Component/processFlow/MainContainer';
 import Title from '../Component/processFlow/title';
 
+
 export default function ProcessFlow() {
     const navigate = useNavigate();
     const [process, setProcess] = useState([]);
@@ -108,6 +109,7 @@ export default function ProcessFlow() {
             })
             if(res.data.message === 'logout successfully'){
                 localStorage.removeItem('process');
+                sessionStorage.removeItem('token');
                 navigate("/auth/login")
             }
         } catch (error) {
