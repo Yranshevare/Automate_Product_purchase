@@ -28,4 +28,5 @@ urlpatterns = [
     path('process/',include('process.urls')),
     path('stepOne/',include('stepOne.urls')),
     path('approve/',include('Approvel.urls')),
+    path('rfq/',include('RFQ.urls')),
 ]

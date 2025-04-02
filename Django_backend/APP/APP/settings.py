@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'stepOne',
     'Approvel',
     'rest_framework',
+    'RFQ',
 ]
 
 MIDDLEWARE = [
