@@ -158,6 +158,8 @@ def send_for_primary(request):
                 res = send_email_to_store(decrypt_access_token['username'] or settings.EMAIL_HOST_USER,decrypt_access_token['username'],decrypt_access_token['email'],file,process.title)
                 if  res != 1:
                     return JsonResponse({"error": "email not sent properly"},status = 500)
+                process.stepThree = process.steps.PENDING
+                process.save()
             
 
 
@@ -371,7 +373,8 @@ def Approve(request):
                 if res != 1:
                     # delete the approval models
                     return JsonResponse({"error": "email not sent properly"},status = 500)
-                # function to send email to store for quotations
+                process.stepThree = processModel.steps.COMPLETE
+                process.save()
 
             print(app.sequence_number)
             app.save()

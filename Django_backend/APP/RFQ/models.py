@@ -3,10 +3,8 @@ from django.db import models
 # Create your models here.
 class RFQModel(models.Model):
     id = models.AutoField(primary_key=True)
-    email = models.CharField(max_length=100)
 
-    sheet = models.TextField()
-    name = models.CharField(max_length=100)
+    sheet = models.TextField()      # cloudinary url
 
 
     class type(models.TextChoices):
@@ -25,4 +23,4 @@ class RFQModel(models.Model):
     process = models.ForeignKey('process.processModel', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.email
+        return self.process.title

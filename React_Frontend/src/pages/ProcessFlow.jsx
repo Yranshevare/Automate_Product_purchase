@@ -47,7 +47,11 @@ export default function ProcessFlow() {
             }
             // console.log(process)
         } catch (error) {
-            
+            console.log(error.response.data.error)
+            if(error?.response?.data?.error == 'unauthorize request' && sessionStorage.getItem('token') !== null){
+                sessionStorage.removeItem('token');
+                console.log("lll")
+            }
         }
     },[])
    useEffect(() => {
