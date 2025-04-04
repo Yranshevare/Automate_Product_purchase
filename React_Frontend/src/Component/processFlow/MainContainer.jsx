@@ -4,6 +4,7 @@ import { server } from '../../constant'
 import {  useNavigate } from 'react-router-dom';
 import { ThreeDot } from 'react-loading-indicators';
 import StepTwo from './stepTwo';
+import StepFour from './StepFour';
 
 const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo,user }) => {
 
@@ -104,23 +105,7 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo,user }) 
         </div>
         <div  className={processData?.step_three =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
             <div className="step-number">4</div>
-            <button
-                className="step-button"
-            >
-                <div className="step-content">
-                    <div className='step-inner-content'>
-                        <div className="step-header">
-                            <div>
-                                <span className={processData?.step_three == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_three}</span>
-                                <h3>Quote selection</h3>
-                            </div>
-                        </div>
-                        <hr />
-                        <p className="step-description">select the specific quote for approval</p>
-                    </div>
-                    <span className="chevron-right"></span>
-                </div>
-            </button>
+            <StepFour/>
         </div>
         <div  className={processData?.step_four =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
             <div className="step-number">5</div>

@@ -73,7 +73,7 @@
   align-items: center;
   margin-bottom: 20px;
   flex-wrap: wrap;
-  width: 100%;
+  width: 94%;
 }
 
 .section-info {
@@ -393,6 +393,58 @@ textarea:focus {
     width: 270px;
   }
 
+}
+
+/* quotation submition */
+.add-file-container {
+  margin-top: 16px;
+}
+
+.add-file-btn {
+  background-color: #a5a5a5;
+  color: black;
+  padding: 2% 4%;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.add-file-btn:hover {
+  opacity: 0.9;
+}
+
+.upload-file-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 2% 0%;
+  width: 94%;
+}
+
+.upload-btn,
+.view-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #556ed9;
+  color: white;
+  padding: 2% 4%;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  width: 100%;
+  max-width: 39%;
+  font-size: 1.2rem;
+  font-family: inherit;
+}
+
+.upload-btn:hover,
+.view-btn:hover {
+  opacity: 0.9;
 }
 
 
