@@ -507,3 +507,126 @@ def send_email_to_store(from_email,owner_username,owner_email,file,title):
     res = email.send()
 
     return res
+
+
+
+
+@csrf_exempt
+def send_for_final_approval(request):
+    if request.method == 'GET':
+        try:
+            data = json.loads(request.body)
+            print(data)
+
+            if not data:
+              return JsonResponse({'error': 'email is required'}, status=400)
+            
+
+            
+
+            token = request.POST.get('token')
+            if not token:
+                return JsonResponse({'error': 'unauthorize request'}, status=401)
+            
+
+            
+            process_token = request.COOKIES.get('process_token')
+            access_token = request.COOKIES.get('access_token')
+
+            if not access_token or not process_token:
+                return JsonResponse({'error': 'unauthorize request'}, status=401)
+
+            decrypt_process_token = decrypt_data(process_token)
+            decrypt_access_token = decrypt_data(access_token)
+
+
+            process = processModel.objects.filter(_id = decrypt_process_token['id']).first()
+            if not process:
+                return JsonResponse({"error":"process doesn't exist"},status=404)
+            
+            if process.stepOne != process.steps.COMPLETE:
+                return JsonResponse({"error":"no requirement sheet is available"},status=405)
+            
+            if process.stepTwo == process.steps.REJECTED:
+                return JsonResponse({"error":"request already rejected"},status=405)
+            
+
+
+            sender_email = ""
+            data = json.loads(data)
+            for x in data:
+
+                existed_approval_model =  ApprovalModel.objects.filter(email = x["email"],process = decrypt_process_token['id']).first()
+
+                if not existed_approval_model:
+                    new_approval_model = ApprovalModel.objects.create(
+                        email = x["email"],
+                        process = process,
+                        sequence_number = x["sequence_number"],
+                        status = ApprovalModel.Status.PENDING,
+                        response = x["response"],
+                        type = ApprovalModel.Type.FINAL,
+                        name = x["name"]
+                    )
+
+                    new_approval_model.save()
+                    if sender_email == "":
+                        sender_email = x["email"]
+                else:
+                    if existed_approval_model.type != ApprovalModel.Type.FINAL:
+                        existed_approval_model.status = ApprovalModel.Status.PENDING
+                        existed_approval_model.type = ApprovalModel.Type.FINAL
+                        existed_approval_model.response = existed_approval_model.response + "sending another request for final approval"
+                        existed_approval_model.save()
+
+                    if existed_approval_model.status == ApprovalModel.Status.PENDING and sender_email == "" : 
+                        sender_email = existed_approval_model.email
+                        
+                
+
+                if sender_email == "":
+                    return JsonResponse({"message":'all emil have submit their approval'},status = 200)
+
+                subject = "final approval"
+                from_email = decrypt_access_token['username'] or settings.EMAIL_HOST_USER
+                recipient_list = [sender_email]
+                html_content = f"""
+                    <body>
+                        <div >
+                            <div >
+                                <h2>RFQ Approval Request</h2>
+                            </div>
+                            <div >
+                                <p></p>
+                                <p>Please review the requirement sheet for <b>{process.title}</b> at the following link:</p>
+                                <p><a href={settings.FRONTEND}/approval/{token} >Review Requirement Sheet</a></p>
+                                <p>Once you have reviewed the document, kindly provide your approval or feedback so we can continue with the RFQ process.</p>
+                                <p>If you have any questions or need additional information, feel free to reach out.</p>
+                                <p>Thank you for your attention to this matter.</p>
+                                <p>Best regards,</p>
+                                <p>{decrypt_access_token['username']}<br>{decrypt_access_token['email']}</p>
+                            </div>
+                            <div >
+                                <p>This email was sent by Automate product purchase platform. If you did not request this email, please disregard it.</p>
+                            </div>
+                        </div>
+                    </body>
+                """
+                email = EmailMessage(subject, html_content, from_email, recipient_list)
+                email.content_subtype = "html"  # Mark content as HTML
+                res = email.send()
+                if res != 1:
+                    # delete the approval models
+                    return JsonResponse({"error": "email not sent properly"},status = 500)
+            
+
+                    
+
+            
+
+            return JsonResponse({'message':f'email sended successfully to {sender_email}'},status = 200)
+        except Exception as e:
+            return JsonResponse({'message':'error while getting the request','error':str(e)},status=500)
+        
+    else:
+        return JsonResponse({"message":"invalid request type"},status=405)

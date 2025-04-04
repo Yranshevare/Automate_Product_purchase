@@ -8,4 +8,5 @@ urlpatterns = [
     path('get/<str:process_id>/',views.get),
     path('reject_request/',views.Reject),
     path('get_one/',views.get_one),
+    path('send_for_final/',views.send_for_final_approval),
 ]
