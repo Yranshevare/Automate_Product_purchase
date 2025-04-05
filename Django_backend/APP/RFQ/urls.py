@@ -7,4 +7,5 @@ urlpatterns = [
     path('submit/', views.submit),
     path('get_all/',views.get_all),
     path('select/',views.select),
+    path('remove/',views.remove),
 ]

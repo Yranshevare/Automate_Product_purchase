@@ -29,6 +29,11 @@ function StepThree({processData}) {
       loadInfo()
     },[])
     const toggleStep = useCallback((stepNumber) => {
+      // console.log(quotes)
+      if(quotes.length === 0) {
+        alert("No quotes found")
+        return
+      }
       if(processData.step_two != "Complete") {
         alert("Please complete previous steps first")
         return
@@ -38,9 +43,7 @@ function StepThree({processData}) {
           } else {
             setExpandedStep(stepNumber);
           }
-        },
-        [expandedStep]
-      );
+        },[expandedStep,quotes]);
       
       const handleSelectQuote = useCallback((idx)=>{
         console.log(quotes[idx])

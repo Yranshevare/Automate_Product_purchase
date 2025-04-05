@@ -28,17 +28,17 @@ export default function QuoteSubmit() {
 
     try {
       setIsLoading(true)
-      const [step,existingQuote] = await axios.all([
-        axios.get(`${server}stepOne/get/${data.id}/`, { withCredentials: true }),
-        axios.get(`${server}rfq/get_all/`, {
-          params: { id: data.id },
-          withCredentials: true,
-        })
+      // const [step,existingQuote] = await axios.all([
+      //   axios.get(`${server}stepOne/get/${data.id}/`, { withCredentials: true }),
+      //   axios.get(`${server}rfq/get_all/`, {
+      //     params: { id: data.id },
+      //     withCredentials: true,
+      //   })
 
-      ])
+      // ])
+      const step = await axios.get(`${server}stepOne/get/${data.id}/`, { withCredentials: true })
       console.log(step.data)
-      console.log(existingQuote.data.sheet)
-      setFiles(existingQuote.data.sheet)
+    
 
 
       if(step.data.message === "successfully fetched the data"){
@@ -62,7 +62,14 @@ export default function QuoteSubmit() {
           });
           setItemType(newStr)
 
-        } 
+          setIsLoading(false)
+        }  
+        const existingQuote = await axios.get(`${server}rfq/get_all/`, {
+          params: { id: data.id },
+          withCredentials: true,
+        })
+        console.log(existingQuote.data.sheet)
+        setFiles(existingQuote.data.sheet)
 
 
       }
@@ -146,7 +153,7 @@ export default function QuoteSubmit() {
           </div>
           {
             files.map((file, index) => (
-              <FileInput key={index} file={file} />
+              <FileInput key={index} file={file} reloadInfo={loadInfo}/>
             ))
           }
         </div>

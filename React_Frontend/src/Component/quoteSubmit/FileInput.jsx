@@ -1,21 +1,23 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useDebugValue, useEffect, useState } from 'react'
 
 import uploadFile from '../../util/handleFileUpload';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { decryptData } from '../../util/encryptToken';
 import { server } from '../../constant';
+import deleteFile from '../../util/deleteUploadedFile';
 
-export default function FileInput({file}) {
+export default function FileInput({file,reloadInfo}) {
 
   const [files, setFiles] = useState(file || {});
   const [docLink, setDocLink] = useState("");
   const [uploading, setUploading] = useState("Upload The Quotation File");
   const [tokenData, setTokenData] = useState(null);
+  const [removeLoader,setRemoveLoader] = useState("remove")
 
   const {token} = useParams()
   // console.log(token)
-  console.log(file)
+  // console.log(files)
 
 
   const loadInfo = useCallback(async () => {
@@ -27,6 +29,10 @@ export default function FileInput({file}) {
   useEffect(() => {
     loadInfo();
   }, []);
+
+  useEffect(() => {
+    setFiles(file);
+  }, [file]);
 
 
 
@@ -43,7 +49,7 @@ export default function FileInput({file}) {
 
       try {
         const uploadUrl = await uploadFile(uploaded_file);
-        console.log(uploadUrl)
+        // console.log(uploadUrl)
 
         const res = await axios.post(`${server}rfq/submit/`,{
           sheet : uploadUrl,
@@ -52,11 +58,12 @@ export default function FileInput({file}) {
         console.log(res)
         if (res.data.message == "data submitted successfully"){
           alert("data submitted successfully")
+          setFiles({sheet:uploadUrl});
+          reloadInfo()
         }
 
 
 
-        setFiles({sheet:uploadUrl});
         setDocLink(res);
       } catch (error) {
         console.log(error)
@@ -67,13 +74,36 @@ export default function FileInput({file}) {
 
 
 
-    const handleRemoveQuote = useCallback(()=>{
+    const handleRemoveQuote = useCallback(async ()=>{
 
       if (!confirm("are you sure that you want to remove this quote from?"))return
+      setRemoveLoader("removing....")
+      console.log(files,"files")
+      try {
+        const del =  deleteFile(files.sheet)
+        const res = await axios.post(`${server}rfq/remove/`,{
+          file_id:del,
+          id: files.id 
+        },{
+          withCredentials: true
+        })
+        console.log(res)
 
-      
-      setFiles({})
-    })
+        if(res.data.message === "data deleted successfully"  ){
+
+          // function to delete the image from cloudinary
+          alert("data deleted successfully")
+          // reloadInfo()
+          setFiles({})
+        }
+        console.log(del)
+      } catch (error) {
+        console.log(error.response?.data || error)
+      }finally{
+        setRemoveLoader("remove")
+      }
+      // setFiles({})
+    },[files])
     
 
   return (
@@ -115,7 +145,7 @@ export default function FileInput({file}) {
           view
         </a>
         <button type="button" className="view-btn" onClick={handleRemoveQuote}>
-          remove
+          {removeLoader}
         </button>
         </>
 

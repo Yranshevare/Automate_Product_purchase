@@ -125,6 +125,11 @@ DATABASES = {
 }
 
 
+CLOUD_NAME = env('CLOUD_NAME')
+API_KEY = env('API_KEY')
+API_SECRET = env('API_SECRET')
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
