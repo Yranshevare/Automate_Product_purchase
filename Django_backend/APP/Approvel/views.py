@@ -155,7 +155,7 @@ def send_for_primary(request):
                     # delete the approval models
                     return JsonResponse({"error": "email not sent properly"},status = 500)
             else:
-                res = send_email_to_store(decrypt_access_token['username'] or settings.EMAIL_HOST_USER,decrypt_access_token['username'],decrypt_access_token['email'],file,process.title)
+                res = send_email_to_store(decrypt_access_token['username'] or settings.EMAIL_HOST_USER,decrypt_access_token['username'],decrypt_access_token['email'],file,process.title,token)
                 if  res != 1:
                     return JsonResponse({"error": "email not sent properly"},status = 500)
                 process.stepThree = process.steps.PENDING
@@ -242,16 +242,16 @@ def Approve(request):
         try:
             # print(request.FILES,"LLL")
             file = request.FILES.get('pdf')
-            print(file)
+            # print(file)
             
             process_id = request.GET.get('process_id')
             owner_email = request.GET.get('owner_email')
             owner_username = request.GET.get('owner_username')
             
             # process_id = json.loads(request.body)['process_id']
-            print(process_id,"   ")
+            # print(process_id,"   ")
             process_id = decode_id(process_id)
-            print(process_id)
+            # print(process_id)
 
             process = processModel.objects.filter(_id = process_id).first()
             if not process:
@@ -261,7 +261,7 @@ def Approve(request):
                 return JsonResponse({'message':'no requirement sheet is available'},status = 404)
             
             email = request.GET.get('email')
-            print(email)
+            # print(email)
             # seq_num = request.GET.get('seq_num')
             token = request.GET.get('token')
             # print(token)
@@ -278,7 +278,7 @@ def Approve(request):
                     curr_sqe.append(x.sequence_number)
                     
             curr_sqe.sort()
-            print(curr_sqe) 
+            # print(curr_sqe) 
 
 
             #current approval model
@@ -305,7 +305,7 @@ def Approve(request):
                         nextApp = x
                         break
             # print("sending email to ",nextApp.email)
-            print(nextApp)
+            # print(nextApp)
 
             if nextApp:
             
@@ -348,7 +348,7 @@ def Approve(request):
                     # delete the approval models
                     return JsonResponse({"error": "email not sent properly"},status = 500)
                 
-                print('sending email to ',nextApp.email)
+                # print('sending email to ',nextApp.email)
             
             # if(process.stepTwo == processModel.steps.REJECTED):
             #     return JsonResponse({'message':'request already rejected'},status = 422)
@@ -360,7 +360,7 @@ def Approve(request):
             isApprovalAccepted = True
 
             for x in approve:
-                print(x.status)
+                # print(x.status)
                 if x.status != ApprovalModel.Status.ACCEPTED:
                     isApprovalAccepted = False
                     break
@@ -369,7 +369,7 @@ def Approve(request):
                 process.stepTwo = processModel.steps.COMPLETE
                 print("send email to store for quotations")
                 process.save()
-                res = send_email_to_store(owner_username  or settings.EMAIL_HOST_USER,owner_username,owner_email,file,process.title)
+                res = send_email_to_store(owner_username  or settings.EMAIL_HOST_USER,owner_username,owner_email,file,process.title,token)
                 if res != 1:
                     # delete the approval models
                     return JsonResponse({"error": "email not sent properly"},status = 500)
@@ -476,8 +476,8 @@ def get_one(request):
 
 
 
-def send_email_to_store(from_email,owner_username,owner_email,file,title):
-    print(from_email,owner_username,owner_email)
+def send_email_to_store(from_email,owner_username,owner_email,file,title,token):
+    print(token)
 
     subject = 'Asking for Quotations'
     from_email = from_email
@@ -490,6 +490,10 @@ def send_email_to_store(from_email,owner_username,owner_email,file,title):
 
 
             <p>For your reference, I have attached a PDF document with the details of the products I require.</p>
+
+            <p>You may submit your quotation using the following link:<br>
+            <a href={settings.FRONTEND}/quoteSubmit/{token} target="_blank">Submit Quotation</a></p>
+
 
             <p>Please let me know if you need any additional information to prepare the quotation. I would appreciate it if you could send the details at your earliest convenience.</p>
 
@@ -507,7 +511,6 @@ def send_email_to_store(from_email,owner_username,owner_email,file,title):
     res = email.send()
 
     return res
-
 
 
 

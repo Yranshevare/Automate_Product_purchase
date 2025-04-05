@@ -6,7 +6,7 @@ function PdfTemplate({printRef,reqSheet, approve_email}) {
   let currentDate = new Date(); // Outputs the full date and time
   // let dateOnly = currentDate.toDateString();  // Example: "Wed Mar 26 2025"
   let formattedDate = currentDate.toISOString().split('T')[0];  // Example: "2025-03-26"
-  console.log(reqSheet,"com")
+  // console.log(reqSheet,"com")
 
 
 

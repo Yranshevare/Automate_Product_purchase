@@ -4,7 +4,7 @@ import { server } from '../../constant'
 import {  useNavigate } from 'react-router-dom';
 import { ThreeDot } from 'react-loading-indicators';
 import StepTwo from './stepTwo';
-import StepFour from './StepFour';
+import StepThree from './StepThree';
 
 const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo,user }) => {
 
@@ -83,7 +83,7 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo,user }) 
             <div className="step-number">2</div>
             <StepTwo processData={processData} user={user}/>   
         </div>
-        <div  className={processData?.step_three =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
+        {/* <div  className={processData?.step_three =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
             <div className="step-number">3</div>
             <button
                 className="step-button"
@@ -102,13 +102,13 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo,user }) 
                     <span className="chevron-right"></span>
                 </div>
             </button>
-        </div>
+        </div> */}
         <div  className={processData?.step_three =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
-            <div className="step-number">4</div>
-            <StepFour/>
+            <div className="step-number">3</div>
+            <StepThree processData={processData}/>
         </div>
         <div  className={processData?.step_four =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
-            <div className="step-number">5</div>
+            <div className="step-number">4</div>
             <button
                 className="step-button"
             >
@@ -128,7 +128,7 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo,user }) 
             </button>
         </div>
         <div  className={processData?.step_five =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
-            <div className="step-number">6</div>
+            <div className="step-number">5</div>
             <button
                 className="step-button"
             >

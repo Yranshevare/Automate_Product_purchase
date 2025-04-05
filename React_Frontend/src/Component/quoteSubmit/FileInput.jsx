@@ -1,12 +1,32 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import uploadFile from '../../util/handleFileUpload';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import { decryptData } from '../../util/encryptToken';
+import { server } from '../../constant';
 
 export default function FileInput({file}) {
 
-  const [files, setFiles] = useState({});
+  const [files, setFiles] = useState(file || {});
   const [docLink, setDocLink] = useState("");
   const [uploading, setUploading] = useState("Upload The Quotation File");
+  const [tokenData, setTokenData] = useState(null);
+
+  const {token} = useParams()
+  // console.log(token)
+  console.log(file)
+
+
+  const loadInfo = useCallback(async () => {
+    const data = await decryptData(token);
+    // console.log(data)
+    setTokenData(data)
+  }, []);
+
+  useEffect(() => {
+    loadInfo();
+  }, []);
 
 
 
@@ -22,12 +42,21 @@ export default function FileInput({file}) {
 
 
       try {
-        const res = await uploadFile(uploaded_file);
+        const uploadUrl = await uploadFile(uploaded_file);
+        console.log(uploadUrl)
+
+        const res = await axios.post(`${server}rfq/submit/`,{
+          sheet : uploadUrl,
+          id: tokenData.id
+        },{withCredentials: true})
         console.log(res)
+        if (res.data.message == "data submitted successfully"){
+          alert("data submitted successfully")
+        }
 
 
 
-        setFiles({uploaded_file});
+        setFiles({sheet:uploadUrl});
         setDocLink(res);
       } catch (error) {
         console.log(error)
@@ -82,7 +111,7 @@ export default function FileInput({file}) {
         </> 
         :
         <>
-        <a type="button" className="view-btn" target="_blank" href={`${docLink}` || "#"}>
+        <a type="button" className="view-btn" target="_blank" href={`${files.sheet}` || "#"}>
           view
         </a>
         <button type="button" className="view-btn" onClick={handleRemoveQuote}>

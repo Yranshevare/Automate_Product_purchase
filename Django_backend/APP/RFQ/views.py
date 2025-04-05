@@ -59,9 +59,10 @@ def submit(request):
 def get_all(request):
     if request.method == 'GET':
         try:
-            # id = request.GET.get('id')
-            id = json.loads(request.body)['id']
+            id = request.GET.get('id')
+            # id = json.loads(request.body)['id']
             id = decode_id(id)
+            print(id,"hghg")
             process = processModel.objects.filter(_id = id).first()
             if(not process):
                 return JsonResponse({'message':'process not found'},status=401)
