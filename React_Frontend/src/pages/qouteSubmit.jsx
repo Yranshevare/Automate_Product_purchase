@@ -1,22 +1,24 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import "../CSS/Approval.css";
+import FileInput from "../Component/quoteSubmit/FileInput";
 
 export default function QuoteSubmit() {
   const [skuValue, setSkuValue] = useState("  ");
   const [department, setDepartment] = useState("  ");
   const [justification, setJustification] = useState("  ")
   const [requirementText, setRequirementText] = useState("");
-
+  const [files, setFiles] = useState([{}]);
 
   const handleAddFile = useCallback(()=>{
-
+    setFiles(prev => [...prev, {"idx":`${files.length}`}])
   })
-  const handleViewQuote = useCallback(()=>{
+  
 
-  })
-  const handleUploadQuote = useCallback(()=>{
+  useEffect(()=>{
+    console.log(files)
+  },[files])
 
-  })
+  
   return (
     <div className="approval-page">
       <div className="content-container">
@@ -57,30 +59,13 @@ export default function QuoteSubmit() {
               Add another file
             </button>
           </div>
-          <div className="upload-file-container">
-          <button type="button" className="upload-btn" onClick={handleUploadQuote}>
-                <span>Upload The Quotation File</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="17 8 12 3 7 8"></polyline>
-                  <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
-              </button>
-              <button type="button" className="view-btn" onClick={handleViewQuote}>
-              view
-            </button>
-          </div>
+          {
+            files.map((file, index) => (
+              <FileInput key={index} file={file} />
+            ))
+          }
         </div>
+        
       </div>
     </div>
   );

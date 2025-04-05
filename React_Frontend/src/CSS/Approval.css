@@ -420,7 +420,8 @@ textarea:focus {
   display: flex;
   justify-content: space-between;
   padding: 2% 0%;
-  width: 94%;
+  width: 100%;
+  gap: 10px;
 }
 
 .upload-btn,
@@ -437,9 +438,16 @@ textarea:focus {
   cursor: pointer;
   transition: opacity 0.2s;
   width: 100%;
-  max-width: 39%;
+  min-width: 39%;
   font-size: 1.2rem;
   font-family: inherit;
+}
+
+.upload-bul-container{
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: center;
 }
 
 .upload-btn:hover,

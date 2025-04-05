@@ -111,3 +111,7 @@ body {
   padding-bottom: 20px;
 }
 
+
+#file_input{
+  display: none ;
+}

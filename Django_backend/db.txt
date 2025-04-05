@@ -6,5 +6,7 @@ select * from authentication_usermodel
 select * from process_processmodel
 select * from stepone_steponemodel
 select * from approvel_approvalmodel
+select * from rfq_rfqmodel
+
 
 
