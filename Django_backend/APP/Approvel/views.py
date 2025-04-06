@@ -460,6 +460,9 @@ def Approve(request):
                 process.stepTwo = processModel.steps.COMPLETE
                 if not isFinal:
                     print("send email to store for quotations")
+                     # print(request.FILES,"LLL")
+                    file = request.FILES.get('pdf')
+                    # print(file)
                     res = send_email_to_store(owner_username  or settings.EMAIL_HOST_USER,owner_username,owner_email,file,process.title,token)
                     if res != 1:
                         return JsonResponse({"error": "email not sent properly"},status = 500)

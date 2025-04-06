@@ -62,7 +62,8 @@ function Approval() {
           setNextEmail(curr_approval.data.data.next_email)
         }
       } 
-      if(!dec?.isFinal){
+      console.log(dec)
+      if(dec?.isFinal && !dec?.isFinal){
         all_approve?.data?.data.map(item => {
           return item.status = 'Accepted'
         })
