@@ -140,11 +140,16 @@ def select(request):
             rfq = RFQModel.objects.filter(id = id,process = process).first()
             if(not rfq):
                 return JsonResponse({'message':'rfq not found'},status=401)
+            
+            if (rfq.type == 'Selected'):
+                return JsonResponse({'message':'rfq already selected'},status=200)
 
 
-
-            rfq.status = "selected"
+            # print(RFQModel.type.SELECTED)
+            rfq.type = 'Selected'
+            process.stepThree = processModel.steps.COMPLETE
             rfq.save()
+            process.save()
             
 
 

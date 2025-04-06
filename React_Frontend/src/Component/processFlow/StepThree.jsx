@@ -6,6 +6,7 @@ import axios from "axios";
 function StepThree({processData}) {
     const [expandedStep, setExpandedStep] = useState(null);
     const [quotes, setQuotes] = useState([]);
+    const [selectedQuote, setSelectedQuote] = useState([]);
 
 
 
@@ -19,6 +20,7 @@ function StepThree({processData}) {
         console.log(res?.data.sheet)
         if(res.status === 200){
           setQuotes(res?.data?.sheet)
+          
         } 
       } catch (error) {
         console.log(error)
@@ -28,6 +30,13 @@ function StepThree({processData}) {
     useEffect(() => {
       loadInfo()
     },[])
+
+    useEffect(() => {
+      quotes.map((quote,idx) => {
+        setSelectedQuote(prev => [...prev,quote.type])
+      })
+      console.log("Lll")
+    },[quotes])
     const toggleStep = useCallback((stepNumber) => {
       // console.log(quotes)
       if(quotes.length === 0) {
@@ -45,8 +54,36 @@ function StepThree({processData}) {
           }
         },[expandedStep,quotes]);
       
-      const handleSelectQuote = useCallback((idx)=>{
+      const handleSelectQuote = useCallback(async(idx)=>{
         console.log(quotes[idx])
+        if(!confirm("Are you sure you want to select this quote?")) return
+        setSelectedQuote(prev => {
+          prev[idx] = "Selecting..."
+          return [...prev]
+        })
+        try {
+          const res = await axios.post(`${server}rfq/select/`,{
+            id:quotes[idx].id
+          },{
+            withCredentials: true
+          })
+          console.log(res)
+          if(res?.status === 200){
+            alert(res?.data?.message)
+            setSelectedQuote(prev => {
+              prev[idx] = "Selected"
+              return [...prev]
+            })
+          }
+        } catch (error) {
+          console.log(error?.response?.data || error)
+          alert("there is a problem while selecting this quote. please try again")
+          setSelectedQuote(prev => {
+            prev[idx] = "re Select this quote"
+            return [...prev]
+          })
+        }
+
       })
   return (
     <>
@@ -55,7 +92,7 @@ function StepThree({processData}) {
                     <div className='step-inner-content'>
                         <div className="step-header">
                             <div>
-                                <span className={"status-incomplete"}>{processData.step_three || "pending"}</span>
+                                <span className={processData?.step_three == 'Complete' ? "status-complete" : "status-incomplete"}>{processData.step_three || "pending"}</span>
                                 <h3>Quote selection</h3>
                             </div>
                         </div>
@@ -71,7 +108,7 @@ function StepThree({processData}) {
                     quotes.map((quote,index)=>
                     <div className="quotation-buttons" key={index}>
                       <a target="blank" href={quote.sheet} className="view-quote-button">View Quotation</a>
-                      <button className="select-quote-button" onClick={() => handleSelectQuote(index)}>Select this Quote</button>
+                      <button className="select-quote-button" onClick={() => handleSelectQuote(index)}>{selectedQuote[index] === "Not Selected" ? "select this quote" : selectedQuote[index]}</button>
                     </div>
                     
                     )
