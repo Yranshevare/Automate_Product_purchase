@@ -62,6 +62,11 @@ function Approval() {
           setNextEmail(curr_approval.data.data.next_email)
         }
       } 
+      if(!dec?.isFinal){
+        all_approve?.data?.data.map(item => {
+          return item.status = 'Accepted'
+        })
+      }
      
 
 
@@ -112,6 +117,7 @@ function Approval() {
 
 
 
+      setResponding("Approving");
 
       // setShowRejectForm(true);
 
@@ -124,7 +130,6 @@ function Approval() {
 
 
 
-      setResponding("Approving");
       let dec = await decryptData(data);
 
       const payload = {
@@ -134,14 +139,14 @@ function Approval() {
       const token = await encryptData(payload)
       
 
-
       const res = await axios.post(`${server}approve/approve_request/`,pdf, {
         params: { 
           process_id: info.id, 
           email: info.email,
           token:token,
           owner_email:info?.user?.email,
-          owner_username : info?.user?.username
+          owner_username : info?.user?.username,
+          isFinal : info?.isFinal || false
         },
         withCredentials: true,
       });

@@ -6,6 +6,7 @@ from process.models import processModel
 from APP import settings
 from django.core.mail import EmailMessage
 from rest_framework.parsers import MultiPartParser
+from RFQ.models import RFQModel
 import json
 
 @csrf_exempt
@@ -215,7 +216,8 @@ def get(request,process_id):
                     "accepted_by_email":a.email,
                     "response":a.response,
                     "name": a.name,
-                    "sqe_num": a.sequence_number
+                    "sqe_num": a.sequence_number,
+                    'type':a.type
                 }
                 data.append(newData)
             
@@ -240,9 +242,7 @@ def get(request,process_id):
 def Approve(request):
     if request.method == 'POST':
         try:
-            # print(request.FILES,"LLL")
-            file = request.FILES.get('pdf')
-            # print(file)
+            
             
             process_id = request.GET.get('process_id')
             owner_email = request.GET.get('owner_email')
@@ -278,7 +278,6 @@ def Approve(request):
                     curr_sqe.append(x.sequence_number)
                     
             curr_sqe.sort()
-            # print(curr_sqe) 
 
 
             #current approval model
@@ -294,6 +293,15 @@ def Approve(request):
             if app.status == ApprovalModel.Status.ACCEPTED:
                 return JsonResponse({'message':'request already accepted'},status = 200)
             
+
+            isFinal = request.GET.get('isFinal')
+            if(isFinal == 'false'):
+                isFinal = False
+
+            # print(isFinal)
+            if not isFinal and app.type == ApprovalModel.Type.FINAL:
+                return JsonResponse({'message':'request already accepted'},status = 200)
+            
             
 
 
@@ -305,54 +313,137 @@ def Approve(request):
                         nextApp = x
                         break
             # print("sending email to ",nextApp.email)
-            # print(nextApp)
+            print(nextApp)
 
             if nextApp:
+
+
+                if not isFinal:
             
 
-                subject = "Primary approval"
-                from_email = owner_username  or settings.EMAIL_HOST_USER
-                recipient_list = [nextApp.email]
-                html_content = f"""
-                    <body>
-                        <div >
+                    subject = "Primary approval"
+                    from_email = owner_username  or settings.EMAIL_HOST_USER
+                    recipient_list = [nextApp.email]
+                    html_content = f"""
+                        <body>
                             <div >
-                                <h2>RFQ Approval Request</h2>
+                                <div >
+                                    <h2>RFQ Approval Request</h2>
+                                </div>
+                                <div >
+                                    <p>We hope this message finds you well. We are in the process of preparing a Request for Quotation (RFQ) for an upcoming project, and your approval is required to proceed with the next steps.</p>
+                                    <p>Please review the requirement sheet for <b>{process.title}</b> at the following link:</p>
+                                    <p><a href={settings.FRONTEND}/approval/{token} >Review Requirement Sheet</a></p>
+                                    <p>Once you have reviewed the document, kindly provide your approval or feedback so we can continue with the RFQ process.</p>
+                                    <p>If you have any questions or need additional information, feel free to reach out.</p>
+                                    <p>Thank you for your attention to this matter.</p>
+                                    <p>Best regards,</p>
+                                    <p>{owner_username}<br>{owner_email}</p>
+                                </div>
+                                <div >
+                                    <p>This email was sent by Automate product purchase platform. If you did not request this email, please disregard it.</p>
+                                </div>
                             </div>
-                            <div >
-                                <p>We hope this message finds you well. We are in the process of preparing a Request for Quotation (RFQ) for an upcoming project, and your approval is required to proceed with the next steps.</p>
-                                <p>Please review the requirement sheet for <b>{process.title}</b> at the following link:</p>
-                                <p><a href={settings.FRONTEND}/approval/{token} >Review Requirement Sheet</a></p>
-                                <p>Once you have reviewed the document, kindly provide your approval or feedback so we can continue with the RFQ process.</p>
-                                <p>If you have any questions or need additional information, feel free to reach out.</p>
-                                <p>Thank you for your attention to this matter.</p>
-                                <p>Best regards,</p>
-                                <p>{owner_username}<br>{owner_email}</p>
-                            </div>
-                            <div >
-                                <p>This email was sent by Automate product purchase platform. If you did not request this email, please disregard it.</p>
-                            </div>
-                        </div>
-                    </body>
-                """
+                        </body>
+                    """
 
-                email = EmailMessage(subject, html_content, from_email, recipient_list)
-                email.attach(file.name, file.read(), file.content_type)
-                email.content_subtype = "html"  # Mark content as HTML
+                    email = EmailMessage(subject, html_content, from_email, recipient_list)
+
+                    # print(request.FILES,"LLL")
+                    file = request.FILES.get('pdf')
+                    # print(file)
+                    email.attach(file.name, file.read(), file.content_type)
+
+
+                    email.content_subtype = "html"  # Mark content as HTML
 
 
 
-                res = email.send()
+                    res = email.send()
 
-                if res != 1:
-                    # delete the approval models
-                    return JsonResponse({"error": "email not sent properly"},status = 500)
+                    if res != 1:
+                        # delete the approval models
+                        return JsonResponse({"error": "email not sent properly"},status = 500)
+                    print("email sent to next approver",nextApp.email)
+                else:
+
+                    rfq = RFQModel.objects.filter(process = process, type = "Selected").first()
+                    if not rfq:
+                        return JsonResponse({"error":"no requirement sheet is available"},status=405)
+
+                    subject = "final approval"
+                    from_email = owner_username  or settings.EMAIL_HOST_USER
+                    recipient_list = [nextApp.email]
+                    html_content =f"""
+<body style="font-family: Arial, sans-serif; color: #333;">
+    <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px;">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2>Final Approval Required: RFQ Quotation</h2>
+        </div>
+
+        <div style="line-height: 1.6;">
+            <p>Dear Approver,</p>
+
+            <p>
+                Please review the requirement sheet for <b>{process.title}</b> using the link below:
+            </p>
+
+            <p>
+                <a href="{settings.FRONTEND}/approval/{token}" 
+                   style="color: #1a73e8; text-decoration: none;" target="_blank">
+                    ➤ Review Requirement Sheet & Submit Approval
+                </a>
+            </p>
+
+            <p>
+                You can also directly view the quotation document here:
+            </p>
+
+            <p>
+                <a href="{rfq.sheet}" 
+                   target="_blank" 
+                   style="display: inline-block; padding: 10px 15px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+                    View Quotation
+                </a>
+            </p>
+
+            <p>
+                After reviewing, kindly provide your final approval or feedback so we can proceed with the RFQ process.
+            </p>
+
+            <p>If you have any questions or need further information, feel free to reach out.</p>
+
+            <p>Thank you for your attention to this request.</p>
+
+            <p>
+                Best regards,<br>
+                {owner_username}<br>
+                {owner_email}
+            </p>
+        </div>
+
+        <hr style="margin-top: 30px; border: none; border-top: 1px solid #ccc;">
+
+        <div style="font-size: 12px; color: #777;">
+            <p>
+                This email was sent by the Automate Product Purchase Platform. 
+                If you did not request this email, please disregard it.
+            </p>
+        </div>
+    </div>
+</body>
+"""
+
+                    email = EmailMessage(subject, html_content, from_email, recipient_list)
+                    email.content_subtype = "html"
+                    res = email.send()
+
+                    if res != 1:
+                        # delete the approval models
+                        return JsonResponse({"error": "email not sent properly"},status = 500)
                 
-                # print('sending email to ',nextApp.email)
             
-            # if(process.stepTwo == processModel.steps.REJECTED):
-            #     return JsonResponse({'message':'request already rejected'},status = 422)
-            
+                    print("email sent to next approver",nextApp.email)
 
             app.status = ApprovalModel.Status.ACCEPTED
             app.response = f"approved by {app.email} "
@@ -367,14 +458,16 @@ def Approve(request):
 
             if isApprovalAccepted:
                 process.stepTwo = processModel.steps.COMPLETE
-                print("send email to store for quotations")
-                process.save()
-                res = send_email_to_store(owner_username  or settings.EMAIL_HOST_USER,owner_username,owner_email,file,process.title,token)
-                if res != 1:
-                    # delete the approval models
-                    return JsonResponse({"error": "email not sent properly"},status = 500)
-                process.stepThree = processModel.steps.COMPLETE
-                process.save()
+                if not isFinal:
+                    print("send email to store for quotations")
+                    res = send_email_to_store(owner_username  or settings.EMAIL_HOST_USER,owner_username,owner_email,file,process.title,token)
+                    if res != 1:
+                        return JsonResponse({"error": "email not sent properly"},status = 500)
+                    process.save()
+                else:
+                    print("email sent to account department")
+                    process.stepFour = processModel.steps.COMPLETE
+                    process.save()
 
             print(app.sequence_number)
             app.save()
@@ -516,10 +609,12 @@ def send_email_to_store(from_email,owner_username,owner_email,file,title,token):
 
 @csrf_exempt
 def send_for_final_approval(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         try:
-            data = json.loads(request.body)
-            print(data)
+            # print("LLL")
+            # data = json.loads(request.body)
+            data = request.POST.get('data')
+            print(data,"lll")
 
             if not data:
               return JsonResponse({'error': 'email is required'}, status=400)
@@ -589,32 +684,75 @@ def send_for_final_approval(request):
 
                 if sender_email == "":
                     return JsonResponse({"message":'all emil have submit their approval'},status = 200)
+                
+
+                rfq = RFQModel.objects.filter(process = process, type = "Selected").first()
+                if not rfq:
+                    return JsonResponse({"error":"no requirement sheet is available"},status=405)
 
                 subject = "final approval"
                 from_email = decrypt_access_token['username'] or settings.EMAIL_HOST_USER
                 recipient_list = [sender_email]
-                html_content = f"""
-                    <body>
-                        <div >
-                            <div >
-                                <h2>RFQ Approval Request</h2>
-                            </div>
-                            <div >
-                                <p></p>
-                                <p>Please review the requirement sheet for <b>{process.title}</b> at the following link:</p>
-                                <p><a href={settings.FRONTEND}/approval/{token} >Review Requirement Sheet</a></p>
-                                <p>Once you have reviewed the document, kindly provide your approval or feedback so we can continue with the RFQ process.</p>
-                                <p>If you have any questions or need additional information, feel free to reach out.</p>
-                                <p>Thank you for your attention to this matter.</p>
-                                <p>Best regards,</p>
-                                <p>{decrypt_access_token['username']}<br>{decrypt_access_token['email']}</p>
-                            </div>
-                            <div >
-                                <p>This email was sent by Automate product purchase platform. If you did not request this email, please disregard it.</p>
-                            </div>
-                        </div>
-                    </body>
-                """
+                html_content =f"""
+<body style="font-family: Arial, sans-serif; color: #333;">
+    <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px;">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2>Final Approval Required: RFQ Quotation</h2>
+        </div>
+
+        <div style="line-height: 1.6;">
+            <p>Dear Approver,</p>
+
+            <p>
+                Please review the requirement sheet for <b>{process.title}</b> using the link below:
+            </p>
+
+            <p>
+                <a href="{settings.FRONTEND}/approval/{token}" 
+                   style="color: #1a73e8; text-decoration: none;" target="_blank">
+                    ➤ Review Requirement Sheet & Submit Approval
+                </a>
+            </p>
+
+            <p>
+                You can also directly view the quotation document here:
+            </p>
+
+            <p>
+                <a href="{rfq.sheet}" 
+                   target="_blank" 
+                   style="display: inline-block; padding: 10px 15px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+                    View Quotation
+                </a>
+            </p>
+
+            <p>
+                After reviewing, kindly provide your final approval or feedback so we can proceed with the RFQ process.
+            </p>
+
+            <p>If you have any questions or need further information, feel free to reach out.</p>
+
+            <p>Thank you for your attention to this request.</p>
+
+            <p>
+                Best regards,<br>
+                {decrypt_access_token['username']}<br>
+                {decrypt_access_token['email']}
+            </p>
+        </div>
+
+        <hr style="margin-top: 30px; border: none; border-top: 1px solid #ccc;">
+
+        <div style="font-size: 12px; color: #777;">
+            <p>
+                This email was sent by the Automate Product Purchase Platform. 
+                If you did not request this email, please disregard it.
+            </p>
+        </div>
+    </div>
+</body>
+"""
+
                 email = EmailMessage(subject, html_content, from_email, recipient_list)
                 email.content_subtype = "html"  # Mark content as HTML
                 res = email.send()
