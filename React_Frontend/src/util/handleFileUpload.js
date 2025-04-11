@@ -7,8 +7,9 @@ export default async function uploadFile(file) {
         data.append("upload_preset", import.meta.env.VITE_CLOUD_PREST);
         data.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
         
-        
+        // console.log('lll')
         const res = await axios.post("https://api.cloudinary.com/v1_1/dknlbzgap/auto/upload", data);
+        // console.log("kkk")
         return res.data.url
     } catch (error) {
         console.log(error)

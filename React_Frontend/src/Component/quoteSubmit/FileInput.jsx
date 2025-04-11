@@ -48,6 +48,7 @@ export default function FileInput({file,reloadInfo}) {
 
 
       try {
+        // console.log("lll")
         const uploadUrl = await uploadFile(uploaded_file);
         // console.log(uploadUrl)
 
