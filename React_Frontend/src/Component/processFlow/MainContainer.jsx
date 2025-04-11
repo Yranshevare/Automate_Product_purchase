@@ -4,8 +4,8 @@ import { server } from '../../constant'
 import {  useNavigate } from 'react-router-dom';
 import { ThreeDot } from 'react-loading-indicators';
 import StepTwo from './stepTwo';
+// import StepThree from './StepThree';
 import StepThree from './StepThree';
-import StepFour from './stepFour';
 
 const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo,user }) => {
 
@@ -127,7 +127,7 @@ const MainContainer = React.memo(({ process,setSelectedProcess,loadInfo,user }) 
                     <span className="chevron-right"></span>
                 </div>
             </button> */}
-            <StepFour processData={processData} user={user}/>
+            {/* <StepFour processData={processData} user={user}/> */}
         </div>
         <div  className={processData?.step_five =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
             <div className="step-number">5</div>
