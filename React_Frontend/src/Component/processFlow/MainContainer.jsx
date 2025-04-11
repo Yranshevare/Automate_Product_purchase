@@ -6,6 +6,7 @@ import { ThreeDot } from "react-loading-indicators";
 import StepTwo from "./stepTwo";
 // import StepThree from './StepThree';
 import StepThree from "./StepThree";
+import StepFour from "./stepFour";
 import StepFive from "./StepFive";
 
 const MainContainer = React.memo(
@@ -114,26 +115,7 @@ const MainContainer = React.memo(
             <div className="step-number">2</div>
             <StepTwo processData={processData} user={user} />
           </div>
-          {/* <div  className={processData?.step_three =='Complete' ? "timeline-item complete-border" : "timeline-item incomplete-border"}>
-            <div className="step-number">3</div>
-            <button
-                className="step-button"
-            >
-                <div className="step-content">
-                    <div className='step-inner-content'>
-                        <div className="step-header">
-                            <div>
-                                <span className={processData?.step_three == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_three}</span>
-                                <h3>Request for quotations</h3>
-                            </div>
-                        </div>
-                        <hr />
-                        <p className="step-description">mention the email of different vendor whose quote you want</p>
-                    </div>
-                    <span className="chevron-right"></span>
-                </div>
-            </button>
-        </div> */}
+         
           <div
             className={
               processData?.step_three == "Complete"
@@ -152,24 +134,8 @@ const MainContainer = React.memo(
             }
           >
             <div className="step-number">4</div>
-            {/* <button
-                className="step-button"
-            >
-                <div className="step-content">
-                    <div className='step-inner-content'>
-                        <div className="step-header">
-                            <div>
-                                <span className={processData?.step_four == 'Complete' ? "status-complete" : "status-incomplete"}>{processData?.step_four}</span>
-                                <h3>Send for final approval</h3>
-                            </div>
-                        </div>
-                        <hr />
-                        <p className="step-description">mention the email of the person whose approval is needed</p>
-                    </div>
-                    <span className="chevron-right"></span>
-                </div>
-            </button> */}
-            {/* <StepFour processData={processData} user={user}/> */}
+           
+            <StepFour processData={processData} user={user}/>
           </div>
           <div
             className={
