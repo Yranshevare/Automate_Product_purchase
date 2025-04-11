@@ -900,3 +900,24 @@
 .select-quote-button:hover{
   background-color: #6b8ae7; 
 }
+.purchase-order-buttons{
+  display: flex;
+  justify-content:space-around;
+  align-items: center;
+  margin-top: 3%;
+}
+.po-btn{
+  width: 30%;
+  padding: 12px;
+  background-color: #819efc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: Inter;
+}
+.po-btn:hover{
+  background-color: #6b8ae7; 
+}
