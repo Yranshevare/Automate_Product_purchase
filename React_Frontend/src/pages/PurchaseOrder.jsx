@@ -1,15 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import '../CSS/PurchaseOrder.css';
+import EditableTable from "../Component/reqSheet/EditTable";
 
 function PurchaseOrder() {
+  let currentDate = new Date(); // Outputs the full date and time
+  // let dateOnly = currentDate.toDateString();  // Example: "Wed Mar 26 2025"
+  let formattedDate = currentDate.toISOString().split('T')[0];  // Example: "2025-03-26"
+
+
   const [formData, setFormData] = useState({
     orderNumber: "",
     to: "",
-    poDate: "",
+    poDate: formattedDate,
     name: "",
     email: "",
     phone: "",
   });
+
+  const [requirementText, setRequirementText] = useState({
+    headers:["unit","Description","Unit Price","Total Amount"],
+    items:[{"unit":'',"Description":'',"Unit Price":'',"Total Amount":''},
+            {"unit":'subtotal 1', "Description":0},
+            {"unit":'Discount', "Description":0},
+            {"unit":'subtotal 2', "Description":0},
+            {"unit":'GST TAX ADD 18%', "Description":0},
+            {"unit":'Subtotal 3', "Description":0},
+    ]
+  }); // Initialize tableData, 
+  const [finalData, setFinalData] = useState();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,8 +37,54 @@ function PurchaseOrder() {
     }));
   };
 
+  useEffect(() => {
+    if (finalData?.items.length > 6 && finalData?.items[finalData?.items.length -1].unit === ""){
+
+      const newIndex = Math.max((finalData?.items.length -1) - 5, 0);
+
+      const [item] = finalData?.items.splice((finalData?.items.length -1), 1);
+
+      finalData?.items.splice(newIndex, 0, item);
+      setRequirementText(finalData)
+      
+    }
+    
+    for(let i = 0; i < finalData?.items.length-5; i++){
+      if(finalData?.items[i].unit !== "" && finalData?.items[i]["Unit Price"] !== "" ){
+        finalData.items[i]["Total Amount"] = String(finalData?.items[i].unit * finalData?.items[i]["Unit Price"]);
+      }
+      
+      setRequirementText(finalData)
+    }
+    let subtotal_1 = 0
+    for(let i = 0; i < finalData?.items.length-5; i++){
+      if(finalData?.items[i]["Total Amount"] !== ""  ){
+        subtotal_1 += parseFloat(finalData?.items[i]["Total Amount"]);
+      }
+    }
+
+
+    if (finalData && finalData.items && finalData.items.length >= 5) {
+      finalData.items[finalData.items.length - 5]["Description"] = subtotal_1;
+    }
+
+    if (finalData && finalData.items && finalData.items[finalData.items.length - 4]["Description"] !== 0)  {
+      let subtotal_2 = finalData.items[finalData.items.length - 5]["Description"] - finalData.items[finalData.items.length - 4]["Description"];
+      finalData.items[finalData.items.length - 3]["Description"] = subtotal_2;
+    }
+
+    if(finalData && finalData.items){
+      let gst = finalData.items[finalData.items.length - 3]["Description"] * 0.18;
+      finalData.items[finalData.items.length - 2]["Description"] = gst;
+      finalData.items[finalData.items.length - 1]["Description"] = finalData.items[finalData.items.length - 3]["Description"] + finalData.items[finalData.items.length - 2]["Description"];
+    }
+
+  }, [finalData]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(finalData)
+    console.log(formData)
   };
 
   return (
@@ -61,7 +125,7 @@ function PurchaseOrder() {
               PO Date:
             </label>
             <input
-              type="text"
+              type="date"
               id="poDate"
               name="poDate"
               value={formData.poDate}
@@ -127,8 +191,9 @@ function PurchaseOrder() {
           </div>
         </div>
 
-        <div className="div-box"></div>
-
+        <div className="table-container">
+                  <EditableTable tableData={requirementText} setFinalData={setFinalData} />
+                  </div>
         <div className="div-box"></div>
 
 

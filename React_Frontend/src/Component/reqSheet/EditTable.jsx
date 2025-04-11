@@ -53,7 +53,7 @@ function EditableTable({tableData,setFinalData}) {
 
 
   useEffect(() => {
-      setData(tableData ||initialState)
+    setData(tableData ||  initialState)
   },[tableData])
 
   useEffect(() => {

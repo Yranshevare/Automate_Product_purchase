@@ -28,7 +28,7 @@ function App() {
           <Route path="/reqSheet/:proId" element={<ReqSheet />}></Route>
           <Route path="/approval/:data" element={<Approval />}></Route>
           <Route path="/quoteSubmit/:token" element={<QuoteSubmit />} />
-          <Route path="/purchaseorder" element={<PurchaseOrder />} ></Route>
+          <Route path="/purchaseOrder" element={<PurchaseOrder />} ></Route>
         </Routes>
       </div>
     </Router>
