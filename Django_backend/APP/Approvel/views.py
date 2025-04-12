@@ -469,6 +469,9 @@ def Approve(request):
                     process.save()
                 else:
                     print("email sent to account department")
+                    res = send_email_to_acc(owner_username  or settings.EMAIL_HOST_USER,owner_username,owner_email,process.title,token)
+                    if res != 1:
+                        return JsonResponse({"error": "email not sent properly"},status = 500)
                     process.stepFour = processModel.steps.COMPLETE
                     process.save()
 
@@ -609,6 +612,41 @@ def send_email_to_store(from_email,owner_username,owner_email,file,title,token):
     return res
 
 
+def send_email_to_acc(from_email,owner_username,owner_email,title,token):
+    print(token)
+
+    subject = 'Asking for Quotations'
+    from_email = from_email
+    recipient_list = [settings.STORE_EMAIL]
+
+    html_content = f"""
+            <p>Dear [Store Name/Supplier’s Name],</p>
+
+            <p>I hope this email finds you well. I am writing to confirm that we are ready to proceed with the purchase of <strong>{title}</strong>.</p>
+
+            <p>For your reference, I have attached a PDF document with the final details of the products and terms agreed upon.</p>
+
+            <p>You may submit your purchase order using the following link:<br>
+            <a href="{settings.FRONTEND}/purchaseorder/{token}" target="_blank">Submit Purchase Order</a></p>
+
+            <p>If you need any additional information or clarification, please do not hesitate to reach out. We look forward to receiving your purchase order at the earliest convenience.</p>
+
+            <p>Thank you for your continued support.</p>
+
+            <p>Best regards,</p>
+            <p><strong>{owner_username}</strong><br>{owner_email}</p>
+
+    """
+
+    email = EmailMessage(subject, html_content, from_email, recipient_list)
+    email.content_subtype = "html" 
+
+    res = email.send()
+    print(res)
+
+    return res
+
+
 
 @csrf_exempt
 def send_for_final_approval(request):
@@ -686,7 +724,12 @@ def send_for_final_approval(request):
                 
 
                 if sender_email == "":
-                    return JsonResponse({"message":'all emil have submit their approval'},status = 200)
+                    # return JsonResponse({"message":'all emil have submit their approval'},status = 200)
+                    res = send_email_to_acc(settings.EMAIL_HOST_USER,decrypt_access_token['username'],decrypt_access_token['email'],process.title,token)
+                    if res != 1:
+                       return JsonResponse({"error": "email not sent properly"},status = 500)
+                    
+                    return JsonResponse({"message":"request send successfully"},status = 200)
                 
 
                 rfq = RFQModel.objects.filter(process = process, type = "Selected").first()

@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import '../CSS/PurchaseOrder.css';
 import EditableTable from "../Component/reqSheet/EditTable";
+import { useParams } from "react-router-dom";
+import { decryptData } from "../util/encryptToken";
 
 function PurchaseOrder() {
   let currentDate = new Date(); // Outputs the full date and time
@@ -30,6 +32,24 @@ function PurchaseOrder() {
   const [finalData, setFinalData] = useState();
 
   const [terms, setTerms] = useState([{"":""}]);
+
+  const [tokenData, setTokenData] = useState(null);
+
+
+  const {token} = useParams()
+  
+  // console.log(decryptData(token))
+
+  const loadInfo = useCallback(async () => {
+    const data = await decryptData(token);
+    console.log(data)
+    setTokenData(data)
+
+  }, []);
+
+  useEffect(() => {
+    loadInfo();
+  },[])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -132,10 +152,20 @@ function PurchaseOrder() {
         </div>
         <div className="user-info">
           <div className="user-details">
-            <h2 className="username">username</h2>
-            <p className="user-email">abc@gmail.com</p>
+            <h2 className="username">{tokenData?.user?.username||'username'}</h2>
+            <p className="user-email">{tokenData?.user?.email||'abc@gmail.com'}</p>
           </div>
-          <div className="avatar"></div>
+          <div className="user-avatar">
+            <img
+              src={
+                tokenData?.user?.gender.toLowerCase() == "male"
+                  ? "/boy.png"
+                  : "/girl.png"
+              }
+              alt=""
+              className="approve_avatar"
+            />
+            </div>
         </div>
       </div>
 
@@ -237,7 +267,7 @@ function PurchaseOrder() {
           </div>
           {
               terms.map((val,idx) => (
-                <div className="terms-conditions">
+                <div className="terms-conditions" key={idx}>
             
                   <input 
                     value={Object.keys(val)[0]}

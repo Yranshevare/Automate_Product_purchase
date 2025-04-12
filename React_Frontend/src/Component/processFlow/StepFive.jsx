@@ -1,9 +1,14 @@
 import React from "react";
 import { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { encryptData } from "../../util/encryptToken";
 
-function StepFive() {
+function StepFive({processData, user}) {
 
     const [expandedStep, setExpandedStep] = useState(null);
+
+
+    const navigate = useNavigate();
     const toggleStep = useCallback(
         (stepNumber) => {
           if (expandedStep === stepNumber) {
@@ -14,7 +19,17 @@ function StepFive() {
         },
         [expandedStep]
       );
-    const handleViewPO = useCallback();
+    const handleViewPO = useCallback(async()=>{
+      const token = {
+        owner : true,
+        id : localStorage.getItem("process"),
+        processData,
+        user
+      }
+      const encryptedToken = await encryptData(token);
+ 
+      navigate(`/purchaseOrder/${encryptedToken}`)
+    },[]);
     const handleSendPO = useCallback();
     const handleViewInvoice = useCallback();
   return (

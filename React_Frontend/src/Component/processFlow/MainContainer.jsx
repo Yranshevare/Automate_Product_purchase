@@ -145,7 +145,7 @@ const MainContainer = React.memo(
             }
           >
             <div className="step-number">5</div>
-            <StepFive/>
+            <StepFive processData={processData} user={user}/>
           </div>
         </div>
         <div className="delete-process">
