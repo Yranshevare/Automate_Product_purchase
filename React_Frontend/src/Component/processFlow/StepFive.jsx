@@ -39,20 +39,14 @@ function StepFive({processData, user}) {
                   <div className="step-header">
                     <div>
                       <span
-                        className={ "status-incomplete"
-                        }
-                      >
-                        pending
-                      </span>
-                      {/* <span
                         className={
-                          processData?.step_three == "Complete"
+                          processData?.step_five == "Complete"
                             ? "status-complete"
                             : "status-incomplete"
                         }
                       >
-                        {processData.step_three || "pending"}
-                      </span> */}
+                        {processData.step_five || "pending"}
+                      </span>
                       <h3>Place a purchase Order</h3>
                     </div>
                   </div>

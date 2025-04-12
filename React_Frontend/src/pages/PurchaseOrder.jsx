@@ -3,6 +3,9 @@ import '../CSS/PurchaseOrder.css';
 import EditableTable from "../Component/reqSheet/EditTable";
 import { useParams } from "react-router-dom";
 import { decryptData } from "../util/encryptToken";
+import axios from "axios";
+import { server } from "../constant";
+import RenderTable from "../Component/reqSheet/RenderTable";
 
 function PurchaseOrder() {
   let currentDate = new Date(); // Outputs the full date and time
@@ -11,12 +14,12 @@ function PurchaseOrder() {
 
 
   const [formData, setFormData] = useState({
-    orderNumber: "",
-    to: "",
-    poDate: formattedDate,
-    name: "",
-    email: "",
-    phone: "",
+    po_order_number: "",
+    po_address: "",
+    po_date: formattedDate,
+    po_name: "",
+    po_email: "",
+    po_mobile_number: "",
   });
 
   const [requirementText, setRequirementText] = useState({
@@ -44,6 +47,24 @@ function PurchaseOrder() {
     const data = await decryptData(token);
     console.log(data)
     setTokenData(data)
+
+    try {
+      const res = await axios.get(`${server}po/get/${data.id}/`);
+      if (res?.data?.message === "data fetched successfully"){
+        console.log(res.data.data)
+        setRequirementText(JSON.parse(res.data.data.po_tableData));
+        setTerms(JSON.parse(res.data.data.po_term_and_condition));
+        const newFormData = {
+          ...res.data.data
+        }
+        delete newFormData.po_tableData
+        delete newFormData.po_term_and_condition
+        setFormData(newFormData)
+      }
+
+    } catch (error) {
+      console.log(error.response.data || error)
+    }
 
   }, []);
 
@@ -103,12 +124,13 @@ function PurchaseOrder() {
 
   }, [finalData]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     console.log(finalData)
     console.log(formData)
     console.log(terms)
     let canSubmit = true
+    
     Object.keys(formData).forEach((key) => {
       if (formData[key] === "") {
         canSubmit = false
@@ -129,6 +151,27 @@ function PurchaseOrder() {
     if (!canSubmit) {
       alert("Please fill in all fields");
       return;
+    }
+    try {
+      const res = await axios.post(`${server}po/submit/`, {
+        tableData: JSON.stringify(finalData),
+        poData: formData,
+        termsAndCondition: JSON.stringify(terms),
+        id: tokenData.id
+      },{
+        withCredentials: true
+      } )
+      console.log(res)
+      if(res.data.message ==  'data submitted successfully'){
+        alert("data submitted successfully")
+        return
+      }
+      if(res.data.message ==  'PO updated successfully'){
+        alert("data updated successfully")
+        return
+      }
+    } catch (error) {
+      console.log(error.response?.data || error);
     }
   };
 
@@ -201,9 +244,10 @@ function PurchaseOrder() {
             <input
               type="text"
               id="orderNumber"
-              name="orderNumber"
-              value={formData.orderNumber}
+              name="po_order_number"
+              value={formData.po_order_number}
               onChange={handleChange}
+              disabled={tokenData?.owner || false}
               className="form-input"
             />
           </div>
@@ -214,9 +258,10 @@ function PurchaseOrder() {
             <input
               type="date"
               id="poDate"
-              name="poDate"
-              value={formData.poDate}
+              name="po_date"
+              value={formData.po_date}
               onChange={handleChange}
+              disabled={tokenData?.owner || false}
               className="form-input"
             />
           </div>
@@ -229,9 +274,10 @@ function PurchaseOrder() {
             </label>
             <textarea
               id="to"
-              name="to"
-              value={formData.to}
+              name="po_address"
+              value={formData.po_address}
               onChange={handleChange}
+              disabled={tokenData?.owner || false}
               className="form-textarea"
             />
           </div>
@@ -243,9 +289,10 @@ function PurchaseOrder() {
               <input
                 type="text"
                 id="name"
-                name="name"
-                value={formData.name}
+                name="po_name"
+                value={formData.po_name}
                 onChange={handleChange}
+                disabled={tokenData?.owner || false}
                 className="form-input"
               />
             </div>
@@ -256,9 +303,10 @@ function PurchaseOrder() {
               <input
                 type="email"
                 id="email"
-                name="email"
-                value={formData.email}
+                name="po_email"
+                value={formData.po_email}
                 onChange={handleChange}
+                disabled={tokenData?.owner || false}
                 className="form-input"
               />
             </div>
@@ -269,25 +317,38 @@ function PurchaseOrder() {
               <input
                 type="tel"
                 id="phone"
-                name="phone"
-                value={formData.phone}
+                name="po_mobile_number"
+                value={formData.po_mobile_number}
                 onChange={handleChange}
+                disabled={tokenData?.owner || false}
                 className="form-input"
               />
             </div>
           </div>
         </div>
 
+          {
+            tokenData?.owner ?
+            <div className="table">
+              {
+                RenderTable(requirementText)
+              }
+            </div>
+            :
           <div className="table-container">
             <EditableTable tableData={requirementText} setFinalData={setFinalData} />
           </div>
+          }
         {/* <div className="div-box"></div> */}
         <div className="terms-conditions-container">
           <div className="terms-conditions-header">
             <label className="form-label">TERMS AND CONDITIONS</label>
+            {
+              !tokenData?.owner &&
             <button 
             type="button"
             onClick={addTerm}>add</button>
+            }
           </div>
           {
               terms.map((val,idx) => (
@@ -299,6 +360,7 @@ function PurchaseOrder() {
                     type="text"
                     placeholder="enter the terms and condition" 
                     onChange={(e) => handleKeyChange(e.target.value, idx)}
+                    disabled={tokenData?.owner || false}
                   />
                   <input 
                     value={val[Object.keys(val)[0]]}
@@ -306,6 +368,7 @@ function PurchaseOrder() {
                     type="text"
                     placeholder="enter the terms and condition" 
                     onChange={(e) => handleValueChange(e.target.value,idx)}
+                    disabled={tokenData?.owner || false}
                   />
                 </div>
               ))
@@ -322,13 +385,15 @@ function PurchaseOrder() {
             placeholder="enter the terms and condition" />
           </div> */}
         </div>
-
-
+        {
+          !tokenData?.owner &&
         <div className="submit-container">
           <button type="submit" className="submit-button">
             submit
           </button>
         </div>
+        }
+
 
         {/* Footer Signatures */}
         {
