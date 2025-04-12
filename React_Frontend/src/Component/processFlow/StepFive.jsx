@@ -63,8 +63,6 @@ function StepFive({processData, user}) {
         
         const pdf = await generatePdf(ref)
 
-        pdf.append("id", localStorage.getItem("process"))
-
         const token = {
           owner : false,
           id : localStorage.getItem("process"),

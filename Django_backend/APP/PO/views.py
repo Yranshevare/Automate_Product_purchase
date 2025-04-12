@@ -106,8 +106,13 @@ def get(request,id):
 def send_Po_to_vender(request):
     if request.method == 'POST':
         try:
-            id = request.POST.get('id')
-            id = decode_id(id)
+            process_token = request.COOKIES.get('process_token')
+            access_token = request.COOKIES.get('access_token')
+
+            if not access_token or not process_token:
+                return JsonResponse({'error': 'unauthorize request'}, status=401)
+
+            id = decrypt_data(process_token)["id"]
             print(id,"data")
 
             file = request.FILES.get('pdf')
@@ -116,9 +121,14 @@ def send_Po_to_vender(request):
 
             token = request.POST.get('token')
             print(token)
-            
+
             po = POModel.objects.filter(process = id).first()
-            print(po)
+            if not po:
+                return JsonResponse({'message':'PO not found'},status=401)
+            print(po.po_email)
+
+
+            
             return JsonResponse({'message':"PO is sended to vender"})
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON format'}, status=400)
