@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'Approvel',
     'rest_framework',
     'RFQ',
+    'PO',
 ]
 
 MIDDLEWARE = [

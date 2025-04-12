@@ -526,6 +526,7 @@ form{
   resize: none;
   width: 100%;
   background: transparent;
+  padding: 0;
 }
 .table textarea::-webkit-scrollbar{
   display: none;

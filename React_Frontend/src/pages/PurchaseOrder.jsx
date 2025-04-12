@@ -108,6 +108,28 @@ function PurchaseOrder() {
     console.log(finalData)
     console.log(formData)
     console.log(terms)
+    let canSubmit = true
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] === "") {
+        canSubmit = false
+      }
+    })
+
+    terms.forEach((term) => {
+      Object.keys(term).forEach((key) => {
+        if(key == ""){
+          canSubmit = false
+        }
+        if (term[key] === "") {
+          canSubmit = false
+        }
+      })
+    })
+
+    if (!canSubmit) {
+      alert("Please fill in all fields");
+      return;
+    }
   };
 
 
@@ -263,7 +285,9 @@ function PurchaseOrder() {
         <div className="terms-conditions-container">
           <div className="terms-conditions-header">
             <label className="form-label">TERMS AND CONDITIONS</label>
-            <button onClick={addTerm}>add</button>
+            <button 
+            type="button"
+            onClick={addTerm}>add</button>
           </div>
           {
               terms.map((val,idx) => (
@@ -307,24 +331,27 @@ function PurchaseOrder() {
         </div>
 
         {/* Footer Signatures */}
-        <div className="signature-sections">
-        <div className="signatures-row">
-          <div className="signature-box">
-            <div className="signature-line">prespred by - store keeper</div>
+        {
+          tokenData?.owner && 
+          <div className="signature-sections">
+          <div className="signatures-row">
+            <div className="signature-box">
+              <div className="signature-line">prespred by - store keeper</div>
+            </div>
+            <div className="signature-box">
+              <div className="signature-line">Recived by</div>
+            </div>
           </div>
-          <div className="signature-box">
-            <div className="signature-line">Recived by</div>
+          <div className="signatures-row">
+            <div className="signature-box">
+              <div className="signature-line">Recomended by</div>
+            </div>
+            <div className="signature-box">
+              <div className="signature-line">principle</div>
+            </div>
           </div>
-        </div>
-        <div className="signatures-row">
-          <div className="signature-box">
-            <div className="signature-line">Recomended by</div>
           </div>
-          <div className="signature-box">
-            <div className="signature-line">principle</div>
-          </div>
-        </div>
-        </div>
+        }
       </form>
     </div>
   );

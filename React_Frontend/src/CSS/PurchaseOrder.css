@@ -113,6 +113,7 @@
     padding: 8px;
     border: 1px solid #ccc;
     box-sizing: border-box;
+    outline: none;
   }
   
   .form-textarea {
@@ -121,6 +122,7 @@
     padding: 8px;
     border: 1px solid #ccc;
     box-sizing: border-box;
+    outline: none;
   }
   
   /* Gray boxes for item details */
@@ -203,7 +205,7 @@
   width: 100%;
 }
 .terms-conditions input{
-  width: 46% !important;
+  width: 44% !important;
   margin-bottom: 10px;
   /* outline: none;
   height: 25px; */
