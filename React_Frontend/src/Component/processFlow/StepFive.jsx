@@ -17,7 +17,7 @@ function StepFive({processData, user}) {
 
 
     const navigate = useNavigate();
-    console.log(processData,user)
+    // console.log(processData,user)
 
 
 
