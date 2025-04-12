@@ -1,12 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
-import '../CSS/PurchaseOrder.css';
-import EditableTable from "../Component/reqSheet/EditTable";
-import { useParams } from "react-router-dom";
-import { decryptData } from "../util/encryptToken";
-import axios from "axios";
-import { server } from "../constant";
+import React, {  useState } from "react";
 import RenderTable from "../Component/reqSheet/RenderTable";
-import { ThreeDot } from "react-loading-indicators";
+
+import '../CSS/PurchaseOrder.css';
+
 
 function PurchaseOrderPdfTemplate({user, data,ref}) {
 
