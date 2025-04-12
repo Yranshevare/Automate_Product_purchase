@@ -32,7 +32,6 @@ function StepThree({ processData }) {
     quotes.map((quote, idx) => {
       setSelectedQuote((prev) => [...prev, quote.type]);
     });
-    console.log("Lll");
   }, [quotes]);
   const toggleStep = useCallback(
     (stepNumber) => {

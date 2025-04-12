@@ -6,6 +6,7 @@ import { decryptData } from "../util/encryptToken";
 import axios from "axios";
 import { server } from "../constant";
 import RenderTable from "../Component/reqSheet/RenderTable";
+import { ThreeDot } from "react-loading-indicators";
 
 function PurchaseOrder() {
   let currentDate = new Date(); // Outputs the full date and time
@@ -33,10 +34,9 @@ function PurchaseOrder() {
     ]
   }); // Initialize tableData, 
   const [finalData, setFinalData] = useState();
-
   const [terms, setTerms] = useState([{"":""}]);
-
   const [tokenData, setTokenData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
 
   const {token} = useParams()
@@ -61,7 +61,7 @@ function PurchaseOrder() {
         delete newFormData.po_term_and_condition
         setFormData(newFormData)
       }
-
+      setLoading(true);
     } catch (error) {
       console.log(error.response.data || error)
     }
@@ -208,6 +208,7 @@ function PurchaseOrder() {
   };
 
   return (
+    loading ?
     <div className="purchase-order-container">
       {/* Header */}
       <div className="header">
@@ -419,6 +420,8 @@ function PurchaseOrder() {
         }
       </form>
     </div>
+    :
+    <ThreeDot color="#d6d6d6" size="small" text="" textColor="" />
   );
 }
 

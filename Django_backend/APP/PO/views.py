@@ -93,6 +93,7 @@ def get(request,id):
                 "po_mobile_number":po.po_mobile_number,
                 "po_tableData":po.po_tableData,
                 "po_term_and_condition":po.po_term_and_condition,
+                "po_invoice":po.po_invoice
             }
             return JsonResponse({'data':data,"message":"data fetched successfully"},status=200)
         except Exception as e:

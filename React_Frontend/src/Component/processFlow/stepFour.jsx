@@ -20,7 +20,6 @@ export default function StepFour({ processData, user }) {
   const navigate = useNavigate();
 
   const loadInfo = useCallback(async () => {
-    console.log(processData,"4");
 
     if (processData.step_two === "Incomplete") {
       return;

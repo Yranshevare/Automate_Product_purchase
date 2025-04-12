@@ -2,24 +2,40 @@ import React from "react";
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { encryptData } from "../../util/encryptToken";
+import axios from "axios";
+import { server } from "../../constant";
 
 function StepFive({processData, user}) {
 
     const [expandedStep, setExpandedStep] = useState(null);
+    const [data, setData] = useState(null);
 
 
     const navigate = useNavigate();
-    const toggleStep = useCallback(
-        (stepNumber) => {
+
+
+
+    const toggleStep = useCallback(async(stepNumber) => {
           if (expandedStep === stepNumber) {
             setExpandedStep(null);
           } else {
             setExpandedStep(stepNumber);
           }
-        },
-        [expandedStep]
-      );
+          if(processData.step_five === "Pending" && data === null){
+            const res = await axios.get(`${server}po/get/${localStorage.getItem("process")}/`);
+            console.log(res.data.data,"step5")
+            setData(res.data.data);
+
+          }
+    },[expandedStep,data]);
+
+
+
     const handleViewPO = useCallback(async()=>{
+      if(processData.step_five === "Incomplete"){
+        alert("no purchase order has been generated")
+        return
+      }
       const token = {
         owner : true,
         id : localStorage.getItem("process"),
@@ -30,8 +46,21 @@ function StepFive({processData, user}) {
  
       navigate(`/purchaseOrder/${encryptedToken}`)
     },[]);
-    const handleSendPO = useCallback();
-    const handleViewInvoice = useCallback();
+
+
+
+    const handleSendPO = useCallback(()=>{
+      console.log("send email to ",data.po_email)
+    },[data]);
+
+
+
+    const handleViewInvoice = useCallback(() => {
+      if(data.po_invoice === "none"){
+        alert("no invoice has been received")
+        return
+      }
+    },[data]);
   return (
     <div className="step-button" onClick={() => toggleStep(5)}>
               <div className="step-content">

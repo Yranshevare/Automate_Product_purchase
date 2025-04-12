@@ -18,5 +18,7 @@ class POModel(models.Model):
 
     process = models.ForeignKey('process.processModel', on_delete=models.CASCADE)
 
+    po_invoice = models.TextField(default="none")
+
     def __str__(self):
         return self.process.title
