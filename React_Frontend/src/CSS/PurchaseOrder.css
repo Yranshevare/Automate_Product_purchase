@@ -210,3 +210,20 @@
   /* outline: none;
   height: 25px; */
 }
+.purchase-order-table table{
+  width: 100% !important;
+}
+/* .Po_pdf{
+  position: absolute;
+  z-index: 1000;
+  transform: translateX(-100px);
+} */
+/* .expanded-content.open{
+  overflow-y: scroll;
+} */
+.pdf-container{
+  padding: 30px;
+  position: absolute;
+  z-index: 1000;
+  transform: translateX(-10000000px);
+}

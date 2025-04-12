@@ -100,3 +100,27 @@ def get(request,id):
             return JsonResponse({'message': 'Invalid JSON format',"error":str(e)}, status=400)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+
+@csrf_exempt
+def send_Po_to_vender(request):
+    if request.method == 'POST':
+        try:
+            id = request.POST.get('id')
+            id = decode_id(id)
+            print(id,"data")
+
+            file = request.FILES.get('pdf')
+            print(file)
+
+
+            token = request.POST.get('token')
+            print(token)
+            
+            po = POModel.objects.filter(process = id).first()
+            print(po)
+            return JsonResponse({'message':"PO is sended to vender"})
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)

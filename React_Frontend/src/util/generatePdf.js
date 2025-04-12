@@ -31,7 +31,7 @@ const generatePdf = async(printRef)=>{
       pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
       pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight)
       const pdfBlob = pdf.output("blob");
-    //   pdf.save("document.pdf")
+      // pdf.save("document.pdf")
       const pdfFile = new File([pdfBlob], "document.pdf", { type: "application/pdf" });
       const fromData = new FormData()
       fromData.append("pdf", pdfFile);

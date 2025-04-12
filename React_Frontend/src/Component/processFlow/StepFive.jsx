@@ -1,17 +1,23 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { encryptData } from "../../util/encryptToken";
 import axios from "axios";
 import { server } from "../../constant";
+import PurchaseOrderPdfTemplate from "../../util/purchaseOrderPdfTemplete";
+import generatePdf from "../../util/generatePdf";
 
 function StepFive({processData, user}) {
 
     const [expandedStep, setExpandedStep] = useState(null);
     const [data, setData] = useState(null);
+    const [sendEmail, setSendEmail] = useState("send to respective vendor");
+
+    const ref = useRef();
 
 
     const navigate = useNavigate();
+    console.log(processData,user)
 
 
 
@@ -49,8 +55,29 @@ function StepFive({processData, user}) {
 
 
 
-    const handleSendPO = useCallback(()=>{
-      console.log("send email to ",data.po_email)
+    const handleSendPO = useCallback(async()=>{
+      if(!confirm(`are you sure you want to send the purchase order to respective vendor? ${data.po_email}`)) return
+      setSendEmail("sending...");
+      
+      try {
+        
+        const pdf = await generatePdf(ref)
+
+        pdf.append("id", localStorage.getItem("process"))
+
+        const token = {
+          owner : false,
+          id : localStorage.getItem("process"),
+          po_data: data,
+          user: user
+        }
+        pdf.append("token", await encryptData(token))
+        const res = await axios.post(`${server}po/send_po_to_vendor/`,pdf,{withCredentials: true})
+        console.log(res,"5")
+      } catch (error) {
+        console.log(error.response.data || error)
+      }
+      setSendEmail("resent to respective vendor");
     },[data]);
 
 
@@ -91,9 +118,12 @@ function StepFive({processData, user}) {
                 className={`expanded-content ${expandedStep === 5 ? "open" : ""}`}
                 onClick={(e) => e.stopPropagation()}
               >
+                { 
+                  data && <PurchaseOrderPdfTemplate user={user} data={data} ref={ref}/>
+                }
                 <div className="purchase-order-buttons">
                   <button className="po-btn" onClick={handleViewPO}>View this PO</button>
-                  <button className="po-btn" onClick={handleSendPO}>send to respective vendor</button>
+                  <button className="po-btn" onClick={handleSendPO}>{sendEmail}</button>
                   <button className="po-btn" onClick={handleViewInvoice}>view invoice</button>
                 </div>
               </div>

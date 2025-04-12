@@ -10,6 +10,7 @@ import Approval from "./pages/Approval.jsx";
 import QuoteSubmit from "./pages/qouteSubmit.jsx";
 import checkAuthentication from "./util/checkAuthentication";
 import PurchaseOrder from "./pages/PurchaseOrder.jsx";
+import PurchaseOrderPdfTemplate from "./util/purchaseOrderPdfTemplete.jsx";
 
 checkAuthentication();
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/approval/:data" element={<Approval />}></Route>
           <Route path="/quoteSubmit/:token" element={<QuoteSubmit />} />
           <Route path="/purchaseOrder/:token" element={<PurchaseOrder />} ></Route>
+          <Route path="/pdf" element={<PurchaseOrderPdfTemplate/>}></Route>
         </Routes>
       </div>
     </Router>

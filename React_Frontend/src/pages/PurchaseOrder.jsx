@@ -330,7 +330,7 @@ function PurchaseOrder() {
 
           {
             tokenData?.owner ?
-            <div className="table">
+            <div className="table purchase-order-table">
               {
                 RenderTable(requirementText)
               }
