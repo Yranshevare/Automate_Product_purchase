@@ -29,6 +29,8 @@ function PurchaseOrder() {
   }); // Initialize tableData, 
   const [finalData, setFinalData] = useState();
 
+  const [terms, setTerms] = useState([{"":""}]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -85,6 +87,39 @@ function PurchaseOrder() {
     e.preventDefault();
     console.log(finalData)
     console.log(formData)
+    console.log(terms)
+  };
+
+
+  const handleKeyChange = (key,idx) => {
+
+    const newTerms = {...terms[idx]};
+
+
+    newTerms[key] = newTerms[Object.keys(newTerms)[0]]
+    delete newTerms[Object.keys(newTerms)[0]]
+
+    const newObj = [...terms];
+    newObj[idx] = newTerms;
+    setTerms(newObj);
+
+  };
+  const handleValueChange=(val,idx) => {
+    const newTerms = {...terms[idx]};
+
+    newTerms[Object.keys(newTerms)[0]] = val
+
+
+    const newObj = [...terms];
+    newObj[idx] = newTerms;
+    setTerms(newObj);
+    // setTerms({...terms,[key]:val})
+  }
+
+  const addTerm = () => {
+    const newTerms = [...terms];
+    newTerms.push({"":""});
+    setTerms(newTerms);
   };
 
   return (
@@ -191,10 +226,48 @@ function PurchaseOrder() {
           </div>
         </div>
 
-        <div className="table-container">
-                  <EditableTable tableData={requirementText} setFinalData={setFinalData} />
-                  </div>
-        <div className="div-box"></div>
+          <div className="table-container">
+            <EditableTable tableData={requirementText} setFinalData={setFinalData} />
+          </div>
+        {/* <div className="div-box"></div> */}
+        <div className="terms-conditions-container">
+          <div className="terms-conditions-header">
+            <label className="form-label">TERMS AND CONDITIONS</label>
+            <button onClick={addTerm}>add</button>
+          </div>
+          {
+              terms.map((val,idx) => (
+                <div className="terms-conditions">
+            
+                  <input 
+                    value={Object.keys(val)[0]}
+                    className="section-input"
+                    type="text"
+                    placeholder="enter the terms and condition" 
+                    onChange={(e) => handleKeyChange(e.target.value, idx)}
+                  />
+                  <input 
+                    value={val[Object.keys(val)[0]]}
+                    className="section-input"
+                    type="text"
+                    placeholder="enter the terms and condition" 
+                    onChange={(e) => handleValueChange(e.target.value,idx)}
+                  />
+                </div>
+              ))
+            }
+          {/* <div className="terms-conditions">
+            
+            <input 
+            className="section-input"
+            type="text"
+            placeholder="enter the terms and condition" />
+            <input 
+            className="section-input"
+            type="text"
+            placeholder="enter the terms and condition" />
+          </div> */}
+        </div>
 
 
         <div className="submit-container">

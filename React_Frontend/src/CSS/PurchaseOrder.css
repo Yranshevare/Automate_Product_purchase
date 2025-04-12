@@ -176,3 +176,35 @@
 
 
 
+.terms-conditions-container{
+  width: 70%;
+}
+.terms-conditions-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 10px 10px 0px;
+}
+.terms-conditions-header button{
+  width: 100px;
+  height: 30px;
+  border-radius: 5px;
+  border:none;
+  background-color: #a5a5a5;
+  transition-duration: 0.3s;
+  cursor: pointer ;
+}
+.terms-conditions-header button:hover{
+  background-color: #8b8b8b;
+}
+.terms-conditions{
+  display:  flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.terms-conditions input{
+  width: 46% !important;
+  margin-bottom: 10px;
+  /* outline: none;
+  height: 25px; */
+}
