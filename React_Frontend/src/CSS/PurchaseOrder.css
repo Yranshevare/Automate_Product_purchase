@@ -227,3 +227,31 @@
   z-index: 1000;
   transform: translateX(-10000000px);
 }
+
+
+.invoice-file{
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+.invoice-file-input{
+  display: none;
+}
+.invoice-file-label{
+  margin-top: 20px;
+  cursor: pointer;
+  width: 50%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #556ed9;
+  border-radius: 5px;
+  border: 1px solid #1133cb;
+  color: white;
+  font-size: large;
+  font-weight: 600;
+}
+
+

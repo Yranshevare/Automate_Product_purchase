@@ -2,7 +2,7 @@
 function checkAuthentication() {
     const pathArr = window.location.href.split("/")
 
-    const publicPath = ["approval","auth","quoteSubmit","purchaseorder"]
+    const publicPath = ["approval","auth","quoteSubmit","purchaseorder","invoiceSubmit"]
 
 
 
