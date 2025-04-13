@@ -50,7 +50,7 @@ const MainContainer = React.memo(
         await setSelectedProcess(null);
         setProcessData(null);
         loadInfo();
-        // alert(res?.data?.message)
+        alert(res?.data?.message)
       } catch (error) {
         console.log(
           error?.response?.data?.error || error.response?.data?.message

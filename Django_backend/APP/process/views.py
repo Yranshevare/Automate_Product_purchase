@@ -6,7 +6,22 @@ from django.views.decorators.csrf import csrf_exempt
 from authentication.models import UserModel
 from .models import processModel
 from datetime import datetime, timedelta, timezone
+from PO.models import POModel
+from RFQ.models import RFQModel
 import json
+import cloudinary
+import cloudinary.uploader
+
+
+import os 
+import environ
+env = environ.Env()
+
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+
 
 # Create your views here.
 @csrf_exempt 
@@ -171,6 +186,20 @@ def get_one(request):
         return JsonResponse({'error': 'Invalid JSON format'}, status=400)
     
 
+cloudinary.config( 
+  cloud_name = env("CLOUD_NAME"), 
+  api_key = env("API_KEY"), 
+  api_secret =env("API_SECRET")
+)
+
+def extract_public_id(url):
+    parts = url.split('/')
+    file_name_with_ext = parts[-1]       
+    file_name = file_name_with_ext.split('.')[0]                  
+
+    return f"{file_name}" 
+
+
 @csrf_exempt
 def delete(request):
     try:
@@ -195,6 +224,24 @@ def delete(request):
             if str(process[0].owner_id) != decrypt_token['id']:
                 return JsonResponse({"message":"not the owner of this process"},status=401)
             
+
+            if(process[0].stepThree != processModel.steps.INCOMPLETE):
+                rfq = RFQModel.objects.filter(process = process[0])
+                for r in rfq:
+                    file_id = extract_public_id(r.sheet)
+
+                    result = cloudinary.uploader.destroy(file_id)
+                print("delete the uploaded quotes")
+
+           
+
+            if(process[0].stepFive == processModel.steps.COMPLETE):
+                po = POModel.objects.filter(process = process[0]).first()
+
+                file_id = extract_public_id(po.po_invoice)
+
+                result = cloudinary.uploader.destroy(file_id)
+
             process.delete()
 
             return JsonResponse({'message':'process deleted successfully'},status=200)
