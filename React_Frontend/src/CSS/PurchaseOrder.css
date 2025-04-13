@@ -255,3 +255,23 @@
 }
 
 
+.invoice-present{
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+}
+.invoice-present label{
+  width: 40%;
+  margin: 0;
+}
+.invoice-present a{
+  width: 40%;
+  background-color: #556ed9;
+  color: white;
+  font-size: large;
+  font-weight: 600;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;  
+  justify-content: center;
+}

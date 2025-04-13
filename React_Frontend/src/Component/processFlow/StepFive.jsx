@@ -27,7 +27,7 @@ function StepFive({processData, user}) {
           } else {
             setExpandedStep(stepNumber);
           }
-          if(processData.step_five === "Pending" && data === null){
+          if(processData.step_five !== "Incomplete" && data === null){
             const res = await axios.get(`${server}po/get/${localStorage.getItem("process")}/`);
             console.log(res.data.data,"step5")
             setData(res.data.data);
@@ -81,10 +81,12 @@ function StepFive({processData, user}) {
 
 
     const handleViewInvoice = useCallback(() => {
+      console.log(data)
       if(data.po_invoice === "none"){
         alert("no invoice has been received")
         return
       }
+      window.open(data.po_invoice)
     },[data]);
   return (
     <div className="step-button" onClick={() => toggleStep(5)}>

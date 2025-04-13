@@ -6,7 +6,19 @@ from process.models import processModel
 from .models import POModel
 from django.conf import settings
 from django.core.mail import EmailMessage
+import cloudinary
+import cloudinary.uploader
 import json
+
+
+import os 
+import environ
+env = environ.Env()
+
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 
 # Create your views here.
 @csrf_exempt
@@ -171,6 +183,61 @@ def send_Po_to_vender(request):
 
             
             return JsonResponse({'message':"PO is sended to vender"})
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+
+
+cloudinary.config( 
+  cloud_name = env("CLOUD_NAME"), 
+  api_key = env("API_KEY"), 
+  api_secret =env("API_SECRET")
+)
+@csrf_exempt
+def submit_invoice(request):
+    if request.method == 'POST':
+        try:
+            id = json.loads(request.body)['id']
+            id = decode_id(id)
+            # print(id)
+            po_invoice = json.loads(request.body)['po_invoice']
+            # print(po_invoice)
+            if(not po_invoice):
+                return JsonResponse({'message':'Invoice not found'},status=401)
+
+
+            process = processModel.objects.filter(_id = id).first()
+            if(not process):
+                return JsonResponse({'message':'process not found'},status=401)
+
+
+            po = POModel.objects.filter(process = process).first()
+            if(not po):
+                return JsonResponse({'message':'PO not found'},status=401)
+            
+
+            if po.po_invoice != 'none':
+
+                parts = po.po_invoice.split('/')
+                file_name_with_ext = parts[-1]       
+                file_name = file_name_with_ext.split('.')[0]
+
+
+                
+                result = cloudinary.uploader.destroy(file_name)
+                print(result,"result")
+
+                po.po_invoice = po_invoice
+                po.save()
+                return JsonResponse({'message':'Invoice updated successfully'},status=200)
+            
+            po.po_invoice = po_invoice
+            process.stepFive = process.steps.COMPLETE
+            process.save()
+            po.save()
+            return JsonResponse({'message':"Invoice submitted successfully"})
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON format'}, status=400)
     else:

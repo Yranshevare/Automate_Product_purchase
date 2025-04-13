@@ -61,9 +61,12 @@ function PurchaseOrder() {
         delete newFormData.po_term_and_condition
         setFormData(newFormData)
       }
-      setLoading(true);
     } catch (error) {
       console.log(error.response.data || error)
+    }
+    finally{
+      setLoading(true);
+
     }
 
   }, []);

@@ -5,7 +5,9 @@ import '../CSS/PurchaseOrder.css';
 import { useParams } from "react-router-dom";
 import { decryptData } from "../util/encryptToken";
 import { ThreeDot } from "react-loading-indicators";
-
+import uploadFile from '../util/handleFileUpload';
+import axios from "axios";
+import {server} from "../constant";
 
 function InvoiceSubmit() {
 
@@ -34,6 +36,7 @@ function InvoiceSubmit() {
   const [user, setUser] = useState('');
 
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState("Upload Invoice");
 
     const {token} = useParams() 
     // console.log(token)
@@ -43,13 +46,17 @@ function InvoiceSubmit() {
   const loadInfo = useCallback(async () => {
     try {
         const data = await decryptData(token);
-        console.log(data.user)
+        console.log(data)
+
+        const res = await axios.get(`${server}po/get/${data.id}/`,{withCredentials: true});
+        console.log(res.data.data)
+
+
         const newFormData = {
-            ...data.po_data
+            ...res.data.data
         }
         delete newFormData.po_tableData
         delete newFormData.po_term_and_condition
-        delete newFormData.po_invoice
 
         setFormData(newFormData)
 
@@ -70,8 +77,39 @@ function InvoiceSubmit() {
 
 
   const uploadInvoice = useCallback(async (e) => {
+
     const uploaded_file = event.target.files[0];
     console.log(uploaded_file)
+    if(!uploaded_file) {
+      alert("Please upload a file")
+      return
+    }
+    if(!confirm(`Are you sure you want to upload this file? ${uploaded_file.name}`)) return
+    
+    setUploading("Uploading...")
+    try {
+      const uploadUrl = await uploadFile(uploaded_file);
+
+      const id = (await decryptData(token)).id
+
+      const res = await axios.post(`${server}po/submit_invoice/`,{
+        id:id,
+        po_invoice:uploadUrl,
+        
+      },{withCredentials: true})
+
+      console.log(res)
+      if(res.data.message === "Invoice submitted successfully" || res.data.message === 'Invoice updated successfully'){
+        formData.po_invoice = uploadUrl
+        alert(res.data.message)
+      }
+
+    } catch (error) {
+      console.log(error.response ||error)
+    }
+    finally{
+      setUploading("Upload Invoice")
+    }
   },[])
 
 
@@ -231,9 +269,18 @@ function InvoiceSubmit() {
 
 
         {/* Footer Signatures */}
+        <input type="file"  id="file"  className="invoice-file-input" onChange={uploadInvoice}/>
          <div className="invoice-file">
-            <input type="file"  id="file"  className="invoice-file-input" onChange={uploadInvoice}/>
-            <label htmlFor="file" className="invoice-file-label"><p>Upload Invoice</p></label>
+          {
+            formData?.po_invoice !== 'none' ?
+              <div className="invoice-present">
+              <label htmlFor="file" className="invoice-file-label"><p>{uploading ==="Upload Invoice" ? "Change the invoice" : uploading }</p></label>
+              <a href={`${formData?.po_invoice}`} target="_blank">view invoice</a>
+              </div>
+            
+            :
+            <label htmlFor="file" className="invoice-file-label"><p>{uploading}</p></label>
+          }
             
          </div>
         
